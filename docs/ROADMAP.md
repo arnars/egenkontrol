@@ -64,7 +64,8 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 - [x] Opret SvelteKit-projekt
 - [x] Tilføj Vercel-adapter
 - [x] Konfigurér streng TypeScript
-- [ ] Opret Supabase-projekt
+- [x] Opret Supabase-projekt
+- [x] Anvend og verificér første Drizzle-migration
 - [ ] Konfigurér og dokumentér miljøvariabler
 - [x] Opsæt Drizzle
 - [x] Opret migrationsstruktur og migrationspraksis

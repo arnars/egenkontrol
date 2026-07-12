@@ -4,7 +4,7 @@ Dokumentet beskriver informationsbehov og relationer, ikke et endeligt Drizzle-s
 
 ## Implementeringsstatus
 
-Første Drizzle-schema og migration findes nu i `src/lib/server/db/schema.ts` og `drizzle/`. Det er fortsat et fundament, ikke et anvendt produktionsschema. Migrationen er ikke kørt mod Supabase. Følgende principper er implementeret i schema/migration:
+Første Drizzle-schema og migration findes i `src/lib/server/db/schema.ts` og `drizzle/`. Migrationen blev anvendt på projektets delte Supabase-instans 12. juli 2026. RLS er aktiveret på alle 11 applikationstabeller, men virksomhedsspecifikke politikker og Auth-koblingen mangler fortsat. Følgende principper er implementeret i schema/migration:
 
 - eksakt reference til kontroldefinition og revision,
 - idempotency key for indsendelser,

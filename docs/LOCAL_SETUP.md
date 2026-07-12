@@ -20,7 +20,9 @@ RECIPE_SITE_PATH=../recipe-site
 
 ## Miljøfiler og secrets
 
-Lokale hemmeligheder skal senere ligge i `.env.local`. Filen må aldrig committes. Der er endnu ikke oprettet nogen miljøfil.
+Lokale hemmeligheder skal ligge i `.env.local`. Filen må aldrig committes. Der er endnu ikke oprettet nogen miljøfil.
+
+Det fælles Supabase-projekt hedder `egenkontrol`, har projektreference `qgihpnympwvtbjufwawg` og ligger i regionen Central EU (Frankfurt). Den offentlige projekt-URL er `https://qgihpnympwvtbjufwawg.supabase.co`. Credentials og databasepassword dokumenteres ikke i repositoryet.
 
 Forventede variabelnavne:
 
@@ -62,12 +64,10 @@ Playwright-browsere installeres lokalt med `pnpm exec playwright install`, før 
 
 `DATABASE_URL` skal bruge Supabases transaction pooler til Vercel-runtime. Postgres.js er konfigureret med `prepare: false`, fordi transaction pooling ikke understøtter prepared statements. `DIRECT_URL` bruges af Drizzle Kit til migrationer og senere af `pg_dump`/administration. Kopiér `.env.example` til `.env.local` og indsæt aldrig rigtige credentials i repositoryet.
 
-Den første migration kan først anvendes, når et Supabase-projekt er oprettet, `DIRECT_URL` er sat, migrationen er gennemgået, og backup/rollback-afhjælpning er beskrevet. Kør aldrig `drizzle-kit push` direkte mod produktion; brug de versionsstyrede migrationer.
+Den første migration blev anvendt på Supabase 12. juli 2026 og er registreret i Drizzles migrationstabel. Verifikationen viste 11 applikationstabeller, RLS på alle 11 tabeller og alle seks append-only-triggere. Den anvendte migrationsfil er nu uforanderlig; senere schemaændringer skal ligge i nye migrationsfiler. Kør aldrig `drizzle-kit push` direkte mod det delte miljø.
 
 ## Skal afklares
 
-- Lokal Supabase kontra fjern udviklingsdatabase
 - Separate miljøer til udvikling, preview og produktion
-- Connection pooling kontra direkte forbindelse
-- Kommandoer til udvikling, test, migration og typecheck
+- Lokal Supabase til integrationstests kontra den delte fjerninstans
 - Hvordan referenceprojektets commit/version registreres i designanalysen
