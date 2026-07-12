@@ -26,7 +26,6 @@ Den valgte retning er SvelteKit med TypeScript på Vercel, Supabase Postgres og 
 
 ## Næste trin
 
-1. Opret første inviterede bruger og knyt identiteten til en actor.
-2. Tilføj virksomhedsspecifikke RLS-politikker og test isolation.
-3. Forbind "Dagens kontroller" med den revisionssikre skrivepipeline.
-4. Fortsæt den faglige gennemgang af risikoanalyse og procedurer.
+1. Tilføj virksomhedsspecifikke RLS-politikker og test isolation.
+2. Forbind "Dagens kontroller" med den revisionssikre skrivepipeline.
+3. Fortsæt den faglige gennemgang af risikoanalyse og procedurer.

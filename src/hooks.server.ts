@@ -17,16 +17,10 @@ export const handle: Handle = async ({ event, resolve }) => {
 	});
 
 	event.locals.getVerifiedAuth = async () => {
-		const {
-			data: { session }
-		} = await event.locals.supabase.auth.getSession();
-
-		if (!session) return { session: null, claims: null };
-
 		const { data, error } = await event.locals.supabase.auth.getClaims();
-		if (error || !data?.claims?.sub) return { session: null, claims: null };
+		if (error || !data?.claims?.sub) return { claims: null };
 
-		return { session, claims: data.claims as App.PageData['claims'] };
+		return { claims: data.claims as App.PageData['claims'] };
 	};
 
 	if (!publicPaths.has(event.url.pathname)) {

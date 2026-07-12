@@ -132,7 +132,7 @@ Første version bruger inviterede Supabase-brugere med e-mail og adgangskode. Sv
 
 ### Konsekvenser
 
-Den første bruger skal oprettes administrativt og knyttes til en actor. Glemt adgangskode, magic links og mailnotifikationer afventer valg og opsætning af SMTP. RLS-politikker skal fortsat håndhæve virksomhedstilhørsforhold uafhængigt af routebeskyttelsen.
+Den ene administrative bruger oprettes manuelt og knyttes til en actor. Glemt adgangskode, magic links og mailnotifikationer er ikke en del af det nuværende flow. RLS-politikker skal fortsat håndhæve virksomhedstilhørsforhold uafhængigt af routebeskyttelsen.
 
 ## Skabelon til fremtidige ADR'er
 
