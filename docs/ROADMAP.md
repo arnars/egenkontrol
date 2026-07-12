@@ -7,8 +7,8 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 - [x] Initialisér lokalt Git-repository
 - [x] Tilføj `.gitignore` for secrets, dependencies og genererede filer
 - [x] Opret første commit med dokumentationsgrundlaget
-- [ ] Opret offentligt GitHub-repository med navnet `egenkontrol`
-- [ ] Tilføj GitHub-repositoryet som `origin` og push `main`
+- [x] Opret offentligt GitHub-repository med navnet `egenkontrol`
+- [x] Tilføj GitHub-repositoryet som `origin` og push `main`
 
 ## Fase 0 — domæneafklaring
 
