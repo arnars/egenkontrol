@@ -8,6 +8,20 @@
       "when": 1783879020514,
       "tag": "20260712175700_initial_control_records",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1783880482829,
+      "tag": "20260712182122_auth_rls_persistence",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1783880813422,
+      "tag": "20260712182653_authenticated_read_grants",
+      "breakpoints": true
     }
   ]
 }

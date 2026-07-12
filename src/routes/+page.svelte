@@ -1,23 +1,23 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
+	import { invalidateAll } from '$app/navigation';
+	import type { SubmitFunction } from '@sveltejs/kit';
 	import { assessMeasurement, formatTemperature } from '$lib/domain/today-controls';
 	import type { PageData } from './$types';
-
-	type Completion = {
-		value: number;
-		deviation: boolean;
-		completedAt: Date;
-	};
 
 	let { data }: { data: PageData } = $props();
 	let view = $state<'today' | 'week'>('today');
 	let activeControlId = $state<string | null>(null);
 	let temperatureInput = $state('');
 	let deviation = $state(false);
+	let deviationDescription = $state('');
+	let idempotencyKey = $state('');
+	let saving = $state(false);
 	let error = $state('');
 	let eventMessage = $state('');
-	let completions = $state<Record<string, Completion>>({});
 
 	let activeControl = $derived(data.controls.find((control) => control.id === activeControlId));
+	let completions = $derived(data.completions);
 	let pendingControls = $derived(
 		data.controls.filter((control) => completions[control.id] === undefined)
 	);
@@ -35,6 +35,8 @@
 		activeControlId = id;
 		temperatureInput = '';
 		deviation = false;
+		deviationDescription = '';
+		idempotencyKey = crypto.randomUUID();
 		error = '';
 		eventMessage = '';
 	}
@@ -43,28 +45,54 @@
 		activeControlId = null;
 		temperatureInput = '';
 		deviation = false;
+		deviationDescription = '';
+		idempotencyKey = '';
 		error = '';
 	}
 
-	function saveControl() {
+	const enhanceCompletion: SubmitFunction = ({ cancel }) => {
 		if (!activeControl) return;
 
 		const normalized = temperatureInput.replace(',', '.').trim();
 		const value = Number(normalized);
 		if (normalized === '' || !Number.isFinite(value)) {
 			error = 'Indtast en gyldig temperatur.';
+			cancel();
 			return;
 		}
 
 		const assessment = assessMeasurement(activeControl, value);
 		if (assessment.requiresDeviation && !deviation) {
 			error = `${assessment.message} Markér afvigelse for at fortsætte.`;
+			cancel();
 			return;
 		}
 
-		completions[activeControl.id] = { value, deviation, completedAt: new Date() };
-		closeControl();
-	}
+		if (deviation && deviationDescription.trim() === '') {
+			error = 'Beskriv afvigelsen for at fortsætte.';
+			cancel();
+			return;
+		}
+
+		saving = true;
+		error = '';
+
+		return async ({ result }) => {
+			saving = false;
+			if (result.type === 'success') {
+				await invalidateAll();
+				closeControl();
+				return;
+			}
+
+			if (result.type === 'failure') {
+				error = String(result.data?.error ?? 'Kontrollen kunne ikke gemmes.');
+				return;
+			}
+
+			error = 'Din session er udløbet. Genindlæs siden og log ind igen.';
+		};
+	};
 
 	function startEvent(title: string) {
 		closeControl();
@@ -152,39 +180,58 @@
 			<button class="text-button" onclick={closeControl}>Luk</button>
 		</header>
 
-		<div class="measurement-fields">
-			<label>
-				<span>Målt temperatur</span>
-				<span class="temperature-input">
-					<input
-						bind:value={temperatureInput}
-						inputmode="decimal"
-						autocomplete="off"
-						aria-describedby="profile-hint measurement-error"
-					/>
-					<i>°C</i>
-				</span>
-			</label>
+		<form method="POST" action="?/complete" use:enhance={enhanceCompletion}>
+			<input type="hidden" name="controlId" value={activeControl.id} />
+			<input type="hidden" name="idempotencyKey" value={idempotencyKey} />
+			<div class="measurement-fields">
+				<label>
+					<span>Målt temperatur</span>
+					<span class="temperature-input">
+						<input
+							name="value"
+							bind:value={temperatureInput}
+							inputmode="decimal"
+							autocomplete="off"
+							aria-describedby="profile-hint measurement-error"
+						/>
+						<i>°C</i>
+					</span>
+				</label>
 
-			<label class="checkbox-field">
-				<input type="checkbox" bind:checked={deviation} />
-				<span>Markér afvigelse</span>
-			</label>
-		</div>
-
-		<p id="profile-hint" class="field-hint">
-			{activeControl.profileLabel}: højst {formatTemperature(activeControl.limit)}. Profilstatus:
-			{activeControl.profileStatus === 'approved' ? 'godkendt' : 'afventer godkendelse'}.
-		</p>
-		<p id="measurement-error" class="field-error" aria-live="polite">{error}</p>
-
-		<footer>
-			<span>Senere gemmes bruger, tidspunkt og revision.</span>
-			<div>
-				<button class="secondary-button" onclick={closeControl}>Annullér</button>
-				<button class="primary-button" onclick={saveControl}>Gem kontrol</button>
+				<label class="checkbox-field">
+					<input name="deviation" type="checkbox" bind:checked={deviation} />
+					<span>Markér afvigelse</span>
+				</label>
 			</div>
-		</footer>
+
+			{#if deviation}
+				<label class="deviation-field">
+					<span>Beskriv afvigelsen</span>
+					<textarea
+						name="deviationDescription"
+						bind:value={deviationDescription}
+						rows="3"
+						maxlength="2000"
+						required></textarea>
+				</label>
+			{/if}
+
+			<p id="profile-hint" class="field-hint">
+				{activeControl.profileLabel}: højst {formatTemperature(activeControl.limit)}. Profilstatus:
+				{activeControl.profileStatus === 'approved' ? 'godkendt' : 'afventer godkendelse'}.
+			</p>
+			<p id="measurement-error" class="field-error" aria-live="polite">{error}</p>
+
+			<footer>
+				<span>Bruger, tidspunkt og definitionens revision gemmes i revisionssporet.</span>
+				<div>
+					<button class="secondary-button" type="button" onclick={closeControl}>Annullér</button>
+					<button class="primary-button" type="submit" disabled={saving}
+						>{saving ? 'Gemmer…' : 'Gem kontrol'}</button
+					>
+				</div>
+			</footer>
+		</form>
 	</section>
 {/if}
 

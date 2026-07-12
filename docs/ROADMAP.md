@@ -73,6 +73,8 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 - [x] Opsæt Supabase Auth-klient og loginflow
 - [x] Beskyt interne routes server-side
 - [x] Opret den ene administrative bruger og tilknyt actor
+- [x] Tilføj virksomhedsspecifikke RLS-læsepolitikker og atomisk temperatur-RPC
+- [ ] Anvend korrigerende `authenticated`-grants og verificér RLS-læsning
 - [x] Opsæt Vitest
 - [x] Opsæt Playwright
 - [ ] Opsæt preview-deployments
@@ -110,7 +112,7 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 - [ ] Implementér login
 - [ ] Implementér dagens kontroller
 - [ ] Implementér ugens kontroller
-- [ ] Implementér temperaturregistrering
+- [x] Implementér temperaturregistrering i UI og atomisk databasefunktion
 - [ ] Implementér ja/nej-kontrol
 - [ ] Implementér tjekliste
 - [ ] Implementér afvigelsesflow

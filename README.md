@@ -4,7 +4,7 @@ Et kommende digitalt egenkontrolsystem til den daglige drift i en mindre dansk d
 
 ## Status
 
-SvelteKit-fundamentet og den første konfigurationsdrevne prototype af "Dagens kontroller" er oprettet. Det første Drizzle-schema er migreret til Supabase, og RLS er slået til på alle 11 applikationstabeller. Supabase Auth er integreret med server-validerede cookies, inviteret login og beskyttede interne routes. UI-registreringer lever fortsat kun i browsertilstanden, indtil adgangspolitikker og skrivepipelinen forbindes til brugerfladen.
+SvelteKit-fundamentet og den konfigurationsdrevne side "Dagens kontroller" er oprettet. Drizzle-schemaet er migreret til Supabase, RLS er slået til på alle 11 applikationstabeller, og virksomhedsspecifikke læsepolitikker er tilføjet. Supabase Auth er integreret med server-validerede cookies og beskyttede interne routes. Temperaturformularen skriver nu atomisk gennem en afgrænset databasefunktion; den korrigerende migration med læseprivilegier mangler at blive anvendt, før gemte rækker kan vises igen i UI'et.
 
 Den valgte retning er SvelteKit med TypeScript på Vercel, Supabase Postgres og Auth, Drizzle ORM, Zod, Vitest og Playwright. Første version er online-only. Det visuelle system skal udledes af et eksisterende lokalt opskriftssite.
 

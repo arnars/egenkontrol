@@ -168,7 +168,7 @@ a:focus-visible {
 .section-heading,
 .control-row,
 .measurement-panel > header,
-.measurement-panel > footer {
+.measurement-panel form > footer {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -184,7 +184,7 @@ a:focus-visible {
 .section-heading span,
 .control-action span,
 .measurement-panel label > span:first-child,
-.measurement-panel > footer > span {
+.measurement-panel form > footer > span {
 	margin: 0;
 	color: var(--muted);
 	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -363,6 +363,11 @@ button.control-row:hover {
 	background: var(--paper);
 }
 
+.measurement-panel form {
+	display: grid;
+	gap: 1.5rem;
+}
+
 .measurement-fields {
 	display: grid;
 	grid-template-columns: minmax(0, 1fr) minmax(14rem, 0.45fr);
@@ -417,6 +422,25 @@ button.control-row:hover {
 	accent-color: var(--ink);
 }
 
+.deviation-field {
+	display: grid;
+	gap: 0.6rem;
+}
+
+.deviation-field textarea {
+	width: 100%;
+	padding: 0.9rem;
+	border: 1px solid var(--line);
+	border-radius: 0;
+	background: var(--page);
+	color: var(--ink);
+	font:
+		1rem/1.5 ui-sans-serif,
+		system-ui,
+		sans-serif;
+	resize: vertical;
+}
+
 .field-hint,
 .field-error {
 	margin: 0;
@@ -434,7 +458,7 @@ button.control-row:hover {
 	color: var(--danger);
 }
 
-.measurement-panel > footer > div {
+.measurement-panel form > footer > div {
 	display: flex;
 	gap: 0.75rem;
 }
@@ -454,6 +478,11 @@ button.control-row:hover {
 .primary-button {
 	background: var(--ink);
 	color: var(--paper);
+}
+
+.primary-button:disabled {
+	cursor: wait;
+	opacity: 0.65;
 }
 
 .secondary-button {
@@ -489,12 +518,12 @@ button.control-row:hover {
 		font-size: clamp(2.8rem, 14vw, 4rem);
 	}
 
-	.measurement-panel > footer {
+	.measurement-panel form > footer {
 		align-items: stretch;
 		flex-direction: column;
 	}
 
-	.measurement-panel > footer > div,
+	.measurement-panel form > footer > div,
 	.primary-button,
 	.secondary-button {
 		flex: 1;

@@ -1,0 +1,136 @@
+import { fail } from '@sveltejs/kit';
+import catalog from '../../config/egenkontrol.defaults.json';
+import business from '../../config/virksomhed.json';
+import { buildTodayControls } from '$lib/domain/today-controls';
+import {
+	CompletionValidationError,
+	prepareTemperatureCompletion
+} from '$lib/server/controls/temperature-completion';
+import type { Actions, PageServerLoad } from './$types';
+
+const controls = buildTodayControls(
+	business.assets,
+	catalog.productTemperatureProfiles,
+	business.controlOverrides
+);
+
+type StoredCompletion = {
+	id: string;
+	observed_at: string;
+	metadata: { configuredControlId?: string } | null;
+	measurements: Array<{ value: number }>;
+	deviations: Array<{ id: string }>;
+};
+
+function localDate(value: string | Date) {
+	return new Intl.DateTimeFormat('en-CA', {
+		timeZone: business.locations[0]?.timeZone ?? 'Europe/Copenhagen',
+		year: 'numeric',
+		month: '2-digit',
+		day: '2-digit'
+	}).format(new Date(value));
+}
+
+export const load: PageServerLoad = async ({ locals }) => {
+	const today = localDate(new Date());
+	const { data, error } = await locals.supabase
+		.from('completed_controls')
+		.select('id, observed_at, metadata, measurements(value), deviations(id)')
+		.eq('location_id', business.locations[0]?.id ?? '')
+		.order('observed_at', { ascending: false })
+		.limit(100);
+
+	if (error) console.error('Kunne ikke hente dagens kontroller', error.code);
+
+	const completions = Object.fromEntries(
+		((data ?? []) as StoredCompletion[])
+			.filter((completion) => localDate(completion.observed_at) === today)
+			.flatMap((completion) => {
+				const controlId = completion.metadata?.configuredControlId;
+				const value = completion.measurements[0]?.value;
+				if (!controlId || value === undefined) return [];
+
+				return [
+					[
+						controlId,
+						{
+							id: completion.id,
+							value: Number(value),
+							deviation: completion.deviations.length > 0,
+							completedAt: completion.observed_at
+						}
+					] as const
+				];
+			})
+	);
+
+	return {
+		companyName: business.company.name,
+		locationName: business.locations[0]?.name ?? business.company.name,
+		configurationStatus: business.status,
+		controls,
+		completions,
+		eventControls: [
+			{ id: 'receiving-check', title: 'Varemodtagelse', description: 'Start ved levering' },
+			{ id: 'heating-core-temperature', title: 'Opvarmning', description: 'Start for en batch' },
+			{ id: 'cooling-time-temperature', title: 'Nedkøling', description: 'Start for en batch' },
+			{
+				id: 'hot-holding-temperature',
+				title: 'Varmholdelse',
+				description: 'Start ved varmholdning'
+			}
+		]
+	};
+};
+
+export const actions: Actions = {
+	complete: async ({ request, locals }) => {
+		const { claims } = await locals.getVerifiedAuth();
+		if (!claims) return fail(401, { error: 'Din session er udløbet. Log ind igen.' });
+
+		const formData = await request.formData();
+		const control = controls.find((item) => item.id === formData.get('controlId'));
+		if (!control) return fail(400, { error: 'Kontrollen findes ikke længere.' });
+
+		try {
+			const rawValue = String(formData.get('value') ?? '')
+				.replace(',', '.')
+				.trim();
+			const command = prepareTemperatureCompletion({
+				command: {
+					controlId: formData.get('controlId'),
+					value: rawValue,
+					deviation: formData.get('deviation') === 'on',
+					deviationDescription: formData.get('deviationDescription') || undefined,
+					observedAt: new Date(),
+					idempotencyKey: formData.get('idempotencyKey'),
+					actorId: claims.sub
+				},
+				control,
+				companyId: business.company.id,
+				locationId: business.locations[0]?.id ?? '',
+				controlDefinitionRevision: 1
+			});
+
+			const { error } = await locals.supabase.rpc('record_temperature_completion', {
+				p_control_id: command.controlId,
+				p_location_id: command.locationId,
+				p_value: command.value,
+				p_deviation: command.deviation,
+				p_deviation_description: command.deviationDescription ?? null,
+				p_observed_at: command.observedAt.toISOString(),
+				p_idempotency_key: command.idempotencyKey
+			});
+
+			if (error) {
+				console.error('Kunne ikke gemme temperaturkontrol', error.code);
+				return fail(500, { error: 'Kontrollen kunne ikke gemmes. Dine felter er bevaret.' });
+			}
+
+			return { success: true };
+		} catch (error) {
+			if (error instanceof CompletionValidationError) return fail(400, { error: error.message });
+			return fail(400, { error: 'Kontrollér målingen og prøv igen.' });
+		}
+	}
+};
