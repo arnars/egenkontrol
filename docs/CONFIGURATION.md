@@ -2,9 +2,20 @@
 
 ## Formål
 
-`config/egenkontrol.defaults.json` er et versioneret startkatalog, der kan justeres uden et UI. Det er ikke en godkendt risikoanalyse. Alle poster starter som udkast og skal tilpasses virksomhedens faktiske aktiviteter, produkter og procedurer før aktivering.
+`config/egenkontrol.defaults.json` er et versioneret startkatalog. Det er ikke en godkendt risikoanalyse. Alle poster starter som udkast og skal tilpasses virksomhedens faktiske aktiviteter, produkter og procedurer før aktivering.
 
 `config/egenkontrol.schema.json` beskriver den maskinlæsbare struktur. Når applikationen senere oprettes, skal JSON Schema suppleres med Zod-validering og krydsreferencetjek.
+
+Virksomhedens egne valg ligger separat i `config/virksomhed.example.json`, valideret af `config/virksomhed.schema.json`. Kopiér senere eksemplet til en virksomhedsfil og redigér den frem for at ændre startkataloget direkte. Det gør det muligt at opdatere kataloget og sammenligne versioner uden at overskrive lokale valg.
+
+## To konfigurationslag
+
+| Lag | Indeholder | Ændringsprincip |
+| --- | --- | --- |
+| Startkatalog | Generelle aktiviteter, kontroller, felter, kilder og foreslåede standarder | Versionsstyres som produktets udgangspunkt |
+| Virksomhedskonfiguration | Virksomhed, lokationer, udstyr, aktive aktiviteter og lokale overrides | Godkendes og revideres af virksomheden |
+
+`basedOnCatalogVersion` viser, hvilken katalogversion virksomhedskonfigurationen er gennemgået imod. En katalogopdatering må ikke automatisk ændre en allerede godkendt virksomhedsopsætning.
 
 ## Sane defaults
 
@@ -68,6 +79,10 @@ En tilhørende kontrol skal stadig have procedure, frekvenser, felter, afvigelse
 - Fjern ikke tidligere anvendte kontroller; markér dem `retired`.
 - Korrigerende handlinger i kataloget er prompts, ikke automatiske beslutninger.
 - Kildeændringer kræver ny `reviewedAt` og vurdering af berørte kontroller.
+- Læg lokationsspecifikke tider og hyppigheder i `controlOverrides` frem for at ændre kataloget.
+- Registrér køle-, frost- og andet relevant udstyr i `assets`; brug stabile id'er, selv om label senere ændres.
+- Brug `profileOverrides` til fagligt begrundede lokale grænser, og registrér begrundelse og kilder.
+- Godkend ikke virksomhedskonfigurationen, så længe `openQuestions` eller `requires_review`-poster er uafklarede.
 
 ## Validering, der mangler før runtime
 
@@ -80,6 +95,9 @@ JSON Schema validerer grundformen. Applikationen skal senere også kontrollere:
 - at en aktiveret kontrol kun bruger godkendte profiler og revisioner,
 - at tidspunkter er gyldige i lokationens tidszone,
 - at ændringer skaber revisioner frem for lydløs overskrivning.
+- at virksomhedens `basedOnCatalogVersion` findes og er gennemgået,
+- at lokations-, udstyrs-, aktivitets-, kontrol- og profilreferencer findes,
+- at alle id'er er unikke inden for deres type.
 
 ## Før konfigurationen kan godkendes
 

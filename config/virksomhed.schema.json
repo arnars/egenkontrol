@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/arnars/egenkontrol/blob/main/config/virksomhed.schema.json",
+  "title": "Virksomhedens egenkontrolkonfiguration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "configurationVersion", "status", "basedOnCatalogVersion", "company", "locations", "assets", "activitySelections", "controlOverrides", "profileOverrides", "review"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "type": "integer", "minimum": 1 },
+    "configurationVersion": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["draft_requires_business_approval", "approved", "retired"] },
+    "basedOnCatalogVersion": { "type": "string", "minLength": 1 },
+    "company": { "$ref": "#/$defs/company" },
+    "locations": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/location" } },
+    "assets": { "type": "array", "items": { "$ref": "#/$defs/asset" } },
+    "activitySelections": { "type": "array", "items": { "$ref": "#/$defs/activitySelection" } },
+    "controlOverrides": { "type": "array", "items": { "$ref": "#/$defs/controlOverride" } },
+    "profileOverrides": { "type": "array", "items": { "$ref": "#/$defs/profileOverride" } },
+    "review": { "$ref": "#/$defs/review" }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+    "reviewStatus": { "enum": ["requires_review", "approved", "retired"] },
+    "company": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "legalName", "cvr"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string", "minLength": 1 },
+        "legalName": { "type": ["string", "null"] },
+        "cvr": { "type": ["string", "null"], "pattern": "^[0-9]{8}$" }
+      }
+    },
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "timeZone", "active"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string", "minLength": 1 },
+        "timeZone": { "type": "string", "minLength": 1 },
+        "active": { "type": "boolean" }
+      }
+    },
+    "asset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "locationId", "type", "label", "active", "status"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "locationId": { "$ref": "#/$defs/id" },
+        "type": { "enum": ["refrigerator", "freezer", "hot_holding_unit", "thermometer", "other"] },
+        "label": { "type": "string", "minLength": 1 },
+        "active": { "type": "boolean" },
+        "temperatureProfileId": { "$ref": "#/$defs/id" },
+        "status": { "$ref": "#/$defs/reviewStatus" }
+      }
+    },
+    "activitySelection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["activityId", "enabled", "status"],
+      "properties": {
+        "activityId": { "$ref": "#/$defs/id" },
+        "enabled": { "type": "boolean" },
+        "status": { "$ref": "#/$defs/reviewStatus" },
+        "notes": { "type": "string" }
+      }
+    },
+    "controlOverride": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["controlId", "locationId", "enabled", "status"],
+      "properties": {
+        "controlId": { "$ref": "#/$defs/id" },
+        "locationId": { "$ref": "#/$defs/id" },
+        "enabled": { "type": "boolean" },
+        "status": { "$ref": "#/$defs/reviewStatus" },
+        "controlFrequency": { "$ref": "egenkontrol.schema.json#/$defs/controlFrequency" },
+        "documentationFrequency": { "$ref": "egenkontrol.schema.json#/$defs/documentationFrequency" },
+        "notes": { "type": "string" }
+      }
+    },
+    "profileOverride": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profileId", "status", "reason", "sourceRefs"],
+      "properties": {
+        "profileId": { "$ref": "#/$defs/id" },
+        "status": { "$ref": "#/$defs/reviewStatus" },
+        "acceptance": { "$ref": "egenkontrol.schema.json#/$defs/acceptance" },
+        "reason": { "type": "string", "minLength": 1 },
+        "sourceRefs": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/id" }, "uniqueItems": true }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["approvedAt", "approvedBy", "notes", "openQuestions"],
+      "properties": {
+        "approvedAt": { "type": ["string", "null"], "format": "date-time" },
+        "approvedBy": { "type": ["string", "null"] },
+        "notes": { "type": "string" },
+        "openQuestions": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    }
+  }
+}

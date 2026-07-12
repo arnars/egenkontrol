@@ -15,6 +15,8 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 - [ ] Kortlæg virksomhedens aktiviteter og lokationer
 - [x] Opret udvideligt startkatalog med foreslåede aktiviteter og kontroller
 - [x] Adskil kontrolhyppighed og dokumentationshyppighed i konfigurationen
+- [x] Adskil produktets startkatalog fra virksomhedens lokale konfiguration
+- [x] Tilføj konfiguration af lokationer, udstyr og lokale overrides
 - [ ] Gennemgå og godkend startkataloget mod virksomhedens faktiske drift
 - [ ] Gennemgå relevante myndighedskilder
 - [ ] Udarbejd virksomhedens konkrete risikoanalyse
