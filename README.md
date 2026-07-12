@@ -4,7 +4,7 @@ Et kommende digitalt egenkontrolsystem til den daglige drift i en mindre dansk d
 
 ## Status
 
-SvelteKit-fundamentet og den første konfigurationsdrevne prototype af "Dagens kontroller" er oprettet. Registreringer lever kun i browsertilstanden; database, Auth og migrationer er endnu ikke implementeret.
+SvelteKit-fundamentet og den første konfigurationsdrevne prototype af "Dagens kontroller" er oprettet. Drizzle-schema, første migration og en atomisk server-side skrivepipeline er forberedt, men migrationen er endnu ikke anvendt på et Supabase-projekt. UI-registreringer lever derfor fortsat kun i browsertilstanden. Auth og RLS mangler.
 
 Den valgte retning er SvelteKit med TypeScript på Vercel, Supabase Postgres og Auth, Drizzle ORM, Zod, Vitest og Playwright. Første version er online-only. Det visuelle system skal udledes af et eksisterende lokalt opskriftssite.
 

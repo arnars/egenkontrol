@@ -15,3 +15,4 @@ test-results/
 # Human-maintained domain documents and configuration keep their compact formatting
 config/
 docs/
+drizzle/meta/

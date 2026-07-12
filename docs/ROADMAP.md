@@ -66,9 +66,9 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 - [x] Konfigurér streng TypeScript
 - [ ] Opret Supabase-projekt
 - [ ] Konfigurér og dokumentér miljøvariabler
-- [ ] Opsæt Drizzle
-- [ ] Opret migrationsstruktur og migrationspraksis
-- [ ] Opsæt Zod
+- [x] Opsæt Drizzle
+- [x] Opret migrationsstruktur og migrationspraksis
+- [x] Opsæt Zod
 - [ ] Opsæt Supabase Auth
 - [ ] Beskyt interne routes server-side
 - [x] Opsæt Vitest
@@ -84,18 +84,18 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 
 ## Fase 3 — første datamodel
 
-- [ ] Modellér virksomhed
-- [ ] Modellér lokation
-- [ ] Modellér bruger og medlemskab
-- [ ] Modellér kontroldefinition
+- [x] Modellér virksomhed
+- [x] Modellér lokation
+- [ ] Modellér bruger og medlemskab (actor-tabel oprettet; Supabase Auth-relation og roller mangler)
+- [x] Modellér kontroldefinition
 - [ ] Modellér gentagelsesregel og begge hyppighedstyper
-- [ ] Modellér planlagt kontrol
-- [ ] Modellér udført kontrol
-- [ ] Modellér måling
-- [ ] Modellér afvigelse
-- [ ] Modellér korrigerende handling
-- [ ] Modellér auditlog
-- [ ] Modellér versionering og rettelser
+- [x] Modellér planlagt kontrol
+- [x] Modellér udført kontrol
+- [x] Modellér måling
+- [x] Modellér afvigelse
+- [x] Modellér korrigerende handling
+- [x] Modellér auditlog
+- [x] Modellér versionering og rettelser på udførte kontroller
 
 **Acceptkriterier**
 

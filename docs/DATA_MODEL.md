@@ -2,6 +2,20 @@
 
 Dokumentet beskriver informationsbehov og relationer, ikke et endeligt Drizzle-schema. Felter, constraints og enums skal valideres mod virksomhedens risikoanalyse og konkrete arbejdsgange før implementering.
 
+## Implementeringsstatus
+
+Første Drizzle-schema og migration findes nu i `src/lib/server/db/schema.ts` og `drizzle/`. Det er fortsat et fundament, ikke et anvendt produktionsschema. Migrationen er ikke kørt mod Supabase. Følgende principper er implementeret i schema/migration:
+
+- eksakt reference til kontroldefinition og revision,
+- idempotency key for indsendelser,
+- udført kontrol og måling som append-only dokumentation,
+- selvstændig afvigelse med append-only hændelsesforløb,
+- korrigerende handlinger og auditlog,
+- bruger-id og tidspunkter med tidszone,
+- database-triggers, der afviser `UPDATE` og `DELETE` på revisionsrelevante tabeller.
+
+Auth-relation, RLS-politikker, seed/synkronisering af konfigurationskataloget og den endelige korrektionsmodel er endnu ikke afsluttet.
+
 ## Entiteter og ansvar
 
 | Entitet | Ansvar |

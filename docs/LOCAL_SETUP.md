@@ -53,9 +53,16 @@ pnpm lint
 pnpm test:unit
 pnpm test:e2e
 pnpm build
+pnpm db:generate
+pnpm db:check
+pnpm db:migrate
 ```
 
 Playwright-browsere installeres lokalt med `pnpm exec playwright install`, før browsertests køres første gang.
+
+`DATABASE_URL` skal bruge Supabases transaction pooler til Vercel-runtime. Postgres.js er konfigureret med `prepare: false`, fordi transaction pooling ikke understøtter prepared statements. `DIRECT_URL` bruges af Drizzle Kit til migrationer og senere af `pg_dump`/administration. Kopiér `.env.example` til `.env.local` og indsæt aldrig rigtige credentials i repositoryet.
+
+Den første migration kan først anvendes, når et Supabase-projekt er oprettet, `DIRECT_URL` er sat, migrationen er gennemgået, og backup/rollback-afhjælpning er beskrevet. Kør aldrig `drizzle-kit push` direkte mod produktion; brug de versionsstyrede migrationer.
 
 ## Skal afklares
 

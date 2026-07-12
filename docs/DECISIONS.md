@@ -100,6 +100,23 @@ Designværdier må først fastlægges efter kode- og visuel analyse dokumenteret
 - Backupudbyder, frekvens, retention og gendannelsesproces
 - Supabase-adgangsmodel og detaljeret rollemodel
 
+## ADR-006: Separate databaseforbindelser til runtime og migrationer
+
+- **Status:** Accepteret
+- **Dato:** 2026-07-12
+
+### Kontekst
+
+Applikationen skal køre som serverless SvelteKit på Vercel, mens migrationer og backupværktøjer har andre forbindelsesbehov. Supabases transaction pooler er beregnet til midlertidige serverless-forbindelser og understøtter ikke prepared statements. Den direkte forbindelse er beregnet til blandt andet migrationer og `pg_dump`.
+
+### Beslutning
+
+Brug `DATABASE_URL` med Supabases transaction pooler til applikationens runtime og `DIRECT_URL` med den direkte Postgres-forbindelse til Drizzle Kit, migrationer og administrative værktøjer. Postgres.js konfigureres med `prepare: false` og en lille forbindelsespulje i runtime.
+
+### Konsekvenser
+
+Begge forbindelser skal konfigureres separat i lokale, preview- og produktionsmiljøer. Migrationer må ikke køres via transaction pooleren. RLS, Auth og mindst mulige databaseprivilegier skal afklares før produktionsbrug.
+
 ## Skabelon til fremtidige ADR'er
 
 ```md
