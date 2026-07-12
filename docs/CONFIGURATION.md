@@ -10,12 +10,15 @@ Virksomhedens egne valg ligger separat i `config/virksomhed.example.json`, valid
 
 Nabo Brejnings aktuelle udkast ligger i `config/virksomhed.json`. Eksempelfilen bevares som neutral skabelon.
 
+Tværgående gode arbejdsgange og procedurer ligger separat i `config/arbejdsgange.defaults.json`. De holdes uden for kontrolkataloget, fordi de ikke automatisk skal generere daglige kontroller. Kataloget skelner mellem kandidater til gode arbejdsgange, risikostyring og dokumenterede hændelsesprocedurer.
+
 ## To konfigurationslag
 
 | Lag | Indeholder | Ændringsprincip |
 | --- | --- | --- |
 | Startkatalog | Generelle aktiviteter, kontroller, felter, kilder og foreslåede standarder | Versionsstyres som produktets udgangspunkt |
 | Virksomhedskonfiguration | Virksomhed, lokationer, udstyr, aktive aktiviteter og lokale overrides | Godkendes og revideres af virksomheden |
+| Arbejdsgangskatalog | Rengøring, hygiejne, adskillelse, allergener, vedligehold, skadedyr, sporbarhed og tilbagetrækning | Aktiveres og tilpasses efter konkret vurdering; bliver ikke automatisk CCP-kontroller |
 
 `basedOnCatalogVersion` viser, hvilken katalogversion virksomhedskonfigurationen er gennemgået imod. En katalogopdatering må ikke automatisk ændre en allerede godkendt virksomhedsopsætning.
 

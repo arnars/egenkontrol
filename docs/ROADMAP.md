@@ -29,6 +29,8 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 - [ ] Fastlæg kontrolhyppigheder
 - [ ] Fastlæg dokumentationshyppigheder separat
 - [ ] Fastlæg afvigelsesreaktioner og korrigerende handlinger
+- [x] Opret særskilt katalogudkast for gode arbejdsgange og tværgående procedurer
+- [ ] Gennemgå og aktivér relevante arbejdsgange for Nabo Brejning
 - [ ] Afklar sporbarhed og tilbagetrækning
 - [ ] Afklar dokumentopbevaring, eksport og backupbehov
 - [ ] Fastlæg roller og ansvar

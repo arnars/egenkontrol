@@ -1,0 +1,190 @@
+{
+  "$schema": "./arbejdsgange.schema.json",
+  "schemaVersion": 1,
+  "catalogVersion": "2026-07-12.1",
+  "status": "draft_requires_business_approval",
+  "disclaimer": "Arbejdsgangene er startudkast. Virksomheden skal tilpasse ansvar, omfang, frekvens og dokumentation til den faktiske drift og risikoanalyse.",
+  "sourceRegistry": {
+    "fvst-good-practices": {
+      "title": "Gode arbejdsgange er en del af din egenkontrol",
+      "url": "https://foedevarestyrelsen.dk/kost-og-foedevarer/start-og-drift-af-foedevarevirksomhed/egenkontrol-og-risikoanalyse/gode-arbejdsgange",
+      "reviewedAt": "2026-07-12"
+    },
+    "fvst-cleaning": {
+      "title": "Rengøring og desinfektion i fødevarevirksomheder",
+      "url": "https://foedevarestyrelsen.dk/kost-og-foedevarer/start-og-drift-af-foedevarevirksomhed/hygiejne-og-indretning/rengoering-vedligeholdelse-skadedyr-i-foedevarevirksomhed/rengoering-og-desinfektion",
+      "reviewedAt": "2026-07-12"
+    },
+    "fvst-personal-hygiene": {
+      "title": "Hygiejnevejledningen, afsnit 21: Personlig hygiejne",
+      "url": "https://foedevarestyrelsen.dk/lovstof/vejledninger/hygiejnevejledningen/21-personlig-hygiejne-i-foedevarevirksomheder",
+      "reviewedAt": "2026-07-12"
+    },
+    "fvst-cross-contamination": {
+      "title": "Hygiejnevejledningen, afsnit 9: Krydskontamination",
+      "url": "https://foedevarestyrelsen.dk/lovstof/vejledninger/hygiejnevejledningen/9-krydskontamination-i-foedevarevirksomheder",
+      "reviewedAt": "2026-07-12"
+    },
+    "fvst-allergens": {
+      "title": "Allergener i mad: Sådan skal du oplyse om allergener",
+      "url": "https://foedevarestyrelsen.dk/kost-og-foedevarer/maerkning-og-markedsfoering-af-foedevarer/generelle-maerkningskrav/oplysning-om-allergener",
+      "reviewedAt": "2026-07-12"
+    },
+    "fvst-traceability": {
+      "title": "Sådan sikrer du, at dine varer kan spores",
+      "url": "https://foedevarestyrelsen.dk/kost-og-foedevarer/start-og-drift-af-foedevarevirksomhed/sporbarhed",
+      "reviewedAt": "2026-07-12"
+    },
+    "fvst-withdrawal": {
+      "title": "Kontrol med tilbagetrækning og ulovlige produkter",
+      "url": "https://foedevarestyrelsen.dk/kost-og-foedevarer/foedevaresikkerhed/foedevareberedskab/kontrol-med-tilbagetraekning-og-ulovlige-produkter",
+      "reviewedAt": "2026-07-12"
+    }
+  },
+  "practiceAreas": [
+    {
+      "id": "cleaning-and-disinfection",
+      "label": "Rengøring og desinfektion",
+      "category": "good_working_practice_candidate",
+      "enabledByDefault": false,
+      "status": "requires_review",
+      "purpose": "Sikre at lokaler, inventar, udstyr og arbejdsredskaber rengøres og om nødvendigt desinficeres tilstrækkeligt.",
+      "suggestedRoutine": [
+        "Opret en konkret rengøringsplan med område eller udstyr, metode, middel, ansvarlig og frekvens.",
+        "Rengør fødevarekontaktflader og udstyr efter brug og efter den frekvens, den konkrete drift kræver.",
+        "Kontrollér visuelt resultatet før området eller udstyret bruges igen.",
+        "Hold rengøringsmidler mærket og adskilt fra fødevarer."
+      ],
+      "normalDocumentation": { "kind": "business_decides", "suggestion": "checklist_or_exceptions" },
+      "alwaysRecord": ["utilstrækkelig rengøring med mulig produktpåvirkning", "gentagne fejl", "korrigerende handling med betydning for fødevarer"],
+      "reviewTriggers": ["nyt udstyr", "ændret produktion", "gentagne rengøringsfejl", "skadedyr eller mikrobiologiske fund"],
+      "sourceRefs": ["fvst-good-practices", "fvst-cleaning"]
+    },
+    {
+      "id": "personal-hygiene",
+      "label": "Personlig hygiejne",
+      "category": "good_working_practice_candidate",
+      "enabledByDefault": false,
+      "status": "requires_review",
+      "purpose": "Forebygge at medarbejdere og andre personer overfører bakterier, virus eller anden forurening til fødevarer.",
+      "suggestedRoutine": [
+        "Fastlæg hvornår og hvordan hænder vaskes.",
+        "Brug ren og passende arbejdsbeklædning.",
+        "Fastlæg håndtering af sygdom, sår og adgang for besøgende.",
+        "Gennemgå arbejdsgangen med alle relevante medarbejdere."
+      ],
+      "normalDocumentation": { "kind": "business_decides", "suggestion": "training_and_exceptions" },
+      "alwaysRecord": ["hændelse med mulig produktpåvirkning", "medarbejderinstruktion efter væsentlig fejl"],
+      "reviewTriggers": ["nye medarbejdere", "ændrede arbejdsopgaver", "hygiejnebrist", "sygdomshændelse"],
+      "sourceRefs": ["fvst-good-practices", "fvst-personal-hygiene"]
+    },
+    {
+      "id": "separation-and-cross-contamination",
+      "label": "Adskillelse og krydskontamination",
+      "category": "risk_control_candidate",
+      "enabledByDefault": false,
+      "status": "requires_review",
+      "purpose": "Forebygge overførsel fra rå eller urene processer til spiseklare fødevarer og rene processer.",
+      "suggestedRoutine": [
+        "Kortlæg rå, urene, rene og spiseklare processer.",
+        "Adskil i rum, arbejdsstation, redskaber eller tid efter den konkrete risiko.",
+        "Rengør mellem processer, når tidsmæssig adskillelse anvendes.",
+        "Placér varer i køl og lager, så dryp og kontakt undgås."
+      ],
+      "normalDocumentation": { "kind": "business_decides", "suggestion": "procedure_and_exceptions" },
+      "alwaysRecord": ["krydskontamination eller mistanke om produktpåvirkning", "kassation eller tilbageholdelse"],
+      "reviewTriggers": ["nyt produkt", "nyt procesflow", "ændret indretning", "krydskontaminationshændelse"],
+      "sourceRefs": ["fvst-cross-contamination"]
+    },
+    {
+      "id": "allergen-management",
+      "label": "Allergenstyring og kundeinformation",
+      "category": "risk_control_candidate",
+      "enabledByDefault": false,
+      "status": "requires_review",
+      "purpose": "Sikre korrekte og tilgængelige oplysninger om allergene ingredienser og håndtere risikoen for utilsigtet overførsel.",
+      "suggestedRoutine": [
+        "Vedligehold en sporbar allergenoplysning for hver opskrift eller vare.",
+        "Opdatér oplysninger, når ingrediens, leverandør eller opskrift ændres.",
+        "Fastlæg hvordan kunder får oplysninger ved salg på stedet, takeaway og eventuel onlinebestilling.",
+        "Fastlæg adskillelse, rengøring og kommunikation ved særlige allergenhenvendelser uden at love et allergenfrit resultat, som driften ikke kan sikre."
+      ],
+      "normalDocumentation": { "kind": "required_information_and_change_log", "suggestion": "document_every_recipe_or_product_change" },
+      "alwaysRecord": ["forkert allergenoplysning", "mistanke om utilsigtet allergenoverførsel", "kundehenvendelse med mulig hændelse"],
+      "reviewTriggers": ["ny opskrift", "ændret ingrediens eller leverandør", "ændret salgskanal", "allergenhændelse"],
+      "sourceRefs": ["fvst-allergens", "fvst-cross-contamination"]
+    },
+    {
+      "id": "maintenance",
+      "label": "Vedligeholdelse af lokaler og udstyr",
+      "category": "good_working_practice_candidate",
+      "enabledByDefault": false,
+      "status": "requires_review",
+      "purpose": "Sikre at lokaler, inventar og udstyr kan holdes hygiejniske og fungerer som forudsat.",
+      "suggestedRoutine": [
+        "Registrér skader og fejl, som kan påvirke hygiejne eller temperaturstyring.",
+        "Prioritér og udfør reparationer efter risiko.",
+        "Beskyt fødevarer under vedligeholdelsesarbejde.",
+        "Kontrollér området før genibrugtagning."
+      ],
+      "normalDocumentation": { "kind": "business_decides", "suggestion": "defect_and_action_log" },
+      "alwaysRecord": ["fejl med mulig produktpåvirkning", "udstyr taget ud af drift", "reparation og frigivelse efter væsentlig fejl"],
+      "reviewTriggers": ["udstyrsfejl", "bygningsændring", "gentagne temperaturafvigelser", "nyt udstyr"],
+      "sourceRefs": ["fvst-good-practices"]
+    },
+    {
+      "id": "pest-prevention",
+      "label": "Skadedyrssikring",
+      "category": "good_working_practice_candidate",
+      "enabledByDefault": false,
+      "status": "requires_review",
+      "purpose": "Forebygge adgang, skjulesteder og fødegrundlag for skadedyr og sikre hurtig reaktion på tegn.",
+      "suggestedRoutine": [
+        "Hold adgangsveje, døre, afløb og gennemføringer sikrede.",
+        "Fjern affald og spild løbende.",
+        "Se efter tegn på skadedyr ved den frekvens, driften kræver.",
+        "Fastlæg kontakt og handling ved observation."
+      ],
+      "normalDocumentation": { "kind": "business_decides", "suggestion": "exceptions_and_provider_reports" },
+      "alwaysRecord": ["observation eller mistanke", "produktpåvirkning", "bekæmpelse og opfølgning"],
+      "reviewTriggers": ["observation", "bygningsarbejde", "ændret affaldshåndtering", "gentagne fund"],
+      "sourceRefs": ["fvst-good-practices"]
+    },
+    {
+      "id": "traceability",
+      "label": "Sporbarhed",
+      "category": "documented_procedure_candidate",
+      "enabledByDefault": false,
+      "status": "requires_review",
+      "purpose": "Kunne identificere leverandør, relevante varer og partier samt erhvervskunder, så en målrettet tilbagetrækning kan gennemføres.",
+      "suggestedRoutine": [
+        "Bevar fakturaer, følgesedler eller tilsvarende oplysninger og gør koblingen mellem dokumenter entydig.",
+        "Registrér vare, leverandør, dato og relevante partioplysninger.",
+        "Registrér levering til andre virksomheder, når det er relevant; salg til endelig forbruger behandles efter de gældende sporbarhedsregler.",
+        "Sørg for at oplysninger kan findes hurtigt ved en hændelse."
+      ],
+      "normalDocumentation": { "kind": "traceability_records", "suggestion": "record_relevant_receipts_and_business_deliveries" },
+      "alwaysRecord": ["manglende sporbarhed", "tilbageholdelse", "tilbagetrækning eller tilbagekaldelse"],
+      "reviewTriggers": ["ny leverandør", "ny salgskanal", "ændret partisystem", "sporbarhedstest eller hændelse"],
+      "sourceRefs": ["fvst-traceability"]
+    },
+    {
+      "id": "withdrawal-and-recall",
+      "label": "Tilbagetrækning og tilbagekaldelse",
+      "category": "documented_procedure_candidate",
+      "enabledByDefault": false,
+      "status": "requires_review",
+      "purpose": "Kunne stoppe, afgrænse og håndtere varer, der kan være farlige, ulovlige eller uegnede.",
+      "suggestedRoutine": [
+        "Fastlæg hvem der kan beslutte at stoppe salg og isolere varer.",
+        "Brug sporbarhedsoplysninger til at afgrænse berørte varer og modtagere.",
+        "Fastlæg kontakt til leverandør, erhvervskunder, myndighed og eventuelt forbrugere efter den konkrete hændelse.",
+        "Dokumentér beslutninger, mængder, kommunikation, handlinger og afslutning."
+      ],
+      "normalDocumentation": { "kind": "event_driven", "suggestion": "document_every_event_and_business_approved_test_frequency" },
+      "alwaysRecord": ["mistanke eller beslutning om tilbagetrækning", "kommunikation og udførte handlinger", "afslutning og evaluering"],
+      "reviewTriggers": ["produktproblem", "leverandørbesked", "kundehenvendelse", "myndighedsbesked", "øvelse eller faktisk hændelse"],
+      "sourceRefs": ["fvst-traceability", "fvst-withdrawal"]
+    }
+  ]
+}
