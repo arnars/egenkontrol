@@ -12,11 +12,12 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 
 ## Fase 0 — domæneafklaring
 
-- [ ] Kortlæg virksomhedens aktiviteter og lokationer
+- [ ] Kortlæg virksomhedens aktiviteter og lokationer (én lokation registreret; aktiviteter afventer gennemgang)
 - [x] Opret udvideligt startkatalog med foreslåede aktiviteter og kontroller
 - [x] Adskil kontrolhyppighed og dokumentationshyppighed i konfigurationen
 - [x] Adskil produktets startkatalog fra virksomhedens lokale konfiguration
 - [x] Tilføj konfiguration af lokationer, udstyr og lokale overrides
+- [x] Registrér Nabo Brejning med én lokation, tre køleenheder og to frysere
 - [ ] Gennemgå og godkend startkataloget mod virksomhedens faktiske drift
 - [ ] Gennemgå relevante myndighedskilder
 - [ ] Udarbejd virksomhedens konkrete risikoanalyse

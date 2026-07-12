@@ -1,0 +1,108 @@
+{
+  "$schema": "./virksomhed.schema.json",
+  "schemaVersion": 1,
+  "configurationVersion": "2026-07-12.1",
+  "status": "draft_requires_business_approval",
+  "basedOnCatalogVersion": "2026-07-12.1",
+  "company": {
+    "id": "nabo-brejning",
+    "name": "Nabo Brejning",
+    "legalName": null,
+    "cvr": null
+  },
+  "locations": [
+    {
+      "id": "brejning",
+      "name": "Nabo Brejning",
+      "timeZone": "Europe/Copenhagen",
+      "active": true
+    }
+  ],
+  "assets": [
+    {
+      "id": "refrigerator-1",
+      "locationId": "brejning",
+      "type": "refrigerator",
+      "label": "Køleskab 1",
+      "active": true,
+      "temperatureProfileId": "chilled-general-draft",
+      "status": "requires_review"
+    },
+    {
+      "id": "refrigerator-2",
+      "locationId": "brejning",
+      "type": "refrigerator",
+      "label": "Køleskab 2",
+      "active": true,
+      "temperatureProfileId": "chilled-general-draft",
+      "status": "requires_review"
+    },
+    {
+      "id": "refrigerated-counter-1",
+      "locationId": "brejning",
+      "type": "refrigerator",
+      "label": "Kølebord 1",
+      "active": true,
+      "temperatureProfileId": "chilled-general-draft",
+      "status": "requires_review"
+    },
+    {
+      "id": "freezer-1",
+      "locationId": "brejning",
+      "type": "freezer",
+      "label": "Fryser 1",
+      "active": true,
+      "temperatureProfileId": "deep-frozen-draft",
+      "status": "requires_review"
+    },
+    {
+      "id": "freezer-2",
+      "locationId": "brejning",
+      "type": "freezer",
+      "label": "Fryser 2",
+      "active": true,
+      "temperatureProfileId": "deep-frozen-draft",
+      "status": "requires_review"
+    }
+  ],
+  "activitySelections": [
+    { "activityId": "goods-receiving", "enabled": true, "status": "requires_review" },
+    { "activityId": "cold-storage", "enabled": true, "status": "requires_review" },
+    { "activityId": "frozen-storage", "enabled": true, "status": "requires_review" },
+    { "activityId": "heat-treatment", "enabled": true, "status": "requires_review" },
+    { "activityId": "cooling", "enabled": true, "status": "requires_review" },
+    { "activityId": "hot-holding", "enabled": true, "status": "requires_review" }
+  ],
+  "controlOverrides": [
+    {
+      "controlId": "refrigeration-temperature",
+      "locationId": "brejning",
+      "enabled": true,
+      "status": "requires_review",
+      "controlFrequency": { "kind": "daily", "localTime": "09:00" },
+      "documentationFrequency": { "kind": "every_control", "deviationsAlways": true }
+    },
+    {
+      "controlId": "freezer-temperature",
+      "locationId": "brejning",
+      "enabled": true,
+      "status": "requires_review",
+      "controlFrequency": { "kind": "daily", "localTime": "09:00" },
+      "documentationFrequency": { "kind": "every_control", "deviationsAlways": true }
+    }
+  ],
+  "profileOverrides": [],
+  "review": {
+    "approvedAt": null,
+    "approvedBy": null,
+    "notes": "Kølebordet er foreløbigt modelleret som én køleenhed. Bekræft om underskabene har separate temperaturzoner eller skal måles hver for sig.",
+    "openQuestions": [
+      "Hvad er enhedernes praktiske navne eller placeringer i køkkenet?",
+      "Skal kølebordets underskabe registreres som én eller flere separate måleenheder?",
+      "Hvilke af de seks startaktiviteter udføres faktisk?",
+      "Er kl. 09:00 et praktisk tidspunkt for den daglige køl- og frostkontrol?",
+      "Hvilke produktkategorier opbevares i hver køleenhed?",
+      "Skal juridisk navn og CVR registreres i konfigurationen?"
+    ]
+  }
+}

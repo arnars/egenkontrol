@@ -20,6 +20,7 @@ Den valgte retning er SvelteKit med TypeScript på Vercel, Supabase Postgres og 
 - [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md) — redigering og udvidelse af startkataloget
 - [`config/egenkontrol.defaults.json`](config/egenkontrol.defaults.json) — konfigurerbare aktiviteter og sane defaults
 - [`config/virksomhed.example.json`](config/virksomhed.example.json) — virksomhedens lokationer, udstyr og lokale valg
+- [`config/virksomhed.json`](config/virksomhed.json) — Nabo Brejnings aktuelle konfigurationsudkast
 
 ## Næste trin
 

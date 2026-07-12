@@ -8,6 +8,8 @@
 
 Virksomhedens egne valg ligger separat i `config/virksomhed.example.json`, valideret af `config/virksomhed.schema.json`. Kopiér senere eksemplet til en virksomhedsfil og redigér den frem for at ændre startkataloget direkte. Det gør det muligt at opdatere kataloget og sammenligne versioner uden at overskrive lokale valg.
 
+Nabo Brejnings aktuelle udkast ligger i `config/virksomhed.json`. Eksempelfilen bevares som neutral skabelon.
+
 ## To konfigurationslag
 
 | Lag | Indeholder | Ændringsprincip |
