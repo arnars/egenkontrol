@@ -13,6 +13,9 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 ## Fase 0 — domæneafklaring
 
 - [ ] Kortlæg virksomhedens aktiviteter og lokationer
+- [x] Opret udvideligt startkatalog med foreslåede aktiviteter og kontroller
+- [x] Adskil kontrolhyppighed og dokumentationshyppighed i konfigurationen
+- [ ] Gennemgå og godkend startkataloget mod virksomhedens faktiske drift
 - [ ] Gennemgå relevante myndighedskilder
 - [ ] Udarbejd virksomhedens konkrete risikoanalyse
 - [ ] Identificér relevante risici

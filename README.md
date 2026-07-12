@@ -17,6 +17,8 @@ Den valgte retning er SvelteKit med TypeScript på Vercel, Supabase Postgres og 
 - [`docs/DECISIONS.md`](docs/DECISIONS.md) — tekniske beslutninger og åbne valg
 - [`docs/SOURCES.md`](docs/SOURCES.md) — myndigheds- og domænekilder
 - [`docs/LOCAL_SETUP.md`](docs/LOCAL_SETUP.md) — lokal kontekst og kommende miljøvariabler
+- [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md) — redigering og udvidelse af startkataloget
+- [`config/egenkontrol.defaults.json`](config/egenkontrol.defaults.json) — konfigurerbare aktiviteter og sane defaults
 
 ## Næste trin
 

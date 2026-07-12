@@ -1,0 +1,249 @@
+{
+  "$schema": "./egenkontrol.schema.json",
+  "schemaVersion": 1,
+  "catalogVersion": "2026-07-12.1",
+  "status": "draft_requires_business_approval",
+  "locale": "da-DK",
+  "timeZone": "Europe/Copenhagen",
+  "disclaimer": "Startkonfigurationen er et redigerbart udkast. Virksomheden skal kontrollere aktiviteter, produktkategorier, grænser, hyppigheder og handlinger mod sin konkrete risikoanalyse, varedeklarationer og gældende faglige kilder før aktivering.",
+  "sourceRegistry": {
+    "fvst-risk-analysis": {
+      "title": "Egenkontrol og risikoanalyse",
+      "url": "https://foedevarestyrelsen.dk/kost-og-foedevarer/start-og-drift-af-foedevarevirksomhed/egenkontrol-og-risikoanalyse",
+      "reviewedAt": "2026-07-12"
+    },
+    "fvst-written-controls": {
+      "title": "Sådan fører du skriftlig egenkontrol i din fødevarevirksomhed",
+      "url": "https://foedevarestyrelsen.dk/kost-og-foedevarer/start-og-drift-af-foedevarevirksomhed/egenkontrol-og-risikoanalyse/skriftlig-egenkontrol",
+      "reviewedAt": "2026-07-12"
+    },
+    "fvst-receiving": {
+      "title": "Hygiejnevejledningen, afsnit 24: Modtagekontrol",
+      "url": "https://foedevarestyrelsen.dk/lovstof/vejledninger/hygiejnevejledningen/24-modtagekontrol-i-foedevarevirksomheder",
+      "reviewedAt": "2026-07-12"
+    },
+    "fvst-cooling": {
+      "title": "Nedkøling af fødevarer",
+      "url": "https://foedevarestyrelsen.dk/kost-og-foedevarer/start-og-drift-af-foedevarevirksomhed/hygiejne-og-indretning/haandtering-af-foedevarer-hygiejne-og-nedkoeling/nedkoeling-af-foedevarer",
+      "reviewedAt": "2026-07-12"
+    },
+    "fvst-heat-treatment": {
+      "title": "Hygiejnevejledningen, afsnit 27: Varmebehandling og varmholdelse",
+      "url": "https://foedevarestyrelsen.dk/lovstof/vejledninger/hygiejnevejledningen/27-varmebehandling-og-varmholdelse-af-foedevarer",
+      "reviewedAt": "2026-07-12"
+    },
+    "fvst-cold-storage": {
+      "title": "Hygiejnevejledningen, afsnit 26: Kølekrav for fødevarer",
+      "url": "https://foedevarestyrelsen.dk/lovstof/vejledninger/hygiejnevejledningen/26-koelekrav-for-foedevarer",
+      "reviewedAt": "2026-07-12"
+    }
+  },
+  "settings": {
+    "deviationsAlwaysDocumented": true,
+    "requireActorIdentity": true,
+    "requireObservedAt": true,
+    "requireCorrectiveActionBeforeClosure": true,
+    "allowSilentDeletionOfCompletedControls": false,
+    "allowSilentOverwriteOfCompletedControls": false
+  },
+  "productTemperatureProfiles": [
+    {
+      "id": "chilled-general-draft",
+      "label": "Køl – generelt startforslag",
+      "status": "requires_review",
+      "acceptance": { "operator": "lte", "value": 5, "unit": "celsius" },
+      "notes": "Må ikke bruges ukritisk til alle varer. Nogle produkter har strengere krav, og for andre fastsætter virksomheden selv en temperatur ud fra produkt, holdbarhed og salgsform.",
+      "sourceRefs": ["fvst-cold-storage", "fvst-written-controls"]
+    },
+    {
+      "id": "chilled-strict-placeholder",
+      "label": "Køl – produkt med strengere krav",
+      "status": "requires_product_mapping",
+      "acceptance": { "operator": "lte", "value": 2, "unit": "celsius" },
+      "notes": "Eksempelprofil fra Fødevarestyrelsens egenkontrolmateriale. Tilknyt kun konkrete produktkategorier efter faglig afklaring.",
+      "sourceRefs": ["fvst-written-controls"]
+    },
+    {
+      "id": "deep-frozen-draft",
+      "label": "Dybfrost – startforslag",
+      "status": "requires_review",
+      "acceptance": { "operator": "lte", "value": -18, "unit": "celsius" },
+      "notes": "Kontrollér produktkategori, mærkning og eventuelle tolerancer før aktivering.",
+      "sourceRefs": ["fvst-written-controls"]
+    }
+  ],
+  "activities": [
+    {
+      "id": "goods-receiving",
+      "label": "Varemodtagelse",
+      "enabled": true,
+      "sortOrder": 10,
+      "riskCategories": ["microbiological", "chemical", "physical"],
+      "controlIds": ["receiving-check"]
+    },
+    {
+      "id": "cold-storage",
+      "label": "Køleopbevaring",
+      "enabled": true,
+      "sortOrder": 20,
+      "riskCategories": ["microbiological"],
+      "controlIds": ["refrigeration-temperature"]
+    },
+    {
+      "id": "frozen-storage",
+      "label": "Frostopbevaring",
+      "enabled": true,
+      "sortOrder": 30,
+      "riskCategories": ["microbiological", "quality"],
+      "controlIds": ["freezer-temperature"]
+    },
+    {
+      "id": "heat-treatment",
+      "label": "Opvarmning og genopvarmning",
+      "enabled": true,
+      "sortOrder": 40,
+      "riskCategories": ["microbiological"],
+      "controlIds": ["heating-core-temperature"]
+    },
+    {
+      "id": "cooling",
+      "label": "Nedkøling",
+      "enabled": true,
+      "sortOrder": 50,
+      "riskCategories": ["microbiological"],
+      "controlIds": ["cooling-time-temperature"]
+    },
+    {
+      "id": "hot-holding",
+      "label": "Varmholdelse",
+      "enabled": true,
+      "sortOrder": 60,
+      "riskCategories": ["microbiological"],
+      "controlIds": ["hot-holding-temperature"]
+    }
+  ],
+  "controls": [
+    {
+      "id": "receiving-check",
+      "revision": 1,
+      "status": "draft_requires_approval",
+      "title": "Kontrol ved varemodtagelse",
+      "activityId": "goods-receiving",
+      "description": "Kontrollér relevante leverancer før varerne tages i brug.",
+      "controlFrequency": { "kind": "per_event", "eventType": "delivery" },
+      "documentationFrequency": { "kind": "weekly", "targetCount": 1, "deviationsAlways": true },
+      "fields": [
+        { "id": "supplier", "type": "text", "label": "Leverandør", "required": true },
+        { "id": "product", "type": "text", "label": "Vare", "required": true },
+        { "id": "temperatureProfileId", "type": "temperature_profile", "label": "Temperaturprofil", "required": false },
+        { "id": "measuredTemperature", "type": "temperature", "label": "Målt temperatur", "unit": "celsius", "requiredWhen": "temperatureProfileId is set" },
+        { "id": "packagingIntact", "type": "yes_no", "label": "Emballage er intakt", "expected": true, "required": true },
+        { "id": "labelAndDateAcceptable", "type": "yes_no", "label": "Mærkning og dato er acceptable", "expected": true, "required": true }
+      ],
+      "deviationTriggers": ["temperature_outside_selected_profile", "packagingIntact == false", "labelAndDateAcceptable == false"],
+      "correctiveActionPrompts": ["Afvis eller returnér varen", "Vurdér og dokumentér om varen kan anvendes straks", "Kassér varen", "Kontakt leverandøren", "Anden dokumenteret handling"],
+      "sourceRefs": ["fvst-receiving", "fvst-written-controls"]
+    },
+    {
+      "id": "refrigeration-temperature",
+      "revision": 1,
+      "status": "draft_requires_approval",
+      "title": "Temperatur på køl",
+      "activityId": "cold-storage",
+      "description": "Kontrollér relevante køleenheder og den produktprofil, der gælder for deres indhold.",
+      "controlFrequency": { "kind": "daily", "localTime": "09:00" },
+      "documentationFrequency": { "kind": "every_control", "deviationsAlways": true },
+      "fields": [
+        { "id": "unitId", "type": "asset_reference", "label": "Køleenhed", "required": true },
+        { "id": "temperatureProfileId", "type": "temperature_profile", "label": "Temperaturprofil", "required": true, "defaultValue": "chilled-general-draft" },
+        { "id": "measuredTemperature", "type": "temperature", "label": "Målt temperatur", "unit": "celsius", "required": true }
+      ],
+      "deviationTriggers": ["temperature_outside_selected_profile"],
+      "correctiveActionPrompts": ["Kontrollér med en retvisende produktmåling", "Flyt berørte varer til egnet køl", "Vurdér og dokumentér varernes sikkerhed", "Tilkald service", "Anden dokumenteret handling"],
+      "sourceRefs": ["fvst-cold-storage", "fvst-written-controls"]
+    },
+    {
+      "id": "freezer-temperature",
+      "revision": 1,
+      "status": "draft_requires_approval",
+      "title": "Temperatur på frost",
+      "activityId": "frozen-storage",
+      "description": "Kontrollér fryseenheder og de produktkrav, der gælder for deres indhold.",
+      "controlFrequency": { "kind": "daily", "localTime": "09:00" },
+      "documentationFrequency": { "kind": "every_control", "deviationsAlways": true },
+      "fields": [
+        { "id": "unitId", "type": "asset_reference", "label": "Fryseenhed", "required": true },
+        { "id": "temperatureProfileId", "type": "temperature_profile", "label": "Temperaturprofil", "required": true, "defaultValue": "deep-frozen-draft" },
+        { "id": "measuredTemperature", "type": "temperature", "label": "Målt temperatur", "unit": "celsius", "required": true }
+      ],
+      "deviationTriggers": ["temperature_outside_selected_profile"],
+      "correctiveActionPrompts": ["Kontrollér med en retvisende produktmåling", "Flyt berørte varer til egnet frost", "Vurdér og dokumentér varernes sikkerhed", "Tilkald service", "Anden dokumenteret handling"],
+      "sourceRefs": ["fvst-written-controls"]
+    },
+    {
+      "id": "heating-core-temperature",
+      "revision": 1,
+      "status": "draft_requires_approval",
+      "title": "Opvarmning",
+      "activityId": "heat-treatment",
+      "description": "Mål kernetemperaturen for den valgte produkt-/procesprofil.",
+      "controlFrequency": { "kind": "per_event", "eventType": "heating_batch" },
+      "documentationFrequency": { "kind": "selected_occurrences", "selectionRule": "first_batch_each_service_day", "deviationsAlways": true },
+      "fields": [
+        { "id": "productOrBatch", "type": "text", "label": "Produkt eller batch", "required": true },
+        { "id": "measuredCoreTemperature", "type": "temperature", "label": "Målt kernetemperatur", "unit": "celsius", "required": true },
+        { "id": "minimumCoreTemperature", "type": "temperature_limit", "label": "Godkendt minimum", "unit": "celsius", "required": true, "defaultValue": 75, "editable": true }
+      ],
+      "deviationTriggers": ["measuredCoreTemperature < minimumCoreTemperature"],
+      "correctiveActionPrompts": ["Fortsæt varmebehandlingen og mål igen", "Vurdér alternativ valideret tid-/temperaturproces", "Kassér produktet", "Anden dokumenteret handling"],
+      "notes": "75 °C er et almindeligt officielt eksempel, men der findes produkter og validerede processer, hvor andre kombinationer gælder. Profilen skal tilpasses den konkrete risikoanalyse.",
+      "sourceRefs": ["fvst-written-controls", "fvst-heat-treatment"]
+    },
+    {
+      "id": "cooling-time-temperature",
+      "revision": 1,
+      "status": "draft_requires_approval",
+      "title": "Nedkøling",
+      "activityId": "cooling",
+      "description": "Dokumentér start- og slutmåling for en nedkølingsbatch.",
+      "controlFrequency": { "kind": "per_event", "eventType": "cooling_batch" },
+      "documentationFrequency": { "kind": "every_control", "deviationsAlways": true },
+      "fields": [
+        { "id": "productOrBatch", "type": "text", "label": "Produkt eller batch", "required": true },
+        { "id": "startTemperature", "type": "temperature", "label": "Starttemperatur", "unit": "celsius", "required": true },
+        { "id": "startTime", "type": "datetime", "label": "Starttid", "required": true },
+        { "id": "endTemperature", "type": "temperature", "label": "Sluttemperatur", "unit": "celsius", "required": true },
+        { "id": "endTime", "type": "datetime", "label": "Sluttid", "required": true }
+      ],
+      "limit": {
+        "kind": "cooling_curve",
+        "fromTemperature": 56,
+        "toTemperature": 10,
+        "maximumDurationMinutes": 240,
+        "editable": true
+      },
+      "deviationTriggers": ["cooling_curve_not_met"],
+      "correctiveActionPrompts": ["Fortsæt hurtig nedkøling og mål igen efter faglig vurdering", "Fordel produktet i mindre portioner eller brug egnet udstyr", "Vurdér og dokumentér produktets sikkerhed", "Kassér produktet", "Anden dokumenteret handling"],
+      "notes": "Andre dokumenterede tid-/temperaturkombinationer kan give samme sikkerhed. Ændringer kræver fagligt grundlag.",
+      "sourceRefs": ["fvst-cooling", "fvst-written-controls"]
+    },
+    {
+      "id": "hot-holding-temperature",
+      "revision": 1,
+      "status": "draft_requires_approval",
+      "title": "Varmholdelse",
+      "activityId": "hot-holding",
+      "description": "Kontrollér temperaturen på varmholdte fødevarer.",
+      "controlFrequency": { "kind": "per_event", "eventType": "hot_holding_service" },
+      "documentationFrequency": { "kind": "every_control", "deviationsAlways": true },
+      "fields": [
+        { "id": "productOrBatch", "type": "text", "label": "Produkt eller batch", "required": true },
+        { "id": "measuredTemperature", "type": "temperature", "label": "Målt temperatur", "unit": "celsius", "required": true },
+        { "id": "minimumTemperature", "type": "temperature_limit", "label": "Godkendt minimum", "unit": "celsius", "required": true, "defaultValue": 56, "editable": true }
+      ],
+      "deviationTriggers": ["measuredTemperature < minimumTemperature"],
+      "correctiveActionPrompts": ["Genopvarm efter godkendt procedure og mål igen", "Vurdér og dokumentér produktets sikkerhed", "Kassér produktet", "Anden dokumenteret handling"],
+      "sourceRefs": ["fvst-heat-treatment"]
+    }
+  ]
+}
