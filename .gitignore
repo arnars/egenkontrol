@@ -1,0 +1,21 @@
+# Dependencies and build output
+node_modules/
+.svelte-kit/
+build/
+dist/
+.vercel/
+coverage/
+playwright-report/
+test-results/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Local tools and operating-system files
+.DS_Store
+*.log
+
+# Local visual reference path/configuration
+.recipe-site-path
