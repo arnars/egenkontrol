@@ -51,8 +51,8 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 - [x] Kortlæg layouts, bredder og breakpoints
 - [x] Kortlæg feedback, animation og printstil
 - [x] Dokumentér resultater i `DESIGN_SYSTEM.md`
-- [ ] Opret senere en visuel prøve på dagens kontroller
-- [ ] Afprøv prøven i stående og liggende iPad-format
+- [x] Opret en visuel prøve på dagens kontroller
+- [x] Afprøv prøven i stående og liggende iPad-format
 
 **Acceptkriterier**
 
@@ -61,9 +61,9 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 
 ## Fase 2 — teknisk fundament
 
-- [ ] Opret SvelteKit-projekt
-- [ ] Tilføj Vercel-adapter
-- [ ] Konfigurér streng TypeScript
+- [x] Opret SvelteKit-projekt
+- [x] Tilføj Vercel-adapter
+- [x] Konfigurér streng TypeScript
 - [ ] Opret Supabase-projekt
 - [ ] Konfigurér og dokumentér miljøvariabler
 - [ ] Opsæt Drizzle
@@ -71,8 +71,8 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 - [ ] Opsæt Zod
 - [ ] Opsæt Supabase Auth
 - [ ] Beskyt interne routes server-side
-- [ ] Opsæt Vitest
-- [ ] Opsæt Playwright
+- [x] Opsæt Vitest
+- [x] Opsæt Playwright
 - [ ] Opsæt preview-deployments
 - [ ] Fastlæg basal sikkerheds- og logningspraksis
 

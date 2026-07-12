@@ -4,7 +4,7 @@ Et kommende digitalt egenkontrolsystem til den daglige drift i en mindre dansk d
 
 ## Status
 
-Projektet er i planlægningsfasen. **SvelteKit-applikationen er endnu ikke oprettet**, og der findes endnu ingen dependencies, database eller migrationer.
+SvelteKit-fundamentet og den første konfigurationsdrevne prototype af "Dagens kontroller" er oprettet. Registreringer lever kun i browsertilstanden; database, Auth og migrationer er endnu ikke implementeret.
 
 Den valgte retning er SvelteKit med TypeScript på Vercel, Supabase Postgres og Auth, Drizzle ORM, Zod, Vitest og Playwright. Første version er online-only. Det visuelle system skal udledes af et eksisterende lokalt opskriftssite.
 
@@ -29,4 +29,4 @@ Den valgte retning er SvelteKit med TypeScript på Vercel, Supabase Postgres og 
 1. Udarbejd virksomhedens konkrete risikoanalyse og procedurer.
 2. Giv read-only adgang til opskriftssitet og udfyld designanalysen.
 3. Afklar åbne domæne- og sikkerhedsspørgsmål.
-4. Opret derefter det tekniske fundament som planlagt i roadmapet.
+4. Tilslut derefter database, Auth og revisionssikker persistens som planlagt i roadmapet.

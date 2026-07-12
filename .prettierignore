@@ -1,0 +1,17 @@
+# Package managers
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+bun.lock
+bun.lockb
+
+# Generated output
+.svelte-kit/
+build/
+coverage/
+playwright-report/
+test-results/
+
+# Human-maintained domain documents and configuration keep their compact formatting
+config/
+docs/
