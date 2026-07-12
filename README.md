@@ -11,6 +11,7 @@ Den valgte retning er SvelteKit med TypeScript på Vercel, Supabase Postgres og 
 ## Dokumentation
 
 - [`docs/DOMAIN.md`](docs/DOMAIN.md) — domæne, begreber og åbne faglige spørgsmål
+- [`docs/RISK_ANALYSIS_DRAFT.md`](docs/RISK_ANALYSIS_DRAFT.md) — arbejdsudkast for Nabo Brejnings første seks kontrolområder
 - [`docs/ROADMAP.md`](docs/ROADMAP.md) — afkrydsningsbar projektplan
 - [`docs/DATA_MODEL.md`](docs/DATA_MODEL.md) — foreløbig datamodel og revisionsprincipper
 - [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md) — skabelon til analyse af designreferencen

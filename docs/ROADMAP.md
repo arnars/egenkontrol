@@ -21,6 +21,8 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 - [ ] Gennemgå og godkend startkataloget mod virksomhedens faktiske drift
 - [ ] Gennemgå relevante myndighedskilder
 - [ ] Udarbejd virksomhedens konkrete risikoanalyse
+- [x] Opret arbejdsudkast til risikoanalyse for de seks startaktiviteter
+- [ ] Gennemgå og godkend risikoanalyseudkastet med virksomhedens faktiske produkter og processer
 - [ ] Identificér relevante risici
 - [ ] Identificér mulige GAG- og CCP-områder med faglig bistand
 - [ ] Fastlæg relevante kritiske grænser

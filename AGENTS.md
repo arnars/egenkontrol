@@ -24,11 +24,12 @@ Detaljer, som ikke er besluttet i `docs/DECISIONS.md`, må ikke behandles som fa
 1. `AGENTS.md` fastlægger arbejdsregler.
 2. `docs/DOMAIN.md` fastlægger domænesprog og afgrænsning.
 3. `docs/DATA_MODEL.md` beskriver den foreløbige informationsmodel.
-4. `docs/DECISIONS.md` registrerer tekniske beslutninger.
-5. `docs/DESIGN_SYSTEM.md` bliver designets autoritative specifikation efter referenceanalysen.
-6. `docs/SOURCES.md` registrerer faglige kilder og deres påvirkning.
-7. `docs/CONFIGURATION.md` og `config/egenkontrol.defaults.json` beskriver det versionerede startkatalog; udkast må ikke behandles som godkendte regler.
-8. `docs/ROADMAP.md` rummer aktuelle og kortvarige opgaver. Sådanne opgaver må ikke lægges i denne fil.
+4. `docs/RISK_ANALYSIS_DRAFT.md` er et arbejdsudkast og må ikke behandles som en godkendt risikoanalyse.
+5. `docs/DECISIONS.md` registrerer tekniske beslutninger.
+6. `docs/DESIGN_SYSTEM.md` bliver designets autoritative specifikation efter referenceanalysen.
+7. `docs/SOURCES.md` registrerer faglige kilder og deres påvirkning.
+8. `docs/CONFIGURATION.md` og `config/egenkontrol.defaults.json` beskriver det versionerede startkatalog; udkast må ikke behandles som godkendte regler.
+9. `docs/ROADMAP.md` rummer aktuelle og kortvarige opgaver. Sådanne opgaver må ikke lægges i denne fil.
 
 Ved konflikt skal den mest specifikke, godkendte beslutning bruges, og konflikten dokumenteres.
 
