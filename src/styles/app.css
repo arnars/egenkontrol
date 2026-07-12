@@ -51,6 +51,76 @@ a:focus-visible {
 	padding: 3rem 0 5rem;
 }
 
+.login-shell {
+	width: min(34rem, 100%);
+	margin: 8vh auto 0;
+	padding: clamp(2rem, 6vw, 4rem);
+	border: 1px solid var(--line);
+	background: var(--paper);
+}
+
+.login-shell h1 {
+	margin: 0.6rem 0 1rem;
+	font-family: ui-sans-serif, system-ui, sans-serif;
+	font-size: clamp(3rem, 8vw, 4.5rem);
+	font-weight: 600;
+	letter-spacing: -0.065em;
+	line-height: 0.95;
+}
+
+.login-intro,
+.login-message p,
+.login-footnote {
+	color: var(--muted);
+	font-family: ui-sans-serif, system-ui, sans-serif;
+	line-height: 1.6;
+}
+
+.login-form {
+	display: grid;
+	gap: 0.8rem;
+	margin-top: 2rem;
+}
+
+.login-form label {
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+	font-size: 0.72rem;
+	letter-spacing: 0.11em;
+	text-transform: uppercase;
+}
+
+.login-form input {
+	width: 100%;
+	min-height: 3.5rem;
+	padding: 0 1rem;
+	border: 1px solid var(--line);
+	border-radius: 0;
+	background: var(--page);
+	font-family: ui-sans-serif, system-ui, sans-serif;
+	font-size: 1rem;
+}
+
+.login-form .primary-button {
+	min-height: 3.5rem;
+	margin-top: 0.4rem;
+}
+
+.login-message {
+	margin-top: 2rem;
+	padding: 1.25rem;
+	background: var(--soft);
+	font-family: ui-sans-serif, system-ui, sans-serif;
+}
+
+.login-message p,
+.login-footnote {
+	margin-bottom: 0;
+}
+
+.login-footnote {
+	font-size: 0.85rem;
+}
+
 .app-nav {
 	display: flex;
 	align-items: center;

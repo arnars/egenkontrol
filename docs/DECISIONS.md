@@ -117,6 +117,23 @@ Brug `DATABASE_URL` med Supabases transaction pooler til applikationens runtime 
 
 Begge forbindelser skal konfigureres separat i lokale, preview- og produktionsmiljøer. Migrationer må ikke køres via transaction pooleren. RLS, Auth og mindst mulige databaseprivilegier skal afklares før produktionsbrug.
 
+## ADR-007: Inviteret adgang med Supabase Auth
+
+- **Status:** Accepteret
+- **Dato:** 2026-07-12
+
+### Kontekst
+
+Systemet indeholder virksomhedsinterne registreringer og må ikke tilbyde offentlig selvoprettelse. Supabases standardmailtjeneste tillader ikke den redigerbare token-hash-skabelon, som et server-side magic-link-flow kræver, uden at egen SMTP først konfigureres.
+
+### Beslutning
+
+Første version bruger inviterede Supabase-brugere med e-mail og adgangskode. SvelteKit opbevarer sessionen i cookies, validerer identiteten med `getClaims()` på serveren og beskytter alle routes undtagen login. Offentlig signup implementeres ikke.
+
+### Konsekvenser
+
+Den første bruger skal oprettes administrativt og knyttes til en actor. Glemt adgangskode, magic links og mailnotifikationer afventer valg og opsætning af SMTP. RLS-politikker skal fortsat håndhæve virksomhedstilhørsforhold uafhængigt af routebeskyttelsen.
+
 ## Skabelon til fremtidige ADR'er
 
 ```md

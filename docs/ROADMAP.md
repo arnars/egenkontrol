@@ -70,8 +70,9 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 - [x] Opsæt Drizzle
 - [x] Opret migrationsstruktur og migrationspraksis
 - [x] Opsæt Zod
-- [ ] Opsæt Supabase Auth
-- [ ] Beskyt interne routes server-side
+- [x] Opsæt Supabase Auth-klient og loginflow
+- [x] Beskyt interne routes server-side
+- [ ] Opret første inviterede bruger og tilknyt actor
 - [x] Opsæt Vitest
 - [x] Opsæt Playwright
 - [ ] Opsæt preview-deployments

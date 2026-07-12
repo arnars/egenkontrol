@@ -2,8 +2,6 @@ import catalog from '../../config/egenkontrol.defaults.json';
 import business from '../../config/virksomhed.json';
 import { buildTodayControls } from '$lib/domain/today-controls';
 
-export const prerender = true;
-
 export function load() {
 	const controls = buildTodayControls(
 		business.assets,
