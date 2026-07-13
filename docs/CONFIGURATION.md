@@ -10,6 +10,15 @@ Virksomhedens egne valg ligger separat i `config/virksomhed.example.json`, valid
 
 Nabo Brejnings aktuelle udkast ligger i `config/virksomhed.json`. Eksempelfilen bevares som neutral skabelon.
 
+Hver lokation har `operatingWeekdays`. Feltet angiver de normale ugentlige driftsdage. En kontrol med `controlFrequency.kind: "daily"` genereres kun på disse dage. Faste lukkedage fremgår af ugevisningen, men danner ingen manglende kontrol. Midlertidige lukninger og datoundtagelser er ikke en del af schema version 2.
+
+```json
+{
+  "timeZone": "Europe/Copenhagen",
+  "operatingWeekdays": ["tuesday", "wednesday", "thursday", "friday", "saturday"]
+}
+```
+
 Tværgående gode arbejdsgange og procedurer ligger separat i `config/arbejdsgange.defaults.json`. De holdes uden for kontrolkataloget, fordi de ikke automatisk skal generere daglige kontroller. Kataloget skelner mellem kandidater til gode arbejdsgange, risikostyring og dokumenterede hændelsesprocedurer.
 
 ## To konfigurationslag
@@ -85,6 +94,7 @@ En tilhørende kontrol skal stadig have procedure, frekvenser, felter, afvigelse
 - Korrigerende handlinger i kataloget er prompts, ikke automatiske beslutninger.
 - Kildeændringer kræver ny `reviewedAt` og vurdering af berørte kontroller.
 - Læg lokationsspecifikke tider og hyppigheder i `controlOverrides` frem for at ændre kataloget.
+- Læg normale ugentlige driftsdage i lokationens `operatingWeekdays`; ændringer må ikke omskrive allerede gemte forekomster eller udførelser.
 - Registrér køle-, frost- og andet relevant udstyr i `assets`; brug stabile id'er, selv om label senere ændres.
 - Brug `profileOverrides` til fagligt begrundede lokale grænser, og registrér begrundelse og kilder.
 - Godkend ikke virksomhedskonfigurationen, så længe `openQuestions` eller `requires_review`-poster er uafklarede.
@@ -99,6 +109,7 @@ JSON Schema validerer grundformen. Applikationen skal senere også kontrollere:
 - at `selected_occurrences` har en kendt, deterministisk regel,
 - at en aktiveret kontrol kun bruger godkendte profiler og revisioner,
 - at tidspunkter er gyldige i lokationens tidszone,
+- at ugedage er gyldige, og at en fast kontrol kun genereres på en aktiv driftsdag,
 - at ændringer skaber revisioner frem for lydløs overskrivning.
 - at virksomhedens `basedOnCatalogVersion` findes og er gennemgået,
 - at lokations-, udstyrs-, aktivitets-, kontrol- og profilreferencer findes,

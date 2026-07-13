@@ -110,6 +110,8 @@ Statusværdier er foreløbige. Særligt forskellen mellem `resolved` og `closed`
 
 Gem hændelsestidspunkter som UTC-instanter og gem lokationens IANA-tidszone, fx `Europe/Copenhagen`. Gem også den lokale kontekst eller offset, når den har dokumentationsværdi. Gentagelsesregler beregnes i lokationens tidszone og skal testes ved sommertid. Skeln mellem planlagt tidsvindue, faktisk observationstid og serverens registreringstid.
 
+Lokationens normale `operatingWeekdays` filtrerer kalenderbaserede gentagelsesregler. `daily` betyder hver driftsdag. En fast lukkedag opretter ingen `ScheduledControl`; det er derfor ikke det samme som status `cancelled` eller `missed`. Når forekomster senere materialiseres i databasen, må efterfølgende ændringer af driftsmønstret ikke omskrive dem.
+
 ## Versionshistorik
 
 Risikoanalyser, procedurer, kritiske grænser og kontroldefinitioner versionsstyres med `validFrom`, eventuelt `validTo`, revisionsnummer, ændringsbegrundelse, forfatter og godkender. En aktiveret revision er låst; en ændring skaber en efterfølger. Historiske kontroller beholder reference til den revision, som gjaldt ved planlægning/udførelse.

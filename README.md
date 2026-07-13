@@ -4,7 +4,7 @@ Et kommende digitalt egenkontrolsystem til den daglige drift i en mindre dansk d
 
 ## Status
 
-SvelteKit-fundamentet og den konfigurationsdrevne side "Dagens kontroller" er oprettet. Drizzle-schemaet er migreret til Supabase, RLS er slået til på alle 11 applikationstabeller, og virksomhedsspecifikke læsepolitikker er tilføjet. Supabase Auth er integreret med server-validerede cookies og beskyttede interne routes. Temperaturformularen skriver måling, eventuel afvigelse, korrigerende handling og auditspor atomisk. Gemte målinger læses tilbage gennem RLS og vises som gennemført.
+SvelteKit-fundamentet og de konfigurationsdrevne visninger "Dagens kontroller" og "Ugens kontroller" er oprettet. Ugegeneratoren respekterer lokationens normale driftsdage, så faste lukkedage ikke skaber falske mangler. Drizzle-schemaet er migreret til Supabase, RLS er slået til på alle 11 applikationstabeller, og virksomhedsspecifikke læsepolitikker er tilføjet. Supabase Auth er integreret med server-validerede cookies og beskyttede interne routes. Temperaturformularen skriver måling, eventuel afvigelse, korrigerende handling og auditspor atomisk. Gemte målinger læses tilbage gennem RLS og vises som gennemført.
 
 Den valgte retning er SvelteKit med TypeScript og Tailwind CSS 4 på Vercel, Supabase Postgres og Auth, Drizzle ORM, Zod, Vitest og Playwright. Første version er online-only. Det visuelle system er udledt af et eksisterende lokalt opskriftssite.
 
@@ -26,6 +26,6 @@ Den valgte retning er SvelteKit med TypeScript og Tailwind CSS 4 på Vercel, Sup
 
 ## Næste trin
 
-1. Tilføj virksomhedsspecifikke RLS-politikker og test isolation.
-2. Forbind "Dagens kontroller" med den revisionssikre skrivepipeline.
-3. Fortsæt den faglige gennemgang af risikoanalyse og procedurer.
+1. Materialisér ugegeneratorens forekomster i `scheduled_controls` og forbind udførelser til dem.
+2. Implementér ja/nej-kontroller og tjeklister.
+3. Fortsæt den faglige gennemgang af risikoanalyse, driftsdage og procedurer.

@@ -151,6 +151,23 @@ Brug Tailwind CSS 4 via den officielle Vite-plugin. Komponenternes layout, typog
 
 Designværdier kan sammenlignes direkte med referenceprojektets Tailwind-skala. Lange class-lister accepteres i de få større views; gentagne mønstre skal først udtrækkes som Svelte-komponenter, når der findes reel genbrug. Der bruges ikke `@apply` til at genskabe et parallelt komponent-CSS-lag.
 
+## ADR-009: Driftsdage filtrerer kalenderbaserede kontroller
+
+- **Status:** Accepteret
+- **Dato:** 2026-07-13
+
+### Kontekst
+
+Der er ikke nødvendigvis bemanding på alle kalenderdage. Hvis en daglig regel genererede kontroller på faste lukkedage, ville systemet vise falske mangler og svække tilliden til overblikket.
+
+### Beslutning
+
+Lokationer konfigurerer normale `operatingWeekdays`. Kalenderbaserede forekomster genereres kun på driftsdage; `daily` fortolkes som hver driftsdag. Lukkedage vises eksplicit i ugeoverblikket, men danner ikke en planlagt kontrol. Første generator beregner den aktuelle uge deterministisk i lokationens tidszone. Materialisering i `scheduled_controls`, datoundtagelser og regler for ændringer af en allerede materialiseret plan behandles som efterfølgende ændringer.
+
+### Konsekvenser
+
+Nabo Brejnings udkast kan have mandag og søndag fri uden falske mangler. Normale åbningstider kan ændres i virksomhedskonfigurationen. Ferie, helligdage og ekstraordinære åbningsdage kræver en særskilt undtagelsesmodel, før de kan påvirke planen.
+
 ## Skabelon til fremtidige ADR'er
 
 ```md

@@ -1,17 +1,23 @@
 import { fail } from '@sveltejs/kit';
 import catalog from '../../config/egenkontrol.defaults.json';
 import business from '../../config/virksomhed.json';
-import { buildTodayControls } from '$lib/domain/today-controls';
+import {
+	buildTemperatureControls,
+	buildTemperatureWeekSchedule,
+	type Weekday
+} from '$lib/domain/today-controls';
 import {
 	CompletionValidationError,
 	prepareTemperatureCompletion
 } from '$lib/server/controls/temperature-completion';
 import type { Actions, PageServerLoad } from './$types';
 
-const controls = buildTodayControls(
+const location = business.locations[0];
+const controlDefinitions = buildTemperatureControls(
 	business.assets,
 	catalog.productTemperatureProfiles,
-	business.controlOverrides
+	business.controlOverrides,
+	location?.id ?? ''
 );
 
 type StoredCompletion = {
@@ -27,56 +33,76 @@ type StoredCompletion = {
 
 function localDate(value: string | Date) {
 	return new Intl.DateTimeFormat('en-CA', {
-		timeZone: business.locations[0]?.timeZone ?? 'Europe/Copenhagen',
+		timeZone: location?.timeZone ?? 'Europe/Copenhagen',
 		year: 'numeric',
 		month: '2-digit',
 		day: '2-digit'
 	}).format(new Date(value));
 }
 
+function currentSchedule(now = new Date()) {
+	const today = localDate(now);
+	const schedule = buildTemperatureWeekSchedule(
+		controlDefinitions,
+		(location?.operatingWeekdays ?? []) as Weekday[],
+		today
+	);
+	const todaySchedule = schedule.days.find((day) => day.localDate === today);
+
+	return { today, schedule, todaySchedule };
+}
+
 export const load: PageServerLoad = async ({ locals }) => {
-	const today = localDate(new Date());
+	const { today, schedule, todaySchedule } = currentSchedule();
 	const { data, error } = await locals.supabase
 		.from('completed_controls')
 		.select(
 			'id, observed_at, metadata, measurements(value), deviations(id, corrective_actions(description, status))'
 		)
-		.eq('location_id', business.locations[0]?.id ?? '')
+		.eq('location_id', location?.id ?? '')
 		.order('observed_at', { ascending: false })
 		.limit(100);
 
 	if (error) console.error('Kunne ikke hente dagens kontroller', error.code);
 
-	const completions = Object.fromEntries(
-		((data ?? []) as StoredCompletion[])
-			.filter((completion) => localDate(completion.observed_at) === today)
-			.flatMap((completion) => {
-				const controlId = completion.metadata?.configuredControlId;
-				const value = completion.measurements[0]?.value;
-				if (!controlId || value === undefined) return [];
+	const weeklyCompletions = Object.fromEntries(
+		((data ?? []) as StoredCompletion[]).flatMap((completion) => {
+			const controlId = completion.metadata?.configuredControlId;
+			const value = completion.measurements[0]?.value;
+			if (!controlId || value === undefined) return [];
+			const completionLocalDate = localDate(completion.observed_at);
 
-				return [
-					[
-						controlId,
-						{
-							id: completion.id,
-							value: Number(value),
-							deviation: completion.deviations.length > 0,
-							correctiveAction:
-								completion.deviations[0]?.corrective_actions[0]?.description ?? null,
-							completedAt: completion.observed_at
-						}
-					] as const
-				];
-			})
+			return [
+				[
+					`${controlId}:${completionLocalDate}`,
+					{
+						id: completion.id,
+						value: Number(value),
+						deviation: completion.deviations.length > 0,
+						correctiveAction: completion.deviations[0]?.corrective_actions[0]?.description ?? null,
+						completedAt: completion.observed_at
+					}
+				] as const
+			];
+		})
+	);
+	const completions = Object.fromEntries(
+		(todaySchedule?.controls ?? []).flatMap((control) => {
+			const completion = weeklyCompletions[control.occurrenceKey];
+			return completion ? [[control.id, completion]] : [];
+		})
 	);
 
 	return {
 		companyName: business.company.name,
-		locationName: business.locations[0]?.name ?? business.company.name,
+		locationName: location?.name ?? business.company.name,
 		configurationStatus: business.status,
-		controls,
+		today,
+		todaySchedule,
+		schedule,
+		controls: todaySchedule?.controls ?? [],
 		completions,
+		weeklyCompletions,
 		eventControls: [
 			{ id: 'receiving-check', title: 'Varemodtagelse', description: 'Start ved levering' },
 			{ id: 'heating-core-temperature', title: 'Opvarmning', description: 'Start for en batch' },
@@ -96,7 +122,8 @@ export const actions: Actions = {
 		if (!claims) return fail(401, { error: 'Din session er udløbet. Log ind igen.' });
 
 		const formData = await request.formData();
-		const control = controls.find((item) => item.id === formData.get('controlId'));
+		const { todaySchedule } = currentSchedule();
+		const control = todaySchedule?.controls.find((item) => item.id === formData.get('controlId'));
 		if (!control) return fail(400, { error: 'Kontrollen findes ikke længere.' });
 
 		try {
@@ -116,7 +143,7 @@ export const actions: Actions = {
 				},
 				control,
 				companyId: business.company.id,
-				locationId: business.locations[0]?.id ?? '',
+				locationId: location?.id ?? '',
 				controlDefinitionRevision: 1
 			});
 

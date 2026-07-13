@@ -17,6 +17,7 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 - [x] Adskil kontrolhyppighed og dokumentationshyppighed i konfigurationen
 - [x] Adskil produktets startkatalog fra virksomhedens lokale konfiguration
 - [x] Tilføj konfiguration af lokationer, udstyr og lokale overrides
+- [x] Tilføj normale driftsdage pr. lokation og undgå faste kontroller på lukkedage
 - [x] Registrér Nabo Brejning med én lokation, tre køleenheder og to frysere
 - [ ] Gennemgå og godkend startkataloget mod virksomhedens faktiske drift
 - [ ] Gennemgå relevante myndighedskilder
@@ -112,7 +113,7 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 
 - [x] Implementér login
 - [ ] Implementér dagens kontroller
-- [ ] Implementér ugens kontroller
+- [x] Implementér ugeoverblik for temperaturkontroller med synlige lukkedage
 - [x] Implementér temperaturregistrering i UI og atomisk databasefunktion
 - [ ] Implementér ja/nej-kontrol
 - [ ] Implementér tjekliste
@@ -133,7 +134,9 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 ## Fase 5 — planlægning og kalender
 
 - [ ] Implementér opgavegenerator
-- [ ] Implementér daglige, ugentlige og valgte ugedage
+- [x] Implementér deterministisk ugeprojektion for daglige, ugentlige og valgte ugedage
+- [ ] Materialisér genererede forekomster i `scheduled_controls`
+- [x] Lad faste lukkedage filtrere kalenderbaserede forekomster
 - [ ] Implementér månedlige, interval- og årlige regler
 - [ ] Implementér hændelsesbaserede kontroller
 - [ ] Vis kommende kontroller

@@ -13,7 +13,10 @@ const control: ScheduledTemperatureControl = {
 	profileStatus: 'requires_review',
 	limit: 5,
 	unit: 'celsius',
-	dueTime: '09:00'
+	dueTime: '09:00',
+	frequency: { kind: 'daily' },
+	localDate: '2026-07-12',
+	occurrenceKey: 'refrigeration-temperature:refrigerator-1:2026-07-12'
 };
 
 function command(overrides: Record<string, unknown> = {}) {

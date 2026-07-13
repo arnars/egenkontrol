@@ -30,6 +30,12 @@ Aktivitet
 
 En kontroldefinition kan have en kritisk grænse og en gentagelsesregel. Gentagelsesreglen danner planlagte kontroller; en udført kontrol dokumenterer den konkrete hændelse.
 
+## Driftsdage og lukkedage
+
+En lokation har et konfigureret ugentligt driftsmønster. En `daily`-regel betyder én forekomst pr. **driftsdag**, ikke pr. kalenderdag. En fast lukkedag danner derfor ingen planlagt kontrol og skal hverken vises som manglende eller efterfølgende markeres som overskredet. Ugevisningen viser lukkedagen eksplicit, så fraværet af kontroller kan forklares.
+
+Nabo Brejnings aktuelle konfigurationsudkast bruger tirsdag–lørdag som driftsdage og mandag/søndag som lukkedage. Mønstret er et driftsmæssigt udkast, ikke en fagligt godkendt kontrolhyppighed. Enkeltstående lukninger, ferie og helligdage er endnu ikke modelleret.
+
 ## To forskellige hyppigheder
 
 **Kontrolhyppighed** beskriver, hvor ofte kontrollen reelt skal udføres. **Dokumentationshyppighed** beskriver, hvilke udførelser der normalt registreres. De skal modelleres separat.
