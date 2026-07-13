@@ -63,6 +63,7 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 
 - [x] Opret SvelteKit-projekt
 - [x] Tilføj Vercel-adapter
+- [x] Opsæt Tailwind CSS 4 med Vite-plugin
 - [x] Konfigurér streng TypeScript
 - [x] Opret Supabase-projekt
 - [x] Anvend og verificér første Drizzle-migration

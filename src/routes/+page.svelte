@@ -117,28 +117,44 @@
 	<title>Dagens kontroller — {data.companyName}</title>
 </svelte:head>
 
-<div class="page-heading-meta">
-	<p>{data.locationName} · {todayLabel}</p>
-	<div class="view-switch" aria-label="Periode">
+<div class="mb-8 flex items-center justify-between gap-4">
+	<p class="m-0 font-mono text-[.72rem] tracking-[.11em] text-muted uppercase">
+		{data.locationName} · {todayLabel}
+	</p>
+	<div class="flex gap-1" aria-label="Periode">
 		<button
-			class:active={view === 'today'}
+			class="min-h-11 cursor-pointer border-0 bg-transparent px-4 font-mono text-[.72rem] tracking-[.11em] text-muted uppercase {view ===
+			'today'
+				? 'text-ink underline underline-offset-[.35rem]'
+				: ''}"
 			aria-pressed={view === 'today'}
 			onclick={() => (view = 'today')}>I dag</button
 		>
 		<button
-			class:active={view === 'week'}
+			class="min-h-11 cursor-pointer border-0 bg-transparent px-4 font-mono text-[.72rem] tracking-[.11em] text-muted uppercase {view ===
+			'week'
+				? 'text-ink underline underline-offset-[.35rem]'
+				: ''}"
 			aria-pressed={view === 'week'}
 			onclick={() => (view = 'week')}>Ugen</button
 		>
 	</div>
 </div>
 
-<header class="hero">
+<header
+	class="mb-6 grid grid-cols-[minmax(0,1fr)_minmax(18rem,.72fr)] items-end gap-12 border-b border-line pb-10 max-[720px]:grid-cols-1 max-[720px]:gap-6"
+>
 	<div>
-		<p class="eyebrow">{view === 'today' ? 'Dagens drift' : 'Ugens overblik'}</p>
-		<h1>{view === 'today' ? 'Dagens kontroller' : 'Ugens kontroller'}</h1>
+		<p class="m-0 font-mono text-[.72rem] tracking-[.11em] text-muted uppercase">
+			{view === 'today' ? 'Dagens drift' : 'Ugens overblik'}
+		</p>
+		<h1
+			class="mt-2 mb-0 max-w-[12ch] font-sans text-[clamp(3rem,6vw,4.5rem)] leading-[.92] font-semibold tracking-[-.065em] max-[720px]:text-[clamp(2.8rem,14vw,4rem)]"
+		>
+			{view === 'today' ? 'Dagens kontroller' : 'Ugens kontroller'}
+		</h1>
 	</div>
-	<p>
+	<p class="m-0 font-sans text-[1.05rem] leading-[1.65] text-muted">
 		{view === 'today'
 			? `${countLabel(pendingControls.length)} mangler. Hændelsesbaserede kontroller startes, når de bliver relevante.`
 			: 'Kontroller grupperes senere efter dag. Dagsvisningen forbliver den primære arbejdsgang.'}
@@ -146,32 +162,44 @@
 </header>
 
 {#if data.configurationStatus !== 'approved'}
-	<p class="draft-notice" role="status">
+	<p class="mb-10 bg-soft px-4 py-3 font-sans text-sm leading-relaxed text-muted" role="status">
 		Konfigurationen er et arbejdsudkast. Grænser og hyppigheder afventer virksomhedens godkendelse.
 	</p>
 {/if}
 
-<section class="control-section" aria-labelledby="pending-heading">
-	<header class="section-heading">
-		<h2 id="pending-heading">Mangler</h2>
-		<span>{countLabel(pendingControls.length)}</span>
+<section class="mt-14" aria-labelledby="pending-heading">
+	<header class="flex items-center justify-between gap-4 border-b border-line pb-3">
+		<h2 class="m-0 font-sans text-[1.6rem] font-medium tracking-[-.035em]" id="pending-heading">
+			Mangler
+		</h2>
+		<span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase"
+			>{countLabel(pendingControls.length)}</span
+		>
 	</header>
 
 	{#if pendingControls.length === 0}
-		<p class="empty-state">Alle planlagte kontroller er gennemført.</p>
+		<p class="mt-6 font-sans text-muted">Alle planlagte kontroller er gennemført.</p>
 	{:else}
-		<div class="control-list">
+		<div class="grid">
 			{#each pendingControls as control (control.id)}
-				<button class="control-row" onclick={() => openControl(control.id)}>
-					<span class="control-copy">
-						<strong>{control.assetLabel}</strong>
-						<small
+				<button
+					class="flex min-h-19 w-full cursor-pointer items-center justify-between gap-4 border-0 border-b border-line bg-transparent px-2 py-3.5 text-left text-ink hover:bg-soft"
+					onclick={() => openControl(control.id)}
+				>
+					<span class="grid gap-1">
+						<strong class="font-sans text-[1.05rem] font-medium">{control.assetLabel}</strong>
+						<small class="text-[.95rem] text-muted"
 							>{control.assetType === 'freezer' ? 'Frost' : 'Køl'} · senest kl. {control.dueTime}</small
 						>
 					</span>
-					<span class="control-action">
-						<span>Mangler</span>
-						<i aria-hidden="true">→</i>
+					<span class="flex items-center gap-3">
+						<span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase"
+							>Mangler</span
+						>
+						<i
+							class="grid h-8 w-8 place-items-center rounded-full border border-line font-sans not-italic"
+							aria-hidden="true">→</i
+						>
 					</span>
 				</button>
 			{/each}
@@ -180,53 +208,83 @@
 </section>
 
 {#if activeControl}
-	<section class="measurement-panel" aria-labelledby="measurement-heading">
-		<header>
+	<section class="my-8 grid gap-6 bg-paper p-6 print:hidden" aria-labelledby="measurement-heading">
+		<header class="flex items-center justify-between gap-4">
 			<div>
-				<p class="eyebrow">Registrér temperatur</p>
-				<h2 id="measurement-heading">{activeControl.assetLabel}</h2>
+				<p class="m-0 font-mono text-[.72rem] tracking-[.11em] text-muted uppercase">
+					Registrér temperatur
+				</p>
+				<h2
+					class="m-0 font-sans text-[1.6rem] font-medium tracking-[-.035em]"
+					id="measurement-heading"
+				>
+					{activeControl.assetLabel}
+				</h2>
 			</div>
-			<button class="text-button" onclick={closeControl}>Luk</button>
+			<button
+				class="min-h-11 cursor-pointer border-0 bg-transparent px-4 font-mono text-[.72rem] tracking-[.11em] text-muted uppercase"
+				onclick={closeControl}>Luk</button
+			>
 		</header>
 
-		<form method="POST" action="?/complete" use:enhance={enhanceCompletion}>
+		<form class="grid gap-6" method="POST" action="?/complete" use:enhance={enhanceCompletion}>
 			<input type="hidden" name="controlId" value={activeControl.id} />
 			<input type="hidden" name="idempotencyKey" value={idempotencyKey} />
-			<div class="measurement-fields">
-				<label>
-					<span>Målt temperatur</span>
-					<span class="temperature-input">
+			<div
+				class="grid grid-cols-[minmax(0,1fr)_minmax(14rem,.45fr)] items-end gap-6 max-[720px]:grid-cols-1"
+			>
+				<label class="grid gap-2.5">
+					<span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase"
+						>Målt temperatur</span
+					>
+					<span class="relative block">
 						<input
+							class="min-h-13 w-full rounded-none border border-line bg-page py-2.5 pr-13 pl-3.5 font-sans text-lg text-ink"
 							name="value"
 							bind:value={temperatureInput}
 							inputmode="decimal"
 							autocomplete="off"
 							aria-describedby="profile-hint measurement-error"
 						/>
-						<i>°C</i>
+						<i class="absolute top-1/2 right-4 -translate-y-1/2 font-mono text-muted not-italic"
+							>°C</i
+						>
 					</span>
 				</label>
 
-				<label class="checkbox-field">
-					<input name="deviation" type="checkbox" bind:checked={deviation} />
-					<span>Markér afvigelse</span>
+				<label class="flex min-h-13 cursor-pointer items-center gap-3">
+					<input
+						class="m-0 h-6 w-6 accent-ink"
+						name="deviation"
+						type="checkbox"
+						bind:checked={deviation}
+					/>
+					<span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase"
+						>Markér afvigelse</span
+					>
 				</label>
 			</div>
 
 			{#if deviation}
-				<div class="deviation-fields">
-					<label class="deviation-field">
-						<span>Beskriv afvigelsen</span>
+				<div class="grid grid-cols-2 gap-6 max-[720px]:grid-cols-1">
+					<label class="grid gap-2.5">
+						<span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase"
+							>Beskriv afvigelsen</span
+						>
 						<textarea
+							class="w-full resize-y rounded-none border border-line bg-page p-3.5 font-sans text-base leading-relaxed text-ink"
 							name="deviationDescription"
 							bind:value={deviationDescription}
 							rows="3"
 							maxlength="2000"
 							required></textarea>
 					</label>
-					<label class="deviation-field">
-						<span>Hvad gjorde du?</span>
+					<label class="grid gap-2.5">
+						<span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase"
+							>Hvad gjorde du?</span
+						>
 						<textarea
+							class="w-full resize-y rounded-none border border-line bg-page p-3.5 font-sans text-base leading-relaxed text-ink"
 							name="correctiveActionDescription"
 							bind:value={correctiveActionDescription}
 							rows="3"
@@ -236,18 +294,34 @@
 				</div>
 			{/if}
 
-			<p id="profile-hint" class="field-hint">
+			<p id="profile-hint" class="m-0 font-sans text-sm leading-relaxed text-muted">
 				{activeControl.profileLabel}: højst {formatTemperature(activeControl.limit)}. Profilstatus:
 				{activeControl.profileStatus === 'approved' ? 'godkendt' : 'afventer godkendelse'}.
 			</p>
-			<p id="measurement-error" class="field-error" aria-live="polite">{error}</p>
+			<p
+				id="measurement-error"
+				class="m-0 min-h-5 font-sans text-sm leading-relaxed text-danger"
+				aria-live="polite"
+			>
+				{error}
+			</p>
 
-			<footer>
-				<span>Bruger, tidspunkt og definitionens revision gemmes i revisionssporet.</span>
-				<div>
-					<button class="secondary-button" type="button" onclick={closeControl}>Annullér</button>
-					<button class="primary-button" type="submit" disabled={saving}
-						>{saving ? 'Gemmer…' : 'Gem kontrol'}</button
+			<footer
+				class="flex items-center justify-between gap-4 max-[720px]:flex-col max-[720px]:items-stretch"
+			>
+				<span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase"
+					>Bruger, tidspunkt og definitionens revision gemmes i revisionssporet.</span
+				>
+				<div class="flex gap-3 max-[720px]:[&>*]:flex-1">
+					<button
+						class="min-h-12 cursor-pointer border border-ink bg-transparent px-5 font-mono text-[.72rem] tracking-[.11em] text-ink uppercase"
+						type="button"
+						onclick={closeControl}>Annullér</button
+					>
+					<button
+						class="min-h-12 cursor-pointer border border-ink bg-ink px-5 font-mono text-[.72rem] tracking-[.11em] text-paper uppercase disabled:cursor-wait disabled:opacity-65"
+						type="submit"
+						disabled={saving}>{saving ? 'Gemmer…' : 'Gem kontrol'}</button
 					>
 				</div>
 			</footer>
@@ -255,18 +329,24 @@
 	</section>
 {/if}
 
-<section class="control-section" aria-labelledby="completed-heading" id="historik">
-	<header class="section-heading">
-		<h2 id="completed-heading">Gennemført</h2>
-		<span>{countLabel(completedControls.length)}</span>
+<section class="mt-14" aria-labelledby="completed-heading" id="historik">
+	<header class="flex items-center justify-between gap-4 border-b border-line pb-3">
+		<h2 class="m-0 font-sans text-[1.6rem] font-medium tracking-[-.035em]" id="completed-heading">
+			Gennemført
+		</h2>
+		<span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase"
+			>{countLabel(completedControls.length)}</span
+		>
 	</header>
-	<div class="control-list">
+	<div class="grid">
 		{#each completedControls as control (control.id)}
 			{@const completion = completions[control.id]}
-			<div class="control-row is-complete">
-				<span class="control-copy">
-					<strong>{control.assetLabel}</strong>
-					<small
+			<div
+				class="flex min-h-19 w-full items-center justify-between gap-4 border-b border-line px-2 py-3.5 text-left text-ink"
+			>
+				<span class="grid gap-1">
+					<strong class="font-sans text-[1.05rem] font-medium">{control.assetLabel}</strong>
+					<small class="text-[.95rem] text-muted"
 						>{formatTemperature(completion.value)}{completion.deviation
 							? completion.correctiveAction
 								? ' · afvigelse · handling dokumenteret'
@@ -274,30 +354,51 @@
 							: ''}</small
 					>
 				</span>
-				<span class="control-action">
-					<span>Gemt</span>
-					<i aria-hidden="true">✓</i>
+				<span class="flex items-center gap-3">
+					<span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase">Gemt</span>
+					<i
+						class="grid h-8 w-8 place-items-center rounded-full border border-ink bg-ink font-sans text-paper not-italic"
+						aria-hidden="true">✓</i
+					>
 				</span>
 			</div>
 		{/each}
 	</div>
 </section>
 
-<section class="control-section" aria-labelledby="event-heading">
-	<header class="section-heading">
-		<h2 id="event-heading">Efter behov</h2>
-		<span>Hændelsesbaseret</span>
+<section class="mt-14 print:hidden" aria-labelledby="event-heading">
+	<header class="flex items-center justify-between gap-4 border-b border-line pb-3">
+		<h2 class="m-0 font-sans text-[1.6rem] font-medium tracking-[-.035em]" id="event-heading">
+			Efter behov
+		</h2>
+		<span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase"
+			>Hændelsesbaseret</span
+		>
 	</header>
-	<div class="control-list">
+	<div class="grid">
 		{#each data.eventControls as control (control.id)}
-			<button class="control-row" onclick={() => startEvent(control.title)}>
-				<span class="control-copy">
-					<strong>{control.title}</strong>
-					<small>{control.description}</small>
+			<button
+				class="flex min-h-19 w-full cursor-pointer items-center justify-between gap-4 border-0 border-b border-line bg-transparent px-2 py-3.5 text-left text-ink hover:bg-soft"
+				onclick={() => startEvent(control.title)}
+			>
+				<span class="grid gap-1">
+					<strong class="font-sans text-[1.05rem] font-medium">{control.title}</strong>
+					<small class="text-[.95rem] text-muted">{control.description}</small>
 				</span>
-				<span class="control-action"><span>Start</span><i aria-hidden="true">→</i></span>
+				<span class="flex items-center gap-3"
+					><span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase">Start</span
+					><i
+						class="grid h-8 w-8 place-items-center rounded-full border border-line font-sans not-italic"
+						aria-hidden="true">→</i
+					></span
+				>
 			</button>
 		{/each}
 	</div>
-	{#if eventMessage}<p class="event-message" aria-live="polite">{eventMessage}</p>{/if}
+	{#if eventMessage}<p
+			class="mt-5 mb-10 bg-soft px-4 py-3 font-sans text-sm leading-relaxed text-muted"
+			aria-live="polite"
+		>
+			{eventMessage}
+		</p>{/if}
 </section>

@@ -134,6 +134,23 @@ Første version bruger inviterede Supabase-brugere med e-mail og adgangskode. Sv
 
 Den ene administrative bruger oprettes manuelt og knyttes til en actor. Glemt adgangskode, magic links og mailnotifikationer er ikke en del af det nuværende flow. RLS-politikker skal fortsat håndhæve virksomhedstilhørsforhold uafhængigt af routebeskyttelsen.
 
+## ADR-008: Tailwind CSS som stylinglag
+
+- **Status:** Accepteret
+- **Dato:** 2026-07-13
+
+### Kontekst
+
+Det visuelle referenceprojekt bruger Tailwind CSS 4, mens den første egenkontrolprototype brugte en samlet fil med komponentorienteret CSS. Det gjorde værdierne sværere at sammenligne direkte med referencen og samlede mange selectors i en fil, som voksede med hvert flow.
+
+### Beslutning
+
+Brug Tailwind CSS 4 via den officielle Vite-plugin. Komponenternes layout, typografi, spacing, tilstande, responsive varianter og printadfærd skrives som utilities i Svelte-filerne. Den globale CSS begrænses til Tailwind-import, design-tokens, dokumentets grundstil, fokusmarkering og `@page`.
+
+### Konsekvenser
+
+Designværdier kan sammenlignes direkte med referenceprojektets Tailwind-skala. Lange class-lister accepteres i de få større views; gentagne mønstre skal først udtrækkes som Svelte-komponenter, når der findes reel genbrug. Der bruges ikke `@apply` til at genskabe et parallelt komponent-CSS-lag.
+
 ## Skabelon til fremtidige ADR'er
 
 ```md

@@ -2,6 +2,8 @@
 
 Dette dokument bygger på en read-only kodeanalyse af opskriftssitet den 12. juli 2026. Referenceprojektet har ingen tilgængelig Git-revision, så analysen kan ikke bindes til et commit-id. Ved senere ændringer skal dato og helst revision registreres igen.
 
+Egenkontrolsystemet implementerer fra 13. juli 2026 værdierne med Tailwind CSS 4-utilities. `src/styles/app.css` indeholder kun Tailwind-import, tokens og dokumentglobale regler; komponentstyling ligger sammen med Svelte-markuppen.
+
 Værdier må ikke opfindes. Genbrug værdierne nedenfor, eller registrér et konkret domæne- eller tilgængelighedsbehov under "Afvigelser fra referenceprojektet".
 
 ## Referenceprojekt
