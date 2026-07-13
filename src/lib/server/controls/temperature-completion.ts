@@ -6,6 +6,7 @@ const temperatureCompletionSchema = z.object({
 	value: z.coerce.number().finite().gte(-100).lte(200),
 	deviation: z.boolean(),
 	deviationDescription: z.string().trim().max(2_000).optional(),
+	correctiveActionDescription: z.string().trim().max(2_000).optional(),
 	observedAt: z.coerce.date(),
 	idempotencyKey: z.string().uuid(),
 	actorId: z.string().uuid()
@@ -46,6 +47,12 @@ export function prepareTemperatureCompletion(input: {
 
 	if (command.deviation && !command.deviationDescription) {
 		throw new CompletionValidationError('Beskriv afvigelsen, før kontrollen kan gemmes.');
+	}
+
+	if (command.deviation && !command.correctiveActionDescription) {
+		throw new CompletionValidationError(
+			'Beskriv den korrigerende handling, før kontrollen kan gemmes.'
+		);
 	}
 
 	return {

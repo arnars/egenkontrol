@@ -422,6 +422,12 @@ button.control-row:hover {
 	accent-color: var(--ink);
 }
 
+.deviation-fields {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 1.5rem;
+}
+
 .deviation-field {
 	display: grid;
 	gap: 0.6rem;
@@ -509,7 +515,8 @@ button.control-row:hover {
 	}
 
 	.hero,
-	.measurement-fields {
+	.measurement-fields,
+	.deviation-fields {
 		grid-template-columns: 1fr;
 		gap: 1.5rem;
 	}

@@ -19,7 +19,10 @@ type StoredCompletion = {
 	observed_at: string;
 	metadata: { configuredControlId?: string } | null;
 	measurements: Array<{ value: number }>;
-	deviations: Array<{ id: string }>;
+	deviations: Array<{
+		id: string;
+		corrective_actions: Array<{ description: string; status: string }>;
+	}>;
 };
 
 function localDate(value: string | Date) {
@@ -35,7 +38,9 @@ export const load: PageServerLoad = async ({ locals }) => {
 	const today = localDate(new Date());
 	const { data, error } = await locals.supabase
 		.from('completed_controls')
-		.select('id, observed_at, metadata, measurements(value), deviations(id)')
+		.select(
+			'id, observed_at, metadata, measurements(value), deviations(id, corrective_actions(description, status))'
+		)
 		.eq('location_id', business.locations[0]?.id ?? '')
 		.order('observed_at', { ascending: false })
 		.limit(100);
@@ -57,6 +62,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 							id: completion.id,
 							value: Number(value),
 							deviation: completion.deviations.length > 0,
+							correctiveAction:
+								completion.deviations[0]?.corrective_actions[0]?.description ?? null,
 							completedAt: completion.observed_at
 						}
 					] as const
@@ -102,6 +109,7 @@ export const actions: Actions = {
 					value: rawValue,
 					deviation: formData.get('deviation') === 'on',
 					deviationDescription: formData.get('deviationDescription') || undefined,
+					correctiveActionDescription: formData.get('correctiveActionDescription') || undefined,
 					observedAt: new Date(),
 					idempotencyKey: formData.get('idempotencyKey'),
 					actorId: claims.sub
@@ -112,12 +120,13 @@ export const actions: Actions = {
 				controlDefinitionRevision: 1
 			});
 
-			const { error } = await locals.supabase.rpc('record_temperature_completion', {
+			const { error } = await locals.supabase.rpc('record_temperature_completion_with_action', {
 				p_control_id: command.controlId,
 				p_location_id: command.locationId,
 				p_value: command.value,
 				p_deviation: command.deviation,
 				p_deviation_description: command.deviationDescription ?? null,
+				p_corrective_action_description: command.correctiveActionDescription ?? null,
 				p_observed_at: command.observedAt.toISOString(),
 				p_idempotency_key: command.idempotencyKey
 			});

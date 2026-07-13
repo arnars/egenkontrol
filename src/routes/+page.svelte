@@ -11,6 +11,7 @@
 	let temperatureInput = $state('');
 	let deviation = $state(false);
 	let deviationDescription = $state('');
+	let correctiveActionDescription = $state('');
 	let idempotencyKey = $state('');
 	let saving = $state(false);
 	let error = $state('');
@@ -36,6 +37,7 @@
 		temperatureInput = '';
 		deviation = false;
 		deviationDescription = '';
+		correctiveActionDescription = '';
 		idempotencyKey = crypto.randomUUID();
 		error = '';
 		eventMessage = '';
@@ -46,6 +48,7 @@
 		temperatureInput = '';
 		deviation = false;
 		deviationDescription = '';
+		correctiveActionDescription = '';
 		idempotencyKey = '';
 		error = '';
 	}
@@ -70,6 +73,12 @@
 
 		if (deviation && deviationDescription.trim() === '') {
 			error = 'Beskriv afvigelsen for at fortsætte.';
+			cancel();
+			return;
+		}
+
+		if (deviation && correctiveActionDescription.trim() === '') {
+			error = 'Beskriv den korrigerende handling for at fortsætte.';
 			cancel();
 			return;
 		}
@@ -205,15 +214,26 @@
 			</div>
 
 			{#if deviation}
-				<label class="deviation-field">
-					<span>Beskriv afvigelsen</span>
-					<textarea
-						name="deviationDescription"
-						bind:value={deviationDescription}
-						rows="3"
-						maxlength="2000"
-						required></textarea>
-				</label>
+				<div class="deviation-fields">
+					<label class="deviation-field">
+						<span>Beskriv afvigelsen</span>
+						<textarea
+							name="deviationDescription"
+							bind:value={deviationDescription}
+							rows="3"
+							maxlength="2000"
+							required></textarea>
+					</label>
+					<label class="deviation-field">
+						<span>Hvad gjorde du?</span>
+						<textarea
+							name="correctiveActionDescription"
+							bind:value={correctiveActionDescription}
+							rows="3"
+							maxlength="2000"
+							required></textarea>
+					</label>
+				</div>
 			{/if}
 
 			<p id="profile-hint" class="field-hint">
@@ -248,7 +268,9 @@
 					<strong>{control.assetLabel}</strong>
 					<small
 						>{formatTemperature(completion.value)}{completion.deviation
-							? ' · afvigelse'
+							? completion.correctiveAction
+								? ' · afvigelse · handling dokumenteret'
+								: ' · afvigelse'
 							: ''}</small
 					>
 				</span>

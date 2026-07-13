@@ -16,6 +16,8 @@ Drizzle-schema og migrationer findes i `src/lib/server/db/schema.ts` og `drizzle
 
 Auth-relationen, de første RLS-politikker, nødvendige læseprivilegier og seed af temperaturdefinitionerne er etableret. Fuld synkronisering af konfigurationskataloget og den endelige korrektionsmodel er endnu ikke afsluttet.
 
+Temperaturflowet gemmer nu måling, afvigelse, en udført korrigerende handling, afvigelseshændelser og audit-events i samme databasetransaktion. En korrigerende handling dokumenterer, hvad brugeren faktisk gjorde; systemet foreskriver ikke handlingen. Afvigelsen forbliver et selvstændigt forløb og lukkes ikke automatisk af denne registrering.
+
 ## Entiteter og ansvar
 
 | Entitet | Ansvar |

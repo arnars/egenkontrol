@@ -2,6 +2,7 @@ import { getDatabase } from '$lib/server/db/client';
 import {
 	auditEvents,
 	completedControls,
+	correctiveActions,
 	deviationEvents,
 	deviations,
 	measurements
@@ -36,6 +37,7 @@ export async function recordTemperatureCompletion(command: PreparedTemperatureCo
 		});
 
 		let deviationId: string | undefined;
+		let correctiveActionId: string | undefined;
 		if (command.deviation) {
 			const [createdDeviation] = await tx
 				.insert(deviations)
@@ -55,6 +57,26 @@ export async function recordTemperatureCompletion(command: PreparedTemperatureCo
 				note: command.deviationDescription!,
 				actorId: command.actorId
 			});
+
+			const [createdAction] = await tx
+				.insert(correctiveActions)
+				.values({
+					deviationId,
+					description: command.correctiveActionDescription!,
+					status: 'completed',
+					performedAt: new Date(),
+					performedBy: command.actorId,
+					createdBy: command.actorId
+				})
+				.returning({ id: correctiveActions.id });
+
+			correctiveActionId = createdAction.id;
+			await tx.insert(deviationEvents).values({
+				deviationId,
+				kind: 'assessment_recorded',
+				note: command.correctiveActionDescription!,
+				actorId: command.actorId
+			});
 		}
 
 		await tx.insert(auditEvents).values({
@@ -68,10 +90,24 @@ export async function recordTemperatureCompletion(command: PreparedTemperatureCo
 			metadata: {
 				controlDefinitionId: command.controlDefinitionId,
 				controlDefinitionRevision: command.controlDefinitionRevision,
-				deviationId
+				deviationId,
+				correctiveActionId
 			}
 		});
 
-		return { ...completed, deviationId, correlationId };
+		if (correctiveActionId) {
+			await tx.insert(auditEvents).values({
+				companyId: command.companyId,
+				locationId: command.locationId,
+				actorId: command.actorId,
+				action: 'created',
+				entityType: 'corrective_action',
+				entityId: correctiveActionId,
+				correlationId,
+				metadata: { deviationId, completedControlId: completed.id }
+			});
+		}
+
+		return { ...completed, deviationId, correctiveActionId, correlationId };
 	});
 }

@@ -71,4 +71,41 @@ describe('prepareTemperatureCompletion', () => {
 			})
 		).toThrow('Beskriv afvigelsen');
 	});
+
+	it('requires a corrective action for an explicit deviation', () => {
+		expect(() =>
+			prepareTemperatureCompletion({
+				command: command({
+					value: 6,
+					deviation: true,
+					deviationDescription: 'Temperaturen var over startprofilens grænse.'
+				}),
+				control,
+				companyId: 'nabo-brejning',
+				locationId: 'brejning',
+				controlDefinitionRevision: 1
+			})
+		).toThrow('Beskriv den korrigerende handling');
+	});
+
+	it('prepares a complete deviation and corrective action', () => {
+		const result = prepareTemperatureCompletion({
+			command: command({
+				value: 6,
+				deviation: true,
+				deviationDescription: 'Temperaturen var over startprofilens grænse.',
+				correctiveActionDescription: 'Varerne blev flyttet til en anden køleenhed.'
+			}),
+			control,
+			companyId: 'nabo-brejning',
+			locationId: 'brejning',
+			controlDefinitionRevision: 1
+		});
+
+		expect(result).toMatchObject({
+			deviation: true,
+			requiresDeviation: true,
+			correctiveActionDescription: 'Varerne blev flyttet til en anden køleenhed.'
+		});
+	});
 });

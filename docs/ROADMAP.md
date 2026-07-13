@@ -115,8 +115,8 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 - [x] Implementér temperaturregistrering i UI og atomisk databasefunktion
 - [ ] Implementér ja/nej-kontrol
 - [ ] Implementér tjekliste
-- [ ] Implementér afvigelsesflow
-- [ ] Implementér korrigerende handling
+- [x] Implementér afvigelsesflow for temperaturkontroller
+- [x] Implementér korrigerende handling for temperaturkontroller
 - [ ] Implementér historik
 - [x] Vis tydelig gemmebekræftelse for temperaturkontroller
 - [x] Bevar temperaturinput og vis fejltilstand ved gemmeproblemer
