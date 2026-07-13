@@ -58,6 +58,13 @@ export type TemperatureWeekSchedule = {
 	days: TemperatureScheduleDay[];
 };
 
+export type ScheduleMaterializationOccurrence = {
+	controlId: string;
+	occurrenceKey: string;
+	localDate: string;
+	dueTime: string;
+};
+
 export type MeasurementAssessment =
 	{ ok: true; requiresDeviation: false } | { ok: false; requiresDeviation: true; message: string };
 
@@ -210,6 +217,19 @@ export function buildTemperatureWeekSchedule(
 	});
 
 	return { startsOn, endsOn: addDays(startsOn, 6), days };
+}
+
+export function buildScheduleMaterializationOccurrences(
+	schedule: TemperatureWeekSchedule
+): ScheduleMaterializationOccurrence[] {
+	return schedule.days.flatMap((day) =>
+		day.controls.map((control) => ({
+			controlId: control.id,
+			occurrenceKey: control.occurrenceKey,
+			localDate: control.localDate,
+			dueTime: control.dueTime
+		}))
+	);
 }
 
 export function assessMeasurement(

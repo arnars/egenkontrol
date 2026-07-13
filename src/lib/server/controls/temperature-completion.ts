@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { assessMeasurement, type ScheduledTemperatureControl } from '$lib/domain/today-controls';
 
 const temperatureCompletionSchema = z.object({
+	scheduledControlId: z.string().uuid(),
 	controlId: z.string().min(1),
 	value: z.coerce.number().finite().gte(-100).lte(200),
 	deviation: z.boolean(),

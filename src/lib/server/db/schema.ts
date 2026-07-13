@@ -171,6 +171,9 @@ export const completedControls = pgTable(
 	},
 	(table) => [
 		uniqueIndex('completed_controls_idempotency_uidx').on(table.companyId, table.idempotencyKey),
+		uniqueIndex('completed_controls_scheduled_original_uidx')
+			.on(table.scheduledControlId)
+			.where(sql`${table.scheduledControlId} is not null and ${table.correctionOfId} is null`),
 		index('completed_controls_history_idx').on(table.locationId, table.observedAt),
 		index('completed_controls_scheduled_idx').on(table.scheduledControlId)
 	]

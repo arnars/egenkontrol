@@ -105,7 +105,7 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 
 **Acceptkriterier**
 
-- [ ] En komplet kontrolkæde kan gemmes og hentes uden at miste historik
+- [x] Temperaturkontrollens komplette kontrolkæde kan gemmes og hentes uden at miste historik
 - [ ] Rettelser og væsentlige ændringer kan spores til bruger og tidspunkt
 - [ ] Isolation mellem virksomheder og lokationer er testet
 
@@ -135,7 +135,7 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 
 - [ ] Implementér opgavegenerator
 - [x] Implementér deterministisk ugeprojektion for daglige, ugentlige og valgte ugedage
-- [ ] Materialisér genererede forekomster i `scheduled_controls`
+- [x] Materialisér temperaturforekomster i `scheduled_controls` uden dubletter
 - [x] Lad faste lukkedage filtrere kalenderbaserede forekomster
 - [ ] Implementér månedlige, interval- og årlige regler
 - [ ] Implementér hændelsesbaserede kontroller

@@ -168,6 +168,25 @@ Lokationer konfigurerer normale `operatingWeekdays`. Kalenderbaserede forekomste
 
 Nabo Brejnings udkast kan have mandag og søndag fri uden falske mangler. Normale åbningstider kan ændres i virksomhedskonfigurationen. Ferie, helligdage og ekstraordinære åbningsdage kræver en særskilt undtagelsesmodel, før de kan påvirke planen.
 
+## ADR-010: Lazy materialisering af den aktuelle temperaturuge
+
+- **Status:** Accepteret
+- **Dato:** 2026-07-13
+
+### Kontekst
+
+MVP’en har endnu ingen scheduler eller cron-job, men udførte temperaturkontroller skal kunne pege på en konkret, revisionssikker planlagt forekomst. En ren beregnet UI-projektion er ikke tilstrækkelig dokumentation.
+
+### Beslutning
+
+Den autentificerede sideindlæsning materialiserer den aktuelle uges faste temperaturforekomster gennem en `SECURITY DEFINER`-RPC. RPC’en validerer actorens virksomhed og lokation, begrænser inputvinduet og indsætter idempotent efter occurrence key. Completion-RPC’en kræver forekomstens UUID, låser rækken, forhindrer en anden oprindelig udførelse og ændrer status atomisk sammen med registreringen.
+
+Opvarmning, nedkøling, varemodtagelse og varmholdelse omfattes ikke. De er hændelsesbaserede og skal senere oprette en forekomst som del af deres konkrete startflow.
+
+### Konsekvenser
+
+Planlagte temperaturkontroller eksisterer i databasen, før de udføres, uden at MVP’en behøver en ekstern scheduler. Gentagne indlæsninger skaber ikke dubletter. Sideindlæsningen har en kontrolleret, idempotent skriveeffekt; en senere scheduler kan overtage samme RPC-kontrakt. Eksisterende udførelser backfilles ikke. Definitioner skal fortsat versionsstyres, så en allerede materialiseret forekomst ikke omskrives af senere konfigurationsændringer.
+
 ## Skabelon til fremtidige ADR'er
 
 ```md

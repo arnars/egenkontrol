@@ -64,7 +64,7 @@ Playwright-browsere installeres lokalt med `pnpm exec playwright install`, før 
 
 `DATABASE_URL` skal bruge Supabases transaction pooler til Vercel-runtime. Postgres.js er konfigureret med `prepare: false`, fordi transaction pooling ikke understøtter prepared statements. `DIRECT_URL` bruges af Drizzle Kit til migrationer og senere af `pg_dump`/administration. Kopiér `.env.example` til `.env.local` og indsæt aldrig rigtige credentials i repositoryet.
 
-Den første migration blev anvendt på Supabase 12. juli 2026 og er registreret i Drizzles migrationstabel. Verifikationen viste 11 applikationstabeller, RLS på alle 11 tabeller og alle seks append-only-triggere. Den anvendte migrationsfil er nu uforanderlig; senere schemaændringer skal ligge i nye migrationsfiler. Kør aldrig `drizzle-kit push` direkte mod det delte miljø.
+Den første migration blev anvendt på Supabase 12. juli 2026 og er registreret i Drizzles migrationstabel. Verifikationen viste 11 applikationstabeller, RLS på alle 11 tabeller og alle seks append-only-triggere. Schedule-materialiseringen og dens korrigerende enum-cast-migration blev anvendt 13. juli 2026; migrationsjournalen indeholder derefter seks poster. De anvendte migrationsfiler er uforanderlige; senere schema- eller funktionsændringer skal ligge i nye migrationsfiler. Kør aldrig `drizzle-kit push` direkte mod det delte miljø.
 
 Supabase Auth bruger i første version inviteret e-mail og adgangskode. Selvoprettelse er ikke en del af applikationen. `hooks.server.ts` validerer sessionens JWT-claims server-side og sender anonyme brugere til `/login`. Magic links afventer egen SMTP og en redigerbar PKCE-kompatibel mailskabelon.
 

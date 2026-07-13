@@ -202,6 +202,13 @@
 	</p>
 {/if}
 
+{#if data.schedulePersistenceError}
+	<p class="mb-10 bg-soft px-4 py-3 font-sans text-sm leading-relaxed text-danger" role="alert">
+		Ugeplanen kunne ikke forbindes med databasen. Planen vises, men faste kontroller kan ikke
+		gemmes, før forbindelsen virker igen.
+	</p>
+{/if}
+
 {#if view === 'week'}
 	<section class="mt-14" aria-labelledby="week-heading">
 		<header class="flex items-center justify-between gap-4 border-b border-line pb-3">
@@ -288,7 +295,8 @@
 			<div class="grid">
 				{#each pendingControls as control (control.id)}
 					<button
-						class="flex min-h-19 w-full cursor-pointer items-center justify-between gap-4 border-0 border-b border-line bg-transparent px-2 py-3.5 text-left text-ink hover:bg-soft"
+						class="flex min-h-19 w-full cursor-pointer items-center justify-between gap-4 border-0 border-b border-line bg-transparent px-2 py-3.5 text-left text-ink hover:bg-soft disabled:cursor-not-allowed disabled:opacity-50"
+						disabled={!control.scheduledControlId}
 						onclick={() => openControl(control.id)}
 					>
 						<span class="grid gap-1">
@@ -337,6 +345,7 @@
 
 			<form class="grid gap-6" method="POST" action="?/complete" use:enhance={enhanceCompletion}>
 				<input type="hidden" name="controlId" value={activeControl.id} />
+				<input type="hidden" name="scheduledControlId" value={activeControl.scheduledControlId} />
 				<input type="hidden" name="idempotencyKey" value={idempotencyKey} />
 				<div
 					class="grid grid-cols-[minmax(0,1fr)_minmax(14rem,.45fr)] items-end gap-6 max-[720px]:grid-cols-1"

@@ -19,6 +19,7 @@ export async function recordTemperatureCompletion(command: PreparedTemperatureCo
 			.values({
 				companyId: command.companyId,
 				locationId: command.locationId,
+				scheduledControlId: command.scheduledControlId,
 				controlDefinitionId: command.controlDefinitionId,
 				controlDefinitionRevision: command.controlDefinitionRevision,
 				idempotencyKey: command.idempotencyKey,

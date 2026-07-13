@@ -21,6 +21,7 @@ const control: ScheduledTemperatureControl = {
 
 function command(overrides: Record<string, unknown> = {}) {
 	return {
+		scheduledControlId: '10000000-0000-4000-8000-000000000001',
 		controlId: control.id,
 		value: 4.2,
 		deviation: false,
@@ -32,6 +33,18 @@ function command(overrides: Record<string, unknown> = {}) {
 }
 
 describe('prepareTemperatureCompletion', () => {
+	it('requires a valid scheduled-control reference', () => {
+		expect(() =>
+			prepareTemperatureCompletion({
+				command: command({ scheduledControlId: 'not-a-uuid' }),
+				control,
+				companyId: 'nabo-brejning',
+				locationId: 'brejning',
+				controlDefinitionRevision: 1
+			})
+		).toThrow();
+	});
+
 	it('prepares an acceptable measurement with its immutable definition revision', () => {
 		const result = prepareTemperatureCompletion({
 			command: command(),
@@ -42,6 +55,7 @@ describe('prepareTemperatureCompletion', () => {
 		});
 
 		expect(result).toMatchObject({
+			scheduledControlId: '10000000-0000-4000-8000-000000000001',
 			companyId: 'nabo-brejning',
 			locationId: 'brejning',
 			controlDefinitionId: 'refrigeration-temperature',

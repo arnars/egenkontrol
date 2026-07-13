@@ -4,6 +4,7 @@ import business from '../../config/virksomhed.json';
 import {
 	buildTemperatureControls,
 	buildTemperatureWeekSchedule,
+	buildScheduleMaterializationOccurrences,
 	type Weekday
 } from '$lib/domain/today-controls';
 import {
@@ -23,12 +24,19 @@ const controlDefinitions = buildTemperatureControls(
 type StoredCompletion = {
 	id: string;
 	observed_at: string;
+	scheduled_control_id: string | null;
 	metadata: { configuredControlId?: string } | null;
 	measurements: Array<{ value: number }>;
 	deviations: Array<{
 		id: string;
 		corrective_actions: Array<{ description: string; status: string }>;
 	}>;
+};
+
+type MaterializedScheduleRow = {
+	scheduled_control_id: string;
+	occurrence_key: string;
+	scheduled_status: 'upcoming' | 'due' | 'completed' | 'missed' | 'cancelled';
 };
 
 function localDate(value: string | Date) {
@@ -53,11 +61,48 @@ function currentSchedule(now = new Date()) {
 }
 
 export const load: PageServerLoad = async ({ locals }) => {
-	const { today, schedule, todaySchedule } = currentSchedule();
+	const { today, schedule: projectedSchedule } = currentSchedule();
+	const occurrences = buildScheduleMaterializationOccurrences(projectedSchedule);
+	const materialization = occurrences.length
+		? await locals.supabase.rpc('materialize_temperature_schedule', {
+				p_location_id: location?.id ?? '',
+				p_occurrences: occurrences
+			})
+		: { data: [] as MaterializedScheduleRow[], error: null };
+
+	if (materialization.error) {
+		console.error('Kunne ikke materialisere ugeplanen', materialization.error.code);
+	}
+
+	const materializedRows = (materialization.data ?? []) as MaterializedScheduleRow[];
+	const scheduledByOccurrence = new Map(
+		materializedRows.map((row) => [row.occurrence_key, row] as const)
+	);
+	const schedulePersistenceError =
+		Boolean(materialization.error) ||
+		occurrences.some((occurrence) => !scheduledByOccurrence.has(occurrence.occurrenceKey));
+	const schedule = {
+		...projectedSchedule,
+		days: projectedSchedule.days.map((day) => ({
+			...day,
+			controls: day.controls.map((control) => {
+				const stored = scheduledByOccurrence.get(control.occurrenceKey);
+				return {
+					...control,
+					scheduledControlId: stored?.scheduled_control_id ?? null,
+					scheduledStatus: stored?.scheduled_status ?? null
+				};
+			})
+		}))
+	};
+	const todaySchedule = schedule.days.find((day) => day.localDate === today);
+	const occurrenceByScheduledId = new Map(
+		materializedRows.map((row) => [row.scheduled_control_id, row.occurrence_key] as const)
+	);
 	const { data, error } = await locals.supabase
 		.from('completed_controls')
 		.select(
-			'id, observed_at, metadata, measurements(value), deviations(id, corrective_actions(description, status))'
+			'id, observed_at, scheduled_control_id, metadata, measurements(value), deviations(id, corrective_actions(description, status))'
 		)
 		.eq('location_id', location?.id ?? '')
 		.order('observed_at', { ascending: false })
@@ -71,10 +116,14 @@ export const load: PageServerLoad = async ({ locals }) => {
 			const value = completion.measurements[0]?.value;
 			if (!controlId || value === undefined) return [];
 			const completionLocalDate = localDate(completion.observed_at);
+			const occurrenceKey = completion.scheduled_control_id
+				? occurrenceByScheduledId.get(completion.scheduled_control_id)
+				: `${controlId}:${completionLocalDate}`;
+			if (!occurrenceKey) return [];
 
 			return [
 				[
-					`${controlId}:${completionLocalDate}`,
+					occurrenceKey,
 					{
 						id: completion.id,
 						value: Number(value),
@@ -97,6 +146,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 		companyName: business.company.name,
 		locationName: location?.name ?? business.company.name,
 		configurationStatus: business.status,
+		schedulePersistenceError,
 		today,
 		todaySchedule,
 		schedule,
@@ -132,6 +182,7 @@ export const actions: Actions = {
 				.trim();
 			const command = prepareTemperatureCompletion({
 				command: {
+					scheduledControlId: formData.get('scheduledControlId'),
 					controlId: formData.get('controlId'),
 					value: rawValue,
 					deviation: formData.get('deviation') === 'on',
@@ -148,6 +199,7 @@ export const actions: Actions = {
 			});
 
 			const { error } = await locals.supabase.rpc('record_temperature_completion_with_action', {
+				p_scheduled_control_id: command.scheduledControlId,
 				p_control_id: command.controlId,
 				p_location_id: command.locationId,
 				p_value: command.value,

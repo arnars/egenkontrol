@@ -14,7 +14,7 @@ Drizzle-schema og migrationer findes i `src/lib/server/db/schema.ts` og `drizzle
 - bruger-id og tidspunkter med tidszone,
 - database-triggers, der afviser `UPDATE` og `DELETE` på revisionsrelevante tabeller.
 
-Auth-relationen, de første RLS-politikker, nødvendige læseprivilegier og seed af temperaturdefinitionerne er etableret. Fuld synkronisering af konfigurationskataloget og den endelige korrektionsmodel er endnu ikke afsluttet.
+Auth-relationen, de første RLS-politikker, nødvendige læseprivilegier og seed af temperaturdefinitionerne er etableret. Den aktuelle temperatur-ugeplan materialiseres nu idempotent i `scheduled_controls` gennem en afgrænset RPC, og nye temperaturudførelser gemmer den konkrete schedule-reference. Fuld synkronisering af konfigurationskataloget og den endelige korrektionsmodel er endnu ikke afsluttet.
 
 Temperaturflowet gemmer nu måling, afvigelse, en udført korrigerende handling, afvigelseshændelser og audit-events i samme databasetransaktion. En korrigerende handling dokumenterer, hvad brugeren faktisk gjorde; systemet foreskriver ikke handlingen. Afvigelsen forbliver et selvstændigt forløb og lukkes ikke automatisk af denne registrering.
 
@@ -111,6 +111,14 @@ Statusværdier er foreløbige. Særligt forskellen mellem `resolved` og `closed`
 Gem hændelsestidspunkter som UTC-instanter og gem lokationens IANA-tidszone, fx `Europe/Copenhagen`. Gem også den lokale kontekst eller offset, når den har dokumentationsværdi. Gentagelsesregler beregnes i lokationens tidszone og skal testes ved sommertid. Skeln mellem planlagt tidsvindue, faktisk observationstid og serverens registreringstid.
 
 Lokationens normale `operatingWeekdays` filtrerer kalenderbaserede gentagelsesregler. `daily` betyder hver driftsdag. En fast lukkedag opretter ingen `ScheduledControl`; det er derfor ikke det samme som status `cancelled` eller `missed`. Når forekomster senere materialiseres i databasen, må efterfølgende ændringer af driftsmønstret ikke omskrive dem.
+
+### Materialisering af temperaturplanen
+
+Den autentificerede ugevisning sender højst 100 deterministiske temperaturforekomster til `materialize_temperature_schedule`. Databasen validerer actor, virksomhed, lokation, definition, asset, dato, tidspunkt og occurrence key. `ON CONFLICT DO NOTHING` gør gentagne sideindlæsninger idempotente, og nye forekomster får et audit-event. Kun et rullende vindue fra syv dage før til fjorten dage efter lokationens lokale dato accepteres.
+
+En ny temperaturudførelse skal pege på en forekomst for samme lokation, kontrol og lokale dato. En partiel unik indeks tillader kun én oprindelig udførelse pr. planlagt kontrol; senere rettelser skal fortsat bruge korrektionsrelationen. Gemning af udførelse, måling, eventuel afvigelse, handling, auditspor og statusændring til `completed` sker i samme transaktion.
+
+Tidligere temperaturudførelser har fortsat `scheduled_control_id = null`. De backfilles ikke, fordi en automatisk efterkobling ikke kan dokumentere, hvilken planrevision der faktisk gjaldt. Migrationerne er fremadrettede og sletter eller omskriver ingen historiske records. Ved fejl skal execute-adgang til materialiserings-/completion-RPC’en kunne tilbagekaldes, hvorefter en ny korrigerende migration anvendes; den unikke indeks kan bevares uden at påvirke legacy-records.
 
 ## Versionshistorik
 

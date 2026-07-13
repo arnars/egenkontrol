@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
 	assessMeasurement,
+	buildScheduleMaterializationOccurrences,
 	buildTemperatureControls,
 	buildTemperatureWeekSchedule,
 	type ConfiguredAsset,
@@ -157,6 +158,26 @@ describe('buildTemperatureWeekSchedule', () => {
 
 		expect(result.days.map((day) => day.controls.length)).toEqual([0, 0, 1, 0, 0, 1, 0]);
 		expect(result.days[2].controls[0].dueTime).toBe('10:00');
+	});
+
+	it('creates a stable persistence payload without closed-day occurrences', () => {
+		const schedule = buildTemperatureWeekSchedule(controls, ['tuesday', 'wednesday'], '2026-07-13');
+		const occurrences = buildScheduleMaterializationOccurrences(schedule);
+
+		expect(occurrences).toEqual([
+			{
+				controlId: 'refrigeration-temperature:cold-1',
+				occurrenceKey: 'refrigeration-temperature:cold-1:2026-07-14',
+				localDate: '2026-07-14',
+				dueTime: '09:00'
+			},
+			{
+				controlId: 'refrigeration-temperature:cold-1',
+				occurrenceKey: 'refrigeration-temperature:cold-1:2026-07-15',
+				localDate: '2026-07-15',
+				dueTime: '09:00'
+			}
+		]);
 	});
 });
 
