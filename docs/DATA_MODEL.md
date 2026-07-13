@@ -4,7 +4,7 @@ Dokumentet beskriver informationsbehov og relationer, ikke et endeligt Drizzle-s
 
 ## Implementeringsstatus
 
-Drizzle-schema og migrationer findes i `src/lib/server/db/schema.ts` og `drizzle/`. Den virksomhedsspecifikke RLS-migration blev anvendt på projektets delte Supabase-instans 12. juli 2026. Den kobler `auth.uid()` til actorens virksomhed, giver læsepolitikker på tværs af kontrolkæden og eksponerer en afgrænset, atomisk RPC til temperaturregistrering. En efterfølgende migration med de nødvendige `SELECT`-grants til rollen `authenticated` er forberedt, men endnu ikke anvendt. Følgende principper er implementeret i schema/migration:
+Drizzle-schema og migrationer findes i `src/lib/server/db/schema.ts` og `drizzle/`. De virksomhedsspecifikke RLS- og grant-migrationer er anvendt på projektets delte Supabase-instans. De kobler `auth.uid()` til actorens virksomhed, giver afgrænsede læsepolitikker på tværs af kontrolkæden og eksponerer en atomisk RPC til temperaturregistrering. Følgende principper er implementeret i schema/migration:
 
 - eksakt reference til kontroldefinition og revision,
 - idempotency key for indsendelser,
@@ -14,7 +14,7 @@ Drizzle-schema og migrationer findes i `src/lib/server/db/schema.ts` og `drizzle
 - bruger-id og tidspunkter med tidszone,
 - database-triggers, der afviser `UPDATE` og `DELETE` på revisionsrelevante tabeller.
 
-Auth-relationen, de første RLS-politikker og seed af temperaturdefinitionerne er etableret. Fuld synkronisering af konfigurationskataloget, anvendelse af den korrigerende grant-migration og den endelige korrektionsmodel er endnu ikke afsluttet.
+Auth-relationen, de første RLS-politikker, nødvendige læseprivilegier og seed af temperaturdefinitionerne er etableret. Fuld synkronisering af konfigurationskataloget og den endelige korrektionsmodel er endnu ikke afsluttet.
 
 ## Entiteter og ansvar
 

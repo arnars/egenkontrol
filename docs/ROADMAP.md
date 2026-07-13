@@ -74,7 +74,7 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 - [x] Beskyt interne routes server-side
 - [x] Opret den ene administrative bruger og tilknyt actor
 - [x] Tilføj virksomhedsspecifikke RLS-læsepolitikker og atomisk temperatur-RPC
-- [ ] Anvend korrigerende `authenticated`-grants og verificér RLS-læsning
+- [x] Anvend korrigerende `authenticated`-grants og verificér RLS-læsning
 - [x] Opsæt Vitest
 - [x] Opsæt Playwright
 - [ ] Opsæt preview-deployments
@@ -109,7 +109,7 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 
 ## Fase 4 — MVP
 
-- [ ] Implementér login
+- [x] Implementér login
 - [ ] Implementér dagens kontroller
 - [ ] Implementér ugens kontroller
 - [x] Implementér temperaturregistrering i UI og atomisk databasefunktion
@@ -118,8 +118,8 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 - [ ] Implementér afvigelsesflow
 - [ ] Implementér korrigerende handling
 - [ ] Implementér historik
-- [ ] Vis tydelig gemmebekræftelse
-- [ ] Bevar input og vis fejltilstand ved netværksproblemer, hvor praktisk muligt
+- [x] Vis tydelig gemmebekræftelse for temperaturkontroller
+- [x] Bevar temperaturinput og vis fejltilstand ved gemmeproblemer
 - [ ] Test centrale flows på iPad-formater
 
 **Acceptkriterier**
