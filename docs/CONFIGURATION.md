@@ -57,11 +57,11 @@ Hyppighederne er operationelle startforslag, ikke påståede myndighedskrav:
 | Varemodtagelse | Hver leverance | Én normal registrering ugentligt; alle afvigelser |
 | Køl | Dagligt kl. 09:00 | Hver kontrol |
 | Frost | Dagligt kl. 09:00 | Hver kontrol |
-| Opvarmning | Hver batch | Første batch pr. driftsdag; alle afvigelser |
-| Nedkøling | Hver batch | Hver kontrol |
-| Varmholdelse | Hver varmholdningsservice | Hver kontrol |
+| Opvarmning | Hver relevant batch | Én relevant hændelse ugentligt eller `Ikke relevant i denne uge`; alle afvigelser |
+| Nedkøling | Hver relevant batch | Én relevant hændelse ugentligt eller `Ikke relevant i denne uge`; alle afvigelser |
+| Varmholdelse | Hver relevant varmholdningsservice | Én relevant hændelse ugentligt eller `Ikke relevant i denne uge`; alle afvigelser |
 
-Tidspunkt, udvælgelsesregel og frekvenser skal vurderes i virksomhedens risikoanalyse.
+Tidspunkt, udvælgelsesregel og frekvenser skal vurderes i virksomhedens risikoanalyse. Den ugentlige dokumentationsfrekvens for proceskontrollerne er valgt som Nabo Brejnings aktuelle arbejdsudkast; den er ikke et generelt myndighedskrav.
 
 ## Sådan tilføjes et område
 

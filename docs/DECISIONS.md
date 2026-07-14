@@ -238,11 +238,49 @@ Rengøring og skadedyrssikring er normalt gode arbejdsgange, som ikke i sig selv
 
 Rengøring vises som en statisk, versioneret plan. Skadedyrssikring vises som en konfigurerbar plan pr. område, og der registreres kun ved fund eller mistanke. Varemodtagelse viser den kontrol, der udføres ved hver levering, men standardflowet opretter kun en registrering ved en fejl. En normal dokumentationshyppighed og registrering af fejlfri leverancer tilføjes kun, hvis Nabo Brejnings godkendte risikoanalyse og procedure fastlægger det.
 
-Frontendprototyperne må ikke fremstille en lokal demoregistrering som vedvarende dokumentation. Persistens, auditspor og databasemigrationer udskydes til integrationscheckpointet efter ADR-012.
+Frontendprototyperne må ikke fremstille en lokal demoregistrering som vedvarende dokumentation. Persistens, auditspor og databasemigrationer udskydes til integrationscheckpointet efter ADR-012. Integrationscheckpointet er efterfølgende gennemført i ADR-015.
 
 ### Konsekvenser
 
 Den daglige bruger møder færre unødige formularer. Rum, forebyggelse og handlinger kan tilpasses uden UI-ændringer. Den senere integration skal gøre hændelser append-only, bevare konfigurationsrevisionen og understøtte produktvurdering, korrigerende handlinger og eventuelle myndighedshenvendelser uden at hævde, at appen foretager anmeldelsen.
+
+## ADR-014: Ugentlig dokumentation af proceskontroller
+
+- **Status:** Accepteret som arbejdsudkast
+- **Dato:** 2026-07-14
+
+### Kontekst
+
+Opvarmning, nedkøling og varmholdelse sker som konkrete hændelser i driften, men en digital registrering ved hver pande, gryde eller batch ville være unødigt tung. Dokumentationsfrekvensen skal fremgå af virksomhedens egenkontrolprogram og er ikke automatisk den samme som den praktiske kontrolhyppighed.
+
+### Beslutning
+
+Nabo Brejnings aktuelle frontendudkast kræver én dokumenteret relevant hændelse pr. uge for hver af de tre proceskontroller. Hvis aktiviteten ikke forekommer i den konkrete uge, kan kontrollen afsluttes som **Ikke relevant i denne uge**. Afvigelser skal altid kunne registreres. Varemodtagelse bevares som et særskilt flow.
+
+Frekvensen er et virksomhedsudkast og ikke et påstået generelt myndighedskrav. Den skal fortsat godkendes sammen med virksomhedens konkrete risikoanalyse og procedurer.
+
+### Konsekvenser
+
+Forsiden kan vise reel ugentlig status uden at kræve registrering af hver tilberedningshandling. Databaseintegrationen i ADR-015 modellerer ugeforekomsten separat fra den valgte drifthændelse, bevarer aktør og servertid og håndterer udfald append-only. Browserlager er ikke revisionssikker dokumentation.
+
+## ADR-015: Integrationscheckpoint for dynamiske drifthændelser
+
+- **Status:** Accepteret
+- **Dato:** 2026-07-14
+
+### Kontekst
+
+Frontendflowene for ugentlige proceskontroller, varemodtagelsesfejl og skadedyrsfund er nu tilstrækkeligt afklarede til vedvarende dokumentation. Temperaturkontrollens eksisterende revisionskæde dækker allerede afsluttede kontroller, målinger, afvigelser, handlinger og auditspor.
+
+### Beslutning
+
+Afsluttede proceskontroller genbruger `scheduled_controls`, `completed_controls`, `measurements`, afvigelser og audit-events. Der tilføjes én append-only tabel, `operational_events`, til igangværende nedkøling og selvstændige varemodtagelses-/skadedyrshændelser. Alle skriverettigheder eksponeres gennem afgrænsede `SECURITY DEFINER`-funktioner med actor- og lokationsvalidering, idempotens og atomiske transaktioner. Klienten har kun RLS-afgrænset læseadgang.
+
+Den ugentlige ikke-relevant-status gemmes som en konkret `ScheduledControlOmission`. Statiske planer forbliver versionerede JSON-dokumenter; databasebaseret dokumentgodkendelse behandles separat.
+
+### Konsekvenser
+
+De prioriterede dynamiske flows og den samlede historik bruger nu Supabase som vedvarende lag. Igangværende nedkøling kan fortsætte på tværs af sideindlæsninger uden at være en opdigtet afsluttet kontrol. Nye hændelsestyper kræver eksplicit databasevalidering og historikmapping. Den fælles typed adapter, automatiserede integrationstests, dokumentrevisioner, eksport og backup resterer.
 
 ## Skabelon til fremtidige ADR'er
 

@@ -18,6 +18,8 @@ Auth-relationen, de første RLS-politikker, nødvendige læseprivilegier og seed
 
 Temperaturflowet gemmer nu måling, afvigelse, en udført korrigerende handling, afvigelseshændelser og audit-events i samme databasetransaktion. En korrigerende handling dokumenterer, hvad brugeren faktisk gjorde; systemet foreskriver ikke handlingen. Afvigelsen forbliver et selvstændigt forløb og lukkes ikke automatisk af denne registrering.
 
+Migration `20260714101814_operational_events` er anvendt på den delte Supabase-instans. Den materialiserer én ugentlig forekomst for opvarmning, nedkøling og varmholdelse, gemmer afsluttede proceskontroller i den eksisterende kontrolkæde og bruger `operational_events` til igangværende nedkøling samt selvstændige varemodtagelses- og skadedyrshændelser. Tabellen er append-only, RLS-afgrænset til actorens virksomhed og bruger et unikt request-id til idempotens.
+
 ## Entiteter og ansvar
 
 | Entitet | Ansvar |
@@ -33,6 +35,7 @@ Temperaturflowet gemmer nu måling, afvigelse, en udført korrigerende handling,
 | `CriticalLimit` | Versioneret, fagligt fastlagt grænse, når relevant. |
 | `ScheduledControl` | Konkret forekomst genereret fra definition og gentagelsesregel. |
 | `ScheduledControlOmission` | Immutable begrundelse for, at en konkret planlagt kontrol blev afsluttet uden måling. |
+| `OperationalEvent` | Append-only starthændelse eller selvstændig drifthændelse, som ikke i sig selv er en afsluttet kontrol. |
 | `CompletedControl` | Immutable registrering af den konkrete udførelse. |
 | `Measurement` | Struktureret værdi, enhed og målekontekst. |
 | `Deviation` | Selvstændigt afvigelsesforløb. |
@@ -52,6 +55,7 @@ ProcedureRevision 1 ── * ControlDefinitionRevision
 ControlDefinitionRevision 1 ── * ScheduledControl
 ScheduledControl 0..1 ── 1 CompletedControl ── * Measurement
 ScheduledControl 0..1 ── 1 ScheduledControlOmission
+ScheduledControl 0..* ── * OperationalEvent
 CompletedControl 0..* ── * Deviation ── * CorrectiveAction
 alle væsentlige entiteter ── * AuditEvent
 ```
@@ -125,6 +129,14 @@ En planlagt temperaturkontrol kan alternativt afsluttes som **Ingen måling**. `
 Handlingen **Ingen målinger i dag** henter alle stadig åbne temperaturforekomster for lokationens aktuelle lokale dato og sender deres UUID'er til én databasefunktion. Funktionen validerer dato, virksomhed, lokation og samtlige forekomster, låser dem i deterministisk rækkefølge og gemmer alle udeladelser i én transaktion med fælles correlation-id. Hvis blot én forekomst er ugyldig eller allerede målt, rulles hele handlingen tilbage. Allerede gemte målinger indgår ikke i serverens input og ændres aldrig.
 
 Tidligere temperaturudførelser har fortsat `scheduled_control_id = null`. De backfilles ikke, fordi en automatisk efterkobling ikke kan dokumentere, hvilken planrevision der faktisk gjaldt. Migrationerne er fremadrettede og sletter eller omskriver ingen historiske records. Ved fejl skal execute-adgang til materialiserings-/completion-RPC’en kunne tilbagekaldes, hvorefter en ny korrigerende migration anvendes; den unikke indeks kan bevares uden at påvirke legacy-records.
+
+### Ugentlige proceskontroller og operationelle hændelser
+
+`materialize_weekly_process_controls` opretter idempotent tre forekomster pr. lokation og ISO-uge. Opvarmning og varmholdelse afsluttes atomisk i `completed_controls` med måling og eventuel afvigelse/handling. Nedkøling opretter først en immutable `cooling_started`-hændelse med ret, batchdato, starttemperatur og tidspunkt. Afslutningen låser ugeforekomsten, læser starten og gemmer start/slutmåling, tidsforløb, eventuel afvigelse, handling, afsluttet kontrol og auditspor i én transaktion.
+
+`Ikke relevant i denne uge` genbruger `scheduled_control_omissions` med et særskilt årsags-snapshot og kan ikke anvendes på en allerede startet nedkøling. Varemodtagelsesfejl og skadedyrsfund gemmes som selvstændige `operational_events`; normale leverancer og den almindelige skadedyrssikring danner fortsat ingen registrering.
+
+Migrationen er fremadrettet og har ingen datamigrering, fordi de tidligere frontendregistreringer ikke var vedvarende dokumentation. Ved en fejl må den allerede anvendte migration ikke redigeres eller rulles destruktivt tilbage. Execute-adgang til de nye RPC'er kan tilbagekaldes, hvorefter en ny korrigerende migration anvendes. Eksisterende hændelser og ugeforekomster skal bevares.
 
 ## Versionshistorik
 

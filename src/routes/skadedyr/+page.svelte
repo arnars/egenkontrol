@@ -1,5 +1,8 @@
 <script lang="ts">
+	/* eslint-disable svelte/no-navigation-without-resolve -- query-parameter tilføjes efter base-aware resolve() */
+	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';
+	import type { SubmitFunction } from '@sveltejs/kit';
 	import DocumentHeader from '$lib/components/DocumentHeader.svelte';
 	import SourceFooter from '$lib/components/SourceFooter.svelte';
 	import type { PageData } from './$types';
@@ -13,7 +16,11 @@
 	let productImpact = $state('unknown');
 	let selectedActions = $state<string[]>([]);
 	let savedMessage = $state('');
+	let requestId = $state('');
+	let saving = $state(false);
+	let error = $state('');
 	let activeArea = $derived(plan.areas.find((area) => area.id === areaId));
+	let historyHref = resolve('/historik') + '?type=pest';
 
 	$effect(() => {
 		if (!areaId) areaId = data.plan.areas[0]?.id ?? '';
@@ -25,13 +32,31 @@
 		selectedActions = [];
 	}
 
-	function savePreview(event: SubmitEvent) {
-		event.preventDefault();
-		const area = activeArea?.label ?? 'valgt område';
-		const type = plan.incidentTypes.find((item) => item.id === incidentType)?.label ?? 'fund';
-		savedMessage = `Demoregistrering oprettet: ${type} i ${area}. ${selectedActions.length} handling${selectedActions.length === 1 ? '' : 'er'} valgt.`;
-		formOpen = false;
+	function toggleForm() {
+		formOpen = !formOpen;
+		if (formOpen) requestId = crypto.randomUUID();
+		error = '';
 	}
+
+	const enhanceRecord: SubmitFunction = () => {
+		saving = true;
+		error = '';
+		return async ({ result }) => {
+			saving = false;
+			if (result.type === 'failure') {
+				error = String(result.data?.error ?? 'Hændelsen kunne ikke gemmes.');
+				return;
+			}
+			if (result.type !== 'success') {
+				error = 'Din session er udløbet. Genindlæs siden og log ind igen.';
+				return;
+			}
+			const area = activeArea?.label ?? 'valgt område';
+			const type = plan.incidentTypes.find((item) => item.id === incidentType)?.label ?? 'fund';
+			savedMessage = `Registrering gemt: ${type} i ${area}. ${selectedActions.length} handling${selectedActions.length === 1 ? '' : 'er'} valgt.`;
+			formOpen = false;
+		};
+	};
 </script>
 
 <svelte:head>
@@ -44,7 +69,7 @@
 
 	{#if savedMessage}
 		<p class="my-6 border-l-2 border-ink bg-paper px-5 py-4 font-sans text-sm" role="status">
-			{savedMessage} Den er kun gemt i denne frontendvisning.
+			{savedMessage}
 		</p>
 	{/if}
 
@@ -59,28 +84,35 @@
 			<div class="flex flex-wrap gap-3">
 				<a
 					class="flex min-h-11 items-center rounded-full border border-line px-5 font-sans text-sm text-ink no-underline"
-					href={`${resolve('/historik')}?type=pest`}>Se historik</a
+					href={historyHref}>Se historik</a
 				>
 				<button
 					class="min-h-11 cursor-pointer rounded-full border border-ink bg-ink px-5 font-sans text-sm text-paper"
 					type="button"
-					onclick={() => (formOpen = !formOpen)}
+					onclick={toggleForm}
 					aria-expanded={formOpen}>{formOpen ? 'Luk' : 'Registrér fund'}</button
 				>
 			</div>
 		</div>
 
 		{#if formOpen}
-			<form class="grid max-w-3xl gap-6 border-t border-line pt-8" onsubmit={savePreview}>
+			<form
+				class="grid max-w-3xl gap-6 border-t border-line pt-8"
+				method="POST"
+				action="?/record"
+				use:enhance={enhanceRecord}
+			>
+				<input type="hidden" name="requestId" value={requestId} />
 				<div class="grid gap-5 sm:grid-cols-2">
 					<label class="grid gap-2 font-sans text-sm font-medium">
 						Område
 						<select
 							class="min-h-12 w-full rounded-none border border-line bg-paper px-3 font-sans text-base"
+							name="areaId"
 							value={areaId}
 							onchange={changeArea}
 						>
-							{#each plan.areas as area}
+							{#each plan.areas as area (area.id)}
 								<option value={area.id}>{area.label}</option>
 							{/each}
 						</select>
@@ -89,9 +121,10 @@
 						Fund eller mistanke
 						<select
 							class="min-h-12 w-full rounded-none border border-line bg-paper px-3 font-sans text-base"
+							name="incidentType"
 							bind:value={incidentType}
 						>
-							{#each plan.incidentTypes as type}
+							{#each plan.incidentTypes as type (type.id)}
 								<option value={type.id}>{type.label}</option>
 							{/each}
 						</select>
@@ -110,6 +143,7 @@
 					Hvad blev observeret?
 					<textarea
 						class="min-h-28 w-full resize-y rounded-none border border-line bg-paper p-3 font-sans text-base"
+						name="observation"
 						bind:value={observation}
 						required
 						maxlength="500"></textarea>
@@ -119,6 +153,7 @@
 					Kan fødevarer være påvirket?
 					<select
 						class="min-h-12 rounded-none border border-line bg-paper px-3 font-sans text-base"
+						name="productImpact"
 						bind:value={productImpact}
 					>
 						<option value="unknown">Skal vurderes</option>
@@ -132,11 +167,12 @@
 						<legend class="mb-2 font-sans text-sm font-medium"
 							>Handlinger i {activeArea.label}</legend
 						>
-						{#each activeArea.incidentActions as action}
+						{#each activeArea.incidentActions as action (action)}
 							<label class="flex min-h-11 items-start gap-3 font-sans text-sm leading-relaxed">
 								<input
 									class="mt-1 h-5 w-5 shrink-0"
 									type="checkbox"
+									name="selectedActions"
 									bind:group={selectedActions}
 									value={action}
 								/>
@@ -146,11 +182,14 @@
 					</fieldset>
 				{/if}
 
+				{#if error}<p class="m-0 font-sans text-sm text-danger" role="alert">{error}</p>{/if}
+
 				<button
 					class="min-h-12 justify-self-start rounded-full border border-ink bg-ink px-6 font-sans text-sm text-paper"
 					type="submit"
+					disabled={saving}
 				>
-					Opret demoregistrering
+					{saving ? 'Gemmer…' : 'Gem registrering'}
 				</button>
 			</form>
 		{/if}
@@ -165,7 +204,7 @@
 			</p>
 		</div>
 		<div class="grid gap-0">
-			{#each plan.areas as area}
+			{#each plan.areas as area (area.id)}
 				<section class="grid gap-6 border-t border-line py-8 lg:grid-cols-[12rem_1fr_1fr]">
 					<div>
 						<h3 class="m-0 font-sans text-lg font-medium">{area.label}</h3>
@@ -178,7 +217,7 @@
 							Forebyggelse
 						</h4>
 						<ul class="m-0 grid gap-2 pl-5 font-sans text-sm leading-relaxed">
-							{#each area.prevention as item}<li>{item}</li>{/each}
+							{#each area.prevention as item (item)}<li>{item}</li>{/each}
 						</ul>
 					</div>
 					<div>
@@ -186,7 +225,7 @@
 							Ved fund
 						</h4>
 						<ul class="m-0 grid gap-2 pl-5 font-sans text-sm leading-relaxed">
-							{#each area.incidentActions as item}<li>{item}</li>{/each}
+							{#each area.incidentActions as item (item)}<li>{item}</li>{/each}
 						</ul>
 					</div>
 				</section>

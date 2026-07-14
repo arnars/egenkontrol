@@ -206,6 +206,41 @@ export const scheduledControlOmissions = pgTable(
 	]
 );
 
+export const operationalEvents = pgTable(
+	'operational_events',
+	{
+		id: uuid('id').primaryKey().defaultRandom(),
+		companyId: text('company_id')
+			.notNull()
+			.references(() => companies.id),
+		locationId: text('location_id')
+			.notNull()
+			.references(() => locations.id),
+		scheduledControlId: uuid('scheduled_control_id').references(() => scheduledControls.id),
+		controlDefinitionId: text('control_definition_id'),
+		controlDefinitionRevision: integer('control_definition_revision'),
+		eventType: text('event_type').notNull(),
+		eventKind: text('event_kind').notNull(),
+		requestId: uuid('request_id').notNull(),
+		observedAt: timestamp('observed_at', { withTimezone: true }).notNull(),
+		recordedAt: timestamp('recorded_at', { withTimezone: true }).notNull().defaultNow(),
+		recordedBy: uuid('recorded_by')
+			.notNull()
+			.references(() => actors.id),
+		payload: jsonb('payload')
+			.notNull()
+			.default(sql`'{}'::jsonb`)
+	},
+	(table) => [
+		uniqueIndex('operational_events_company_request_uidx').on(table.companyId, table.requestId),
+		uniqueIndex('operational_events_schedule_kind_uidx')
+			.on(table.scheduledControlId, table.eventKind)
+			.where(sql`${table.scheduledControlId} is not null`),
+		index('operational_events_history_idx').on(table.locationId, table.observedAt),
+		index('operational_events_schedule_idx').on(table.scheduledControlId)
+	]
+);
+
 export const measurements = pgTable(
 	'measurements',
 	{

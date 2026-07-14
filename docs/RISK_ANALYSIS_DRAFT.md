@@ -124,7 +124,7 @@ Det faktiske flow skal suppleres med fx klargøring, optøning, adskillelse, all
 | Procedureudkast | Identificér produkt/batch, mål i relevant kernested med egnet termometer, og registrér resultatet. |
 | Kontroldefinition | `heating-core-temperature` |
 | Kontrolhyppighed | Forslag: hver batch — skal godkendes |
-| Dokumentationshyppighed | Forslag: første batch pr. driftsdag samt alle afvigelser — skal godkendes |
+| Dokumentationshyppighed | Nabo-udkast: én relevant hændelse ugentligt eller `Ikke relevant i denne uge`; alle afvigelser — skal godkendes |
 | Kritisk grænse | Startforslag: mindst 75 °C; undtagelser og alternative processer kræver konkret, dokumenteret grundlag |
 | Afvigelse | Godkendt tid-/temperaturproces er ikke opnået eller kan ikke dokumenteres |
 | Mulige handlinger | Fortsæt varmebehandling og mål igen, anvend godkendt alternativ proces eller kassér |
@@ -146,10 +146,10 @@ Det faktiske flow skal suppleres med fx klargøring, optøning, adskillelse, all
 | Status | Skal bekræftes og risikovurderes |
 | Mulig mikrobiologisk risiko | Vækst af sygdomsfremkaldende bakterier og eventuel toksindannelse ved langsom eller forsinket nedkøling |
 | Styringsforanstaltning | Anvend en godkendt nedkølingsprocedure og dokumentér tid og temperatur |
-| Procedureudkast | Identificér batch, mål start, anvend egnede beholdere/udstyr, mål slut og registrér begge tidspunkter. |
+| Procedureudkast | Identificér ret og batchdato, mål start, anvend egnede beholdere/udstyr, mål slut og registrér begge tidspunkter. |
 | Kontroldefinition | `cooling-time-temperature` |
 | Kontrolhyppighed | Forslag: hver nedkølingsbatch — skal godkendes |
-| Dokumentationshyppighed | Forslag: hver kontrol — skal godkendes |
+| Dokumentationshyppighed | Nabo-udkast: én relevant hændelse ugentligt eller `Ikke relevant i denne uge`; alle afvigelser — skal godkendes |
 | Kritisk grænse | Startforslag: fra 56 °C til højst 10 °C inden for fire timer; alternativ kombination kræver dokumentation for tilsvarende sikkerhed |
 | Afvigelse | Den godkendte nedkølingskurve er ikke opfyldt eller måling mangler |
 | Mulige handlinger | Intensivér nedkøling og mål igen efter faglig vurdering, opdel produktet, vurdér sikkerhed eller kassér |
@@ -174,7 +174,7 @@ Det faktiske flow skal suppleres med fx klargøring, optøning, adskillelse, all
 | Procedureudkast | Identificér produkt/batch og varmholdningsenhed, mål produktet og registrér tidspunkt og resultat. |
 | Kontroldefinition | `hot-holding-temperature` |
 | Kontrolhyppighed | Forslag: hver varmholdningsservice — begrebet og hyppigheden skal præciseres |
-| Dokumentationshyppighed | Forslag: hver kontrol — skal godkendes |
+| Dokumentationshyppighed | Nabo-udkast: én relevant hændelse ugentligt eller `Ikke relevant i denne uge`; alle afvigelser — skal godkendes |
 | Kritisk grænse | Startforslag: mindst 56 °C |
 | Afvigelse | Måling under godkendt minimum eller manglende sikker viden om forløbet |
 | Mulige handlinger | Genopvarm efter godkendt procedure, foretag dokumenteret vurdering eller kassér |

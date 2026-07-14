@@ -1,4 +1,5 @@
 <script lang="ts">
+	/* eslint-disable svelte/no-navigation-without-resolve -- query-parametre tilføjes efter base-aware resolve() */
 	import { resolve } from '$app/paths';
 	import DocumentHeader from '$lib/components/DocumentHeader.svelte';
 	import type { PageData } from './$types';
@@ -6,13 +7,11 @@
 	let { data }: { data: PageData } = $props();
 
 	let groups = $derived.by(() => {
-		const grouped = new Map<string, typeof data.entries>();
+		const grouped: Record<string, typeof data.entries> = {};
 		for (const entry of data.entries) {
-			const entries = grouped.get(entry.localDate) ?? [];
-			entries.push(entry);
-			grouped.set(entry.localDate, entries);
+			(grouped[entry.localDate] ??= []).push(entry);
 		}
-		return [...grouped.entries()].map(([localDate, entries]) => ({ localDate, entries }));
+		return Object.entries(grouped).map(([localDate, entries]) => ({ localDate, entries }));
 	});
 	let deviations = $derived(data.entries.filter((entry) => entry.status === 'deviation').length);
 	let omissions = $derived(
@@ -47,10 +46,9 @@
 		return `${count} ${count === 1 ? 'registrering' : 'registreringer'}`;
 	}
 
-	function periodHref(from: string, to: string) {
-		const params = new URLSearchParams({ from, to });
-		if (data.historyType !== 'all') params.set('type', data.historyType);
-		return `?${params.toString()}`;
+	function periodQuery(from: string, to: string) {
+		const type = data.historyType === 'all' ? '' : `&type=${encodeURIComponent(data.historyType)}`;
+		return `?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}${type}`;
 	}
 </script>
 
@@ -72,10 +70,10 @@
 				Periode
 			</h2>
 			<nav class="flex flex-wrap gap-2" aria-label="Hurtige perioder">
-				{#each data.presets as preset}
+				{#each data.presets as preset (preset.days)}
 					<a
 						class="flex h-8 items-center border border-line px-3 font-mono text-[10px] tracking-wider text-muted uppercase no-underline hover:border-ink hover:text-ink"
-						href={periodHref(preset.from, preset.to)}>{preset.days} dage</a
+						href={resolve('/historik') + periodQuery(preset.from, preset.to)}>{preset.days} dage</a
 					>
 				{/each}
 			</nav>
@@ -115,7 +113,7 @@
 					name="type"
 					value={data.historyType}
 				>
-					{#each data.historyTypeOptions as option}
+					{#each data.historyTypeOptions as option (option.value)}
 						<option value={option.value}>{option.label}</option>
 					{/each}
 				</select>
@@ -158,13 +156,13 @@
 	{:else}
 		{#if data.truncated}
 			<p class="my-8 border-l-2 border-ink pl-4 font-sans text-sm text-muted">
-				Perioden indeholder flere registreringer, end denne prototype viser. Vælg et kortere
-				interval for at se alt.
+				Perioden indeholder flere registreringer, end visningen viser. Vælg et kortere interval for
+				at se alt.
 			</p>
 		{/if}
 
 		<div>
-			{#each groups as group}
+			{#each groups as group (group.localDate)}
 				<section class="border-b border-line py-10" aria-labelledby={`history-${group.localDate}`}>
 					<header class="mb-4 flex items-baseline justify-between gap-4">
 						<h2

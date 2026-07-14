@@ -80,6 +80,8 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 - [x] Opsæt Vitest
 - [x] Opsæt Playwright
 - [ ] Opsæt preview-deployments
+- [x] Opret Vercel-projekt, forbind GitHub og gennemfør første produktiondeployment
+- [ ] Peg `egenkontrol.nabobrejning.dk` på Vercel i DNS og verificér HTTPS
 - [ ] Fastlæg basal sikkerheds- og logningspraksis
 
 **Acceptkriterier**
@@ -123,7 +125,7 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 - [x] Vis kontrolinput direkte under den valgte kontrolrække
 - [x] Lad den aktive kontrolrække lukke sit inputpanel igen
 - [x] Tilpas topnavigation og venstre headerkant til den visuelle reference
-- [ ] Stabiliser de prioriterede flows før næste databasefase
+- [x] Stabiliser de prioriterede flows før næste databasefase
 
 Database-schema, RLS og RPC'er sættes som udgangspunkt på pause i dette spor. Nye databaseændringer kræver et eksplicit integrationscheckpoint eller en kritisk sikkerheds-/integritetsrettelse.
 
@@ -143,6 +145,9 @@ Database-schema, RLS og RPC'er sættes som udgangspunkt på pause i dette spor. 
 - [x] Vis statiske JSON-baserede planer for personlig hygiejne og adskillelse
 - [x] Vis konfigurerbar skadedyrsplan med frontend-hændelsesflow
 - [x] Vis minimal modtagekontrol med frontend-afvigelsesflow
+- [x] Vis ugentlige frontendflows for opvarmning, nedkøling og varmholdelse med `Ikke relevant i denne uge`
+- [x] Persistér varemodtagelsesfejl og skadedyrshændelser med actor, servertid og auditspor
+- [x] Integrér proceskontroller, varemodtagelse og skadedyr i den samlede historik
 - [x] Vis tydelig gemmebekræftelse for temperaturkontroller
 - [x] Bevar temperaturinput og vis fejltilstand ved gemmeproblemer
 - [ ] Test centrale flows på iPad-formater
@@ -161,7 +166,7 @@ Database-schema, RLS og RPC'er sættes som udgangspunkt på pause i dette spor. 
 - [x] Materialisér temperaturforekomster i `scheduled_controls` uden dubletter
 - [x] Lad faste lukkedage filtrere kalenderbaserede forekomster
 - [ ] Implementér månedlige, interval- og årlige regler
-- [ ] Implementér hændelsesbaserede kontroller
+- [x] Persistér hændelsesbaserede proceskontroller og ugentlig ikke-relevant-status
 - [ ] Vis kommende kontroller
 - [ ] Vis manglende kontroller
 - [ ] Implementér kalendervisning

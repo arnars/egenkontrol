@@ -35,6 +35,7 @@ type ControlWorkspace = {
   week: ControlDay[];
   noMeasurementReasons: NoMeasurementReason[];
   eventControls: EventControlLauncher[];
+  processControls: WeeklyProcessControl[];
 };
 
 type ControlDay = {
@@ -102,6 +103,31 @@ type EventControlLauncher = {
   description: string;
   eventType: string;
 };
+
+type WeeklyProcessControl =
+  | {
+      definitionId: string;
+      kind: 'heating';
+      title: string;
+      description: string;
+      minimumTemperature: number;
+    }
+  | {
+      definitionId: string;
+      kind: 'hot_holding';
+      title: string;
+      description: string;
+      minimumTemperature: number;
+    }
+  | {
+      definitionId: string;
+      kind: 'cooling';
+      title: string;
+      description: string;
+      fromTemperature: number;
+      toTemperature: number;
+      maximumDurationMinutes: number;
+    };
 ```
 
 `ControlOccurrence.status` er en præsenteret status til UI'et. Persistenslaget kan have flere interne statusværdier, men de må ikke sive ind i komponenterne uden et konkret produktbehov.
@@ -161,7 +187,7 @@ type ControlHistoryEntry = {
 };
 ```
 
-Den aktuelle historikside læser de allerede integrerede temperatur- og udeladelsesdata read-only. Typefilteret og genveje fra varemodtagelse og skadedyr er etableret, men de to hændelsestyper viser en tydelig ikke-tilsluttet tilstand, indtil deres persistens implementeres. En endelig adapter, cursor-baseret sideinddeling og revisionsspor for senere rettelser etableres ved integrationscheckpointet; de kræver ikke ændringer i den nuværende frontendnavigation.
+Historiksiden læser temperaturer, udeladelser, proceskontroller, varemodtagelsesfejl og skadedyrshændelser gennem serverlaget. Typefilter og genveje er integreret med persistenslaget. Cursor-baseret sideinddeling og den endelige visning af senere rettelser er fortsat udskudt; de kræver ikke ændringer i den nuværende frontendnavigation.
 
 ## Kommandoer fra frontenden
 
@@ -197,26 +223,55 @@ type RecordNoMeasurementsTodayCommand = {
   note?: string;
 };
 
-type StartEventControlCommand = {
-  kind: 'start_event_control';
-  requestId: string;
-  definitionId: string;
-  eventType: string;
-  startedAt: string;
-};
+type RecordWeeklyProcessControlCommand =
+  | {
+      kind: 'record_weekly_process_control';
+      requestId: string;
+      definitionId: string;
+      weekStartsOn: string;
+      productOrBatch: string;
+      outcome: { kind: 'temperature'; value: number; observedAt: string };
+      deviation?: { description: string; correctiveAction: string };
+    }
+  | {
+      kind: 'start_weekly_cooling_control';
+      requestId: string;
+      definitionId: string;
+      weekStartsOn: string;
+      product: string;
+      batchDate: string;
+      startTemperature: number;
+      startedAt: string;
+    }
+  | {
+      kind: 'complete_weekly_cooling_control';
+      requestId: string;
+      definitionId: string;
+      weekStartsOn: string;
+      endTemperature: number;
+      completedAt: string;
+      deviation?: { description: string; correctiveAction: string };
+    }
+  | {
+      kind: 'record_weekly_process_not_relevant';
+      requestId: string;
+      definitionId: string;
+      weekStartsOn: string;
+      recordedAt: string;
+    };
 
 type ControlCommand =
   | RecordTemperatureCommand
   | RecordNoMeasurementCommand
   | RecordNoMeasurementsTodayCommand
-  | StartEventControlCommand;
+  | RecordWeeklyProcessControlCommand;
 ```
 
-Kommandoerne for ja/nej, tjekliste, opvarmning, nedkøling og varmholdelse tilføjes, når deres konkrete frontend-flow designes. Der opfindes ikke databasefelter på forhånd.
+Proceskontrollerne er hændelsesbaserede i driften, men dokumenteres i Nabo Brejnings aktuelle udkast én gang pr. uge, når aktiviteten forekommer. Ellers afsluttes ugens forekomst som `Ikke relevant i denne uge`. Nedkøling har en særskilt start- og afslutningskommando, så den kan stå som igangværende mellem målingerne. Afvigelser dokumenteres altid. Kommandoerne er nu integreret med Supabase og gemmer aktør, servertid, definition/revision, målinger, eventuel afvigelse, handling og auditspor atomisk.
 
 ## Arbejdsgange og hændelser
 
-Rengøringsplanen er et versioneret, statisk dokument. Skadedyr og varemodtagelse følger et hændelsesprincip: den normale arbejdsgang læses uden registrering, mens fund, mistanke og leveringsfejl opretter en revisionsrelevant hændelse. De aktuelle formularer er frontendprototyper og gemmer endnu ikke data.
+Rengøringsplanen er et versioneret, statisk dokument. Skadedyr og varemodtagelse følger et hændelsesprincip: den normale arbejdsgang læses uden registrering, mens fund, mistanke og leveringsfejl opretter en revisionsrelevant, append-only hændelse i `operational_events`.
 
 ```ts
 type PestArea = {
@@ -318,7 +373,7 @@ Der oprettes to implementeringer:
 - `FixtureControlWorkspaceAdapter` til design og frontend-tests.
 - `SupabaseControlWorkspaceAdapter` ved integrationscheckpointet.
 
-Den nuværende `+page.server.ts` er en fungerende prototype, men endnu ikke den endelige adaptergrænse. Den refaktoreres først, når fixture-adapteren etableres; det kræver ingen databaseændring.
+De aktuelle `+page.server.ts`-filer fungerer som Supabase-adaptere for de integrerede flows, og Svelte-komponenterne kender ikke tabel- eller RPC-navne. Den fælles, typed `ControlWorkspaceAdapter` er fortsat en planlagt refaktorering; den kræver ingen yderligere databaseændring.
 
 ## Integrationscheckpoint
 
@@ -329,4 +384,4 @@ Databasearbejdet genoptages samlet, når disse betingelser er opfyldt:
 3. Fixtures dækker normale forløb, afvigelser og fejl.
 4. Åbne domænevalg, der påvirker dataintegritet, er markeret og afklaret eller eksplicit udsat.
 
-Checkpointet skal levere en mapping fra frontend-kontrakten til datamodellen, gennemgåelige fremadrettede migrationer, RLS/RPC-ændringer, integrationstests og en plan for eksisterende prototype-data.
+Checkpointet har leveret mapping, en fremadrettet migration, RLS, atomiske RPC'er og serverintegration for de prioriterede dynamiske flows. Der fandtes ingen vedvarende prototype-data, som skulle migreres. Automatiserede integrationstests og den fælles typed adapter resterer fortsat.

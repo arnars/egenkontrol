@@ -1,10 +1,6 @@
 import catalog from '../../../config/egenkontrol.defaults.json';
 import business from '../../../config/virksomhed.json';
-import {
-	historyTypeOptions,
-	parseHistoryType,
-	unavailableHistoryMessage
-} from '$lib/domain/control-history';
+import { historyTypeOptions, parseHistoryType } from '$lib/domain/control-history';
 import { buildTemperatureControls } from '$lib/domain/today-controls';
 import type { PageServerLoad } from './$types';
 
@@ -18,9 +14,10 @@ const controlDefinitions = buildTemperatureControls(
 	business.controlOverrides,
 	location?.id ?? ''
 );
-const controlLabels = new Map(
-	controlDefinitions.map((control) => [control.id, control.assetLabel] as const)
-);
+const controlLabels = new Map([
+	...controlDefinitions.map((control) => [control.id, control.assetLabel] as const),
+	...catalog.controls.map((control) => [control.id, control.title] as const)
+]);
 
 type StoredCompletion = {
 	id: string;
@@ -43,6 +40,14 @@ type StoredOmission = {
 		local_date: string;
 		occurrence_key: string;
 	} | null;
+};
+
+type StoredOperationalEvent = {
+	id: string;
+	event_type: 'receiving' | 'pest';
+	event_kind: 'receiving_deviation' | 'pest_incident';
+	observed_at: string;
+	payload: Record<string, unknown>;
 };
 
 function formatLocalDate(value: Date) {
@@ -137,26 +142,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 			truncated: false,
 			filterError,
 			loadError: '',
-			availabilityMessage: unavailableHistoryMessage(historyType),
-			presets: [7, 30, 90].map((days) => ({ days, from: addDays(today, -(days - 1)), to: today }))
-		};
-	}
-
-	if (historyType === 'receiving' || historyType === 'pest') {
-		return {
-			from,
-			to,
-			historyType,
-			historyTypeOptions,
-			today,
-			timeZone,
-			locationName: location?.name ?? business.company.name,
-			entries: [],
-			totalCount: 0,
-			truncated: false,
-			filterError: '',
-			loadError: '',
-			availabilityMessage: unavailableHistoryMessage(historyType),
+			availabilityMessage: '',
 			presets: [7, 30, 90].map((days) => ({ days, from: addDays(today, -(days - 1)), to: today }))
 		};
 	}
@@ -184,13 +170,32 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		.lt('recorded_at', endsBefore)
 		.order('recorded_at', { ascending: false })
 		.range(0, queryLimit - 1);
+	let operationalQuery = locals.supabase
+		.from('operational_events')
+		.select('id, event_type, event_kind, observed_at, payload', { count: 'exact' })
+		.eq('location_id', location?.id ?? '')
+		.in('event_type', ['receiving', 'pest'])
+		.gte('observed_at', startsAt)
+		.lt('observed_at', endsBefore)
+		.order('observed_at', { ascending: false })
+		.range(0, queryLimit - 1);
+	if (historyType === 'receiving' || historyType === 'pest') {
+		operationalQuery = operationalQuery.eq('event_type', historyType);
+	}
+	const operationalResult = await operationalQuery;
 
 	if (completionResult.error)
 		console.error('Kunne ikke hente kontrolhistorik', completionResult.error.code);
 	if (omissionResult.error)
 		console.error('Kunne ikke hente historik for ingen måling', omissionResult.error.code);
+	if (operationalResult.error)
+		console.error('Kunne ikke hente operationelle hændelser', operationalResult.error.code);
 
-	const completions = ((completionResult.data ?? []) as StoredCompletion[]).map((completion) => {
+	const includeControls = historyType === 'all' || historyType === 'control';
+	const includeIncidents = historyType !== 'control';
+	const completions = (
+		includeControls ? ((completionResult.data ?? []) as StoredCompletion[]) : []
+	).map((completion) => {
 		const measurement = completion.measurements[0];
 		const deviation = completion.deviations[0];
 		return {
@@ -207,7 +212,9 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 			correctionStatus: completion.status
 		};
 	});
-	const omissions = ((omissionResult.data ?? []) as StoredOmission[]).map((omission) => {
+	const omissions = (
+		includeControls ? ((omissionResult.data ?? []) as unknown as StoredOmission[]) : []
+	).map((omission) => {
 		const scheduled = omission.scheduled_controls;
 		const controlId = scheduled
 			? configuredControlId(scheduled.occurrence_key, scheduled.local_date)
@@ -226,11 +233,46 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 			correctionStatus: 'submitted' as const
 		};
 	});
-	const entries = [...completions, ...omissions].sort(
+	const incidents = (
+		includeIncidents ? ((operationalResult.data ?? []) as StoredOperationalEvent[]) : []
+	).map((event) => {
+		const payload = event.payload;
+		if (event.event_kind === 'receiving_deviation') {
+			return {
+				id: `event:${event.id}`,
+				kind: 'event' as const,
+				occurredAt: event.observed_at,
+				localDate: localDate(event.observed_at),
+				controlLabel: 'Varemodtagelse',
+				status: 'deviation' as const,
+				value: null,
+				unit: null,
+				detail: `${String(payload.supplier ?? 'Leverandør')} · ${String(payload.issueLabel ?? 'Fejl')} · ${String(payload.assessment ?? '')}`,
+				action: String(payload.actionLabel ?? ''),
+				correctionStatus: 'submitted' as const
+			};
+		}
+		return {
+			id: `event:${event.id}`,
+			kind: 'event' as const,
+			occurredAt: event.observed_at,
+			localDate: localDate(event.observed_at),
+			controlLabel: 'Skadedyr',
+			status: 'deviation' as const,
+			value: null,
+			unit: null,
+			detail: `${String(payload.incidentLabel ?? 'Fund')} · ${String(payload.areaLabel ?? 'Område')} · ${String(payload.observation ?? '')}`,
+			action: Array.isArray(payload.actions) ? payload.actions.join(' · ') : '',
+			correctionStatus: 'submitted' as const
+		};
+	});
+	const entries = [...completions, ...omissions, ...incidents].sort(
 		(left, right) => Date.parse(right.occurredAt) - Date.parse(left.occurredAt)
 	);
 	const totalCount =
-		(completionResult.count ?? completions.length) + (omissionResult.count ?? omissions.length);
+		(includeControls
+			? (completionResult.count ?? completions.length) + (omissionResult.count ?? omissions.length)
+			: 0) + (includeIncidents ? (operationalResult.count ?? incidents.length) : 0);
 
 	return {
 		from,
@@ -246,7 +288,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		filterError: '',
 		availabilityMessage: '',
 		loadError:
-			completionResult.error || omissionResult.error
+			completionResult.error || omissionResult.error || operationalResult.error
 				? 'Noget af historikken kunne ikke hentes. Prøv igen.'
 				: '',
 		presets: [7, 30, 90].map((days) => ({ days, from: addDays(today, -(days - 1)), to: today }))

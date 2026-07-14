@@ -1,7 +1,7 @@
 {
   "$schema": "./egenkontrol.schema.json",
   "schemaVersion": 1,
-  "catalogVersion": "2026-07-12.1",
+  "catalogVersion": "2026-07-14.1",
   "status": "draft_requires_business_approval",
   "locale": "da-DK",
   "timeZone": "Europe/Copenhagen",
@@ -188,7 +188,7 @@
       "activityId": "heat-treatment",
       "description": "Mål kernetemperaturen for den valgte produkt-/procesprofil.",
       "controlFrequency": { "kind": "per_event", "eventType": "heating_batch" },
-      "documentationFrequency": { "kind": "selected_occurrences", "selectionRule": "first_batch_each_service_day", "deviationsAlways": true },
+      "documentationFrequency": { "kind": "weekly", "targetCount": 1, "selectionRule": "one_relevant_occurrence_when_activity_occurs; otherwise_not_relevant", "deviationsAlways": true },
       "fields": [
         { "id": "productOrBatch", "type": "text", "label": "Produkt eller batch", "required": true },
         { "id": "measuredCoreTemperature", "type": "temperature", "label": "Målt kernetemperatur", "unit": "celsius", "required": true },
@@ -207,9 +207,10 @@
       "activityId": "cooling",
       "description": "Dokumentér start- og slutmåling for en nedkølingsbatch.",
       "controlFrequency": { "kind": "per_event", "eventType": "cooling_batch" },
-      "documentationFrequency": { "kind": "every_control", "deviationsAlways": true },
+      "documentationFrequency": { "kind": "weekly", "targetCount": 1, "selectionRule": "one_relevant_occurrence_when_activity_occurs; otherwise_not_relevant", "deviationsAlways": true },
       "fields": [
-        { "id": "productOrBatch", "type": "text", "label": "Produkt eller batch", "required": true },
+        { "id": "product", "type": "text", "label": "Ret", "required": true },
+        { "id": "batchDate", "type": "date", "label": "Batchdato", "required": true, "defaultValue": "today" },
         { "id": "startTemperature", "type": "temperature", "label": "Starttemperatur", "unit": "celsius", "required": true },
         { "id": "startTime", "type": "datetime", "label": "Starttid", "required": true },
         { "id": "endTemperature", "type": "temperature", "label": "Sluttemperatur", "unit": "celsius", "required": true },
@@ -235,7 +236,7 @@
       "activityId": "hot-holding",
       "description": "Kontrollér temperaturen på varmholdte fødevarer.",
       "controlFrequency": { "kind": "per_event", "eventType": "hot_holding_service" },
-      "documentationFrequency": { "kind": "every_control", "deviationsAlways": true },
+      "documentationFrequency": { "kind": "weekly", "targetCount": 1, "selectionRule": "one_relevant_occurrence_when_activity_occurs; otherwise_not_relevant", "deviationsAlways": true },
       "fields": [
         { "id": "productOrBatch", "type": "text", "label": "Produkt eller batch", "required": true },
         { "id": "measuredTemperature", "type": "temperature", "label": "Målt temperatur", "unit": "celsius", "required": true },

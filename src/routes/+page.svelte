@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { invalidateAll } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import type { SubmitFunction } from '@sveltejs/kit';
+	import WeeklyProcessControls from '$lib/components/WeeklyProcessControls.svelte';
 	import { assessMeasurement, formatTemperature } from '$lib/domain/today-controls';
 	import type { PageData } from './$types';
 
@@ -22,7 +24,6 @@
 	let dayOmissionError = $state('');
 	let saving = $state(false);
 	let error = $state('');
-	let eventMessage = $state('');
 
 	let activeControl = $derived(data.controls.find((control) => control.id === activeControlId));
 	let completions = $derived(data.completions);
@@ -96,7 +97,6 @@
 		omissionReasonCode = data.noMeasurementReasons[0]?.code ?? '';
 		omissionNote = '';
 		error = '';
-		eventMessage = '';
 	}
 
 	function openDayOmission() {
@@ -239,11 +239,6 @@
 		};
 	};
 
-	function startEvent(title: string) {
-		closeControl();
-		eventMessage = `${title} bliver næste selvstændige registreringsflow.`;
-	}
-
 	function countLabel(count: number) {
 		return `${count} ${count === 1 ? 'kontrol' : 'kontroller'}`;
 	}
@@ -308,6 +303,13 @@
 {#if data.schedulePersistenceError}
 	<p class="mb-10 bg-soft px-4 py-3 font-sans text-sm leading-relaxed text-danger" role="alert">
 		Ugeplanen kunne ikke forbindes med databasen. Planen vises, men faste kontroller kan ikke
+		gemmes, før forbindelsen virker igen.
+	</p>
+{/if}
+
+{#if data.processPersistenceError}
+	<p class="mb-10 bg-soft px-4 py-3 font-sans text-sm leading-relaxed text-danger" role="alert">
+		Ugens proceskontroller kunne ikke forbindes med databasen. Formularerne vises, men kan ikke
 		gemmes, før forbindelsen virker igen.
 	</p>
 {/if}
@@ -791,41 +793,33 @@
 			{/each}
 		</div>
 	</section>
-
-	<section class="mt-14 print:hidden" aria-labelledby="event-heading">
-		<header class="flex items-center justify-between gap-4 border-b border-line pb-3">
-			<h2 class="m-0 font-sans text-[1.6rem] font-medium tracking-[-.035em]" id="event-heading">
-				Efter behov
-			</h2>
-			<span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase"
-				>Hændelsesbaseret</span
-			>
-		</header>
-		<div class="grid">
-			{#each data.eventControls as control (control.id)}
-				<button
-					class="flex min-h-19 w-full cursor-pointer items-center justify-between gap-4 border-0 border-b border-line bg-transparent px-2 py-3.5 text-left text-ink hover:bg-soft"
-					onclick={() => startEvent(control.title)}
-				>
-					<span class="grid gap-1">
-						<strong class="font-sans text-[1.05rem] font-medium">{control.title}</strong>
-						<small class="text-[.95rem] text-muted">{control.description}</small>
-					</span>
-					<span class="flex items-center gap-3"
-						><span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase">Start</span
-						><i
-							class="grid h-8 w-8 place-items-center rounded-full border border-line font-sans not-italic"
-							aria-hidden="true">→</i
-						></span
-					>
-				</button>
-			{/each}
-		</div>
-		{#if eventMessage}<p
-				class="mt-5 mb-10 bg-soft px-4 py-3 font-sans text-sm leading-relaxed text-muted"
-				aria-live="polite"
-			>
-				{eventMessage}
-			</p>{/if}
-	</section>
 {/if}
+
+<WeeklyProcessControls controls={data.processControls} today={data.today} />
+
+<section class="mt-14 print:hidden" aria-labelledby="event-heading">
+	<header class="flex items-center justify-between gap-4 border-b border-line pb-3">
+		<h2 class="m-0 font-sans text-[1.6rem] font-medium tracking-[-.035em]" id="event-heading">
+			Efter behov
+		</h2>
+		<span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase">Ved levering</span>
+	</header>
+	{#each data.eventControls as control (control.definitionId)}
+		<a
+			class="flex min-h-19 w-full items-center justify-between gap-4 border-b border-line px-2 py-3.5 text-left text-ink no-underline hover:bg-soft"
+			href={resolve('/varemodtagelse')}
+		>
+			<span class="grid gap-1">
+				<strong class="font-sans text-[1.05rem] font-medium">{control.title}</strong>
+				<small class="text-[.95rem] text-muted">{control.description}</small>
+			</span>
+			<span class="flex items-center gap-3">
+				<span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase">Åbn</span>
+				<i
+					class="grid h-8 w-8 place-items-center rounded-full border border-line font-sans not-italic"
+					aria-hidden="true">→</i
+				>
+			</span>
+		</a>
+	{/each}
+</section>

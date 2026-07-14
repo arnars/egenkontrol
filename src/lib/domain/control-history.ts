@@ -12,13 +12,3 @@ export function parseHistoryType(value: string | null): HistoryType {
 		? (value as HistoryType)
 		: 'all';
 }
-
-export function unavailableHistoryMessage(type: HistoryType) {
-	if (type === 'receiving') {
-		return 'Hændelser fra varemodtagelse bliver vist her, når registreringerne kobles til persistenslaget.';
-	}
-	if (type === 'pest') {
-		return 'Skadedyrshændelser bliver vist her, når registreringerne kobles til persistenslaget.';
-	}
-	return '';
-}
