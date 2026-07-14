@@ -1,0 +1,61 @@
+{
+	"schemaVersion": 1,
+	"id": "cleaning-plan-demo-nabo-brejning",
+	"title": "Rengøringsplan",
+	"status": "draft",
+	"statusLabel": "Udkast — skal tilpasses",
+	"introduction": "Planen er et statisk demonstrationsudkast. Områder, metoder, ansvar og frekvenser skal gennemgås mod Nabo Brejnings faktiske indretning, udstyr og drift, før planen kan godkendes.",
+	"principles": [
+		"Rengør fra rent mod urent og beskyt fødevarer under arbejdet.",
+		"Følg altid brugsanvisningen for rengørings- og desinfektionsmidler.",
+		"Kontrollér visuelt, at området er rent, før det tages i brug igen.",
+		"Registrér afvigelser, hvis utilstrækkelig rengøring kan have påvirket fødevarer."
+	],
+	"tasks": [
+		{
+			"area": "Fødevarekontaktflader",
+			"scope": "Arbejdsborde, skærebrætter og redskaber",
+			"method": "Fjern rester, vask med egnet middel, skyl og desinficér om nødvendigt.",
+			"frequency": "Efter brug og ved behov — skal bekræftes",
+			"check": "Visuel kontrol før brug"
+		},
+		{
+			"area": "Køle- og fryseenheder",
+			"scope": "Hylder, håndtag, pakninger og indvendige flader",
+			"method": "Flyt eller beskyt varer, rengør flader og kontrollér for spild og belægninger.",
+			"frequency": "Ved spild og efter lokal plan — skal fastlægges",
+			"check": "Visuel kontrol efter rengøring"
+		},
+		{
+			"area": "Gulve og svært tilgængelige steder",
+			"scope": "Gulve, hjørner og områder under inventar",
+			"method": "Fjern løst snavs og vask med metode og middel egnet til overfladen.",
+			"frequency": "Efter den frekvens driften kræver — skal fastlægges",
+			"check": "Ingen synligt snavs eller ophobning"
+		},
+		{
+			"area": "Håndvask og personalefaciliteter",
+			"scope": "Vask, armatur, kontaktpunkter og eventuelt toilet",
+			"method": "Rengør berøringsflader med særskilt udstyr fra produktionsområdet.",
+			"frequency": "Efter lokal plan og ved behov — skal fastlægges",
+			"check": "Rent samt sæbe og papir tilgængeligt"
+		},
+		{
+			"area": "Affaldsområde",
+			"scope": "Beholdere, låg og området omkring affald",
+			"method": "Tøm løbende, fjern spild og rengør beholdere efter behov.",
+			"frequency": "Efter tømning og ved spild — skal bekræftes",
+			"check": "Ingen ophobning, spild eller tegn på skadedyr"
+		}
+	],
+	"sources": [
+		{
+			"label": "Rengøring og desinfektion i fødevarevirksomheder",
+			"url": "https://foedevarestyrelsen.dk/kost-og-foedevarer/start-og-drift-af-foedevarevirksomhed/hygiejne-og-indretning/rengoering-vedligeholdelse-skadedyr-i-foedevarevirksomhed/rengoering-og-desinfektion"
+		},
+		{
+			"label": "Gode arbejdsgange er en del af din egenkontrol",
+			"url": "https://foedevarestyrelsen.dk/kost-og-foedevarer/start-og-drift-af-foedevarevirksomhed/egenkontrol-og-risikoanalyse/gode-arbejdsgange"
+		}
+	]
+}

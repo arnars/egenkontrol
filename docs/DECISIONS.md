@@ -225,6 +225,25 @@ Databasearbejdet samles i et integrationscheckpoint, når de prioriterede flows 
 
 Design og brugerflow kan afprøves hurtigere, inklusive fejl- og ventetilstande. Risikoen for drift mellem frontend og database håndteres med én autoritativ kontrakt, Zod-validerede fixtures og senere adapter-/integrationstests. Den nuværende databaseintegration bevares som teknisk reference, men udvides ikke løbende under frontendfasen.
 
+## ADR-013: Hændelsesbaseret dokumentation for skadedyr og varemodtagelse
+
+- **Status:** Accepteret
+- **Dato:** 2026-07-14
+
+### Kontekst
+
+Rengøring og skadedyrssikring er normalt gode arbejdsgange, som ikke i sig selv kræver en løbende skriftlig tjekliste. Modtagekontrol skal udføres ved leveringer, men Fødevarestyrelsens materiale lader virksomheden fastlægge den normale dokumentationshyppighed, mens fejl altid skal dokumenteres. Et obligatorisk digitalt skema ved alle tre arbejdsgange ville derfor skabe mere registrering end det nuværende faglige grundlag kræver.
+
+### Beslutning
+
+Rengøring vises som en statisk, versioneret plan. Skadedyrssikring vises som en konfigurerbar plan pr. område, og der registreres kun ved fund eller mistanke. Varemodtagelse viser den kontrol, der udføres ved hver levering, men standardflowet opretter kun en registrering ved en fejl. En normal dokumentationshyppighed og registrering af fejlfri leverancer tilføjes kun, hvis Nabo Brejnings godkendte risikoanalyse og procedure fastlægger det.
+
+Frontendprototyperne må ikke fremstille en lokal demoregistrering som vedvarende dokumentation. Persistens, auditspor og databasemigrationer udskydes til integrationscheckpointet efter ADR-012.
+
+### Konsekvenser
+
+Den daglige bruger møder færre unødige formularer. Rum, forebyggelse og handlinger kan tilpasses uden UI-ændringer. Den senere integration skal gøre hændelser append-only, bevare konfigurationsrevisionen og understøtte produktvurdering, korrigerende handlinger og eventuelle myndighedshenvendelser uden at hævde, at appen foretager anmeldelsen.
+
 ## Skabelon til fremtidige ADR'er
 
 ```md

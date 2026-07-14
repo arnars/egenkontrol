@@ -15,6 +15,11 @@
       "url": "https://foedevarestyrelsen.dk/kost-og-foedevarer/start-og-drift-af-foedevarevirksomhed/hygiejne-og-indretning/rengoering-vedligeholdelse-skadedyr-i-foedevarevirksomhed/rengoering-og-desinfektion",
       "reviewedAt": "2026-07-12"
     },
+    "fvst-pest-control": {
+      "title": "Hygiejnevejledningen, afsnit 18: Skadedyr i fødevarevirksomheder",
+      "url": "https://foedevarestyrelsen.dk/lovstof/vejledninger/hygiejnevejledningen/18-skadedyr-i-foedevarevirksomheder",
+      "reviewedAt": "2026-07-14"
+    },
     "fvst-personal-hygiene": {
       "title": "Hygiejnevejledningen, afsnit 21: Personlig hygiejne",
       "url": "https://foedevarestyrelsen.dk/lovstof/vejledninger/hygiejnevejledningen/21-personlig-hygiejne-i-foedevarevirksomheder",
@@ -148,7 +153,7 @@
       "normalDocumentation": { "kind": "business_decides", "suggestion": "exceptions_and_provider_reports" },
       "alwaysRecord": ["observation eller mistanke", "produktpåvirkning", "bekæmpelse og opfølgning"],
       "reviewTriggers": ["observation", "bygningsarbejde", "ændret affaldshåndtering", "gentagne fund"],
-      "sourceRefs": ["fvst-good-practices"]
+      "sourceRefs": ["fvst-good-practices", "fvst-pest-control"]
     },
     {
       "id": "traceability",

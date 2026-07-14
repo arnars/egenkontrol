@@ -1,0 +1,39 @@
+{
+	"schemaVersion": 1,
+	"id": "receiving-control-demo-nabo-brejning",
+	"title": "Varemodtagelse",
+	"status": "draft",
+	"statusLabel": "Minimal afvigelsesregistrering",
+	"introduction": "Varer skal kontrolleres ved modtagelsen, men et udfyldt skema for hver fejlfri levering er ikke et generelt krav. Denne prototype registrerer derfor kun fejl. En normal dokumentationshyppighed tilføjes først, hvis Nabo Brejnings godkendte egenkontrolprogram fastlægger den.",
+	"checks": [
+		"Kommer varerne fra en relevant registreret eller autoriseret leverandør?",
+		"Er emballagen hel, ren og uden tegn på skadedyr eller anden påvirkning?",
+		"Er holdbarhed og mærkning i orden?",
+		"Er temperaturen i orden for de konkrete varer, når temperaturkontrol er relevant?"
+	],
+	"issueTypes": [
+		{ "id": "temperature", "label": "Temperatur" },
+		{ "id": "packaging", "label": "Emballage eller forurening" },
+		{ "id": "date", "label": "Holdbarhed" },
+		{ "id": "label", "label": "Mærkning" },
+		{ "id": "supplier", "label": "Leverandør eller sporbarhed" },
+		{ "id": "other", "label": "Andet" }
+	],
+	"actions": [
+		{ "id": "rejected", "label": "Afvist eller returneret" },
+		{ "id": "held", "label": "Tilbageholdt til vurdering" },
+		{ "id": "discarded", "label": "Kasseret" },
+		{ "id": "accepted-after-assessment", "label": "Accepteret efter dokumenteret vurdering" },
+		{ "id": "supplier-contacted", "label": "Leverandør kontaktet" }
+	],
+	"sources": [
+		{
+			"label": "Modtagekontrol i fødevarevirksomheder",
+			"url": "https://foedevarestyrelsen.dk/lovstof/vejledninger/hygiejnevejledningen/24-modtagekontrol-i-foedevarevirksomheder"
+		},
+		{
+			"label": "Fødevarestyrelsens skabelon til egenkontrol",
+			"url": "https://foedevarestyrelsen.dk/Media/638532672442452340/Egenkontrol%20dansk%202024.PDF"
+		}
+	]
+}

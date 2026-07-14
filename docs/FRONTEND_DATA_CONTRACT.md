@@ -155,7 +155,45 @@ type ControlCommand =
   | StartEventControlCommand;
 ```
 
-Kommandoerne for ja/nej, tjekliste, opvarmning, nedkøling, varemodtagelse og varmholdelse tilføjes, når deres konkrete frontend-flow designes. Der opfindes ikke databasefelter på forhånd.
+Kommandoerne for ja/nej, tjekliste, opvarmning, nedkøling og varmholdelse tilføjes, når deres konkrete frontend-flow designes. Der opfindes ikke databasefelter på forhånd.
+
+## Arbejdsgange og hændelser
+
+Rengøringsplanen er et versioneret, statisk dokument. Skadedyr og varemodtagelse følger et hændelsesprincip: den normale arbejdsgang læses uden registrering, mens fund, mistanke og leveringsfejl opretter en revisionsrelevant hændelse. De aktuelle formularer er frontendprototyper og gemmer endnu ikke data.
+
+```ts
+type PestArea = {
+  id: string;
+  label: string;
+  prevention: string[];
+  incidentActions: string[];
+};
+
+type RecordPestIncidentCommand = {
+  kind: 'record_pest_incident';
+  requestId: string;
+  areaId: string;
+  incidentType: string;
+  observation: string;
+  productImpact: 'yes' | 'no' | 'unknown';
+  actions: string[];
+  observedAt: string;
+};
+
+type RecordReceivingDeviationCommand = {
+  kind: 'record_receiving_deviation';
+  requestId: string;
+  supplier: string;
+  deliveryReference: string;
+  issueType: 'temperature' | 'packaging' | 'date' | 'label' | 'supplier' | 'other';
+  measuredTemperature?: number;
+  actionId: string;
+  assessment: string;
+  observedAt: string;
+};
+```
+
+En normal modtagelse danner ikke automatisk en digital registrering. Hvis den godkendte risikoanalyse og procedure senere fastlægger en normal dokumentationshyppighed, tilføjes en særskilt kommando uden at ændre afvigelseskommandoen. Ved persistens skal begge hændelsestyper gemme konfigurationsrevision, bruger, servertid og eventuelle senere rettelser append-only.
 
 ## Resultat og fejltilstande
 

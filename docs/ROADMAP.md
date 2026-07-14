@@ -138,6 +138,9 @@ Database-schema, RLS og RPC'er sættes som udgangspunkt på pause i dette spor. 
 - [x] Implementér afvigelsesflow for temperaturkontroller
 - [x] Implementér korrigerende handling for temperaturkontroller
 - [ ] Implementér historik
+- [x] Vis statisk JSON-baseret rengøringsplan som udkast
+- [x] Vis konfigurerbar skadedyrsplan med frontend-hændelsesflow
+- [x] Vis minimal modtagekontrol med frontend-afvigelsesflow
 - [x] Vis tydelig gemmebekræftelse for temperaturkontroller
 - [x] Bevar temperaturinput og vis fejltilstand ved gemmeproblemer
 - [ ] Test centrale flows på iPad-formater

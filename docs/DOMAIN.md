@@ -54,6 +54,8 @@ Mulige områder er varemodtagelse, køle- og frostopbevaring, opvarmning, nedkø
 
 Listen er ikke et kravkatalog. Relevans, grænser og hyppighed afhænger af virksomhedens risikoanalyse.
 
+Rengøring og skadedyrssikring modelleres foreløbigt som gode arbejdsgange med statiske, versionerede planer frem for gentagne digitale kontroller. Konkrete skadedyrsfund og leveringsfejl er hændelser, som skal kunne registreres med observation, vurdering og handling. En fejlfri varemodtagelse danner kun en digital registrering, hvis virksomhedens godkendte procedure senere fastlægger en normal dokumentationshyppighed.
+
 ## Begrebsoversigt
 
 | Begreb | Betydning i systemet |

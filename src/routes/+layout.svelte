@@ -9,6 +9,10 @@
 	function navClass(active: boolean) {
 		return `flex h-8 items-center justify-center rounded-full font-mono text-[11px] tracking-widest uppercase no-underline transition ${active ? 'bg-ink text-paper' : 'text-muted hover:text-ink'}`;
 	}
+
+	function isPlanRoute() {
+		return ['/planer', '/rengoering', '/skadedyr', '/varemodtagelse'].includes(page.route.id ?? '');
+	}
 </script>
 
 <svelte:head>
@@ -40,7 +44,11 @@
 					href={resolve('/')}
 					aria-current={page.route.id === '/' ? 'page' : undefined}>Kontroller</a
 				>
-				<a class={navClass(false)} href={`${resolve('/')}#historik`}>Historik</a>
+				<a
+					class={navClass(isPlanRoute())}
+					href={resolve('/planer')}
+					aria-current={page.route.id === '/planer' ? 'page' : undefined}>Planer</a
+				>
 				<a
 					class={navClass(page.route.id === '/risikoanalyse')}
 					href={resolve('/risikoanalyse')}

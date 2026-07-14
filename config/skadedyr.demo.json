@@ -1,0 +1,75 @@
+{
+	"schemaVersion": 1,
+	"id": "pest-plan-demo-nabo-brejning",
+	"title": "Skadedyrssikring",
+	"status": "draft",
+	"statusLabel": "Udkast — rum skal tilpasses",
+	"introduction": "Skadedyrssikring håndteres som en god arbejdsgang uden en daglig digital tjekliste. Visningen bruges til at beskrive forebyggelse pr. område og til at registrere konkrete fund, mistanke og handlinger.",
+	"incidentTypes": [
+		{ "id": "rats", "label": "Rotte eller tegn på rotte" },
+		{ "id": "droppings", "label": "Ekskrementer eller spor" },
+		{ "id": "live-animal", "label": "Levende skadedyr" },
+		{ "id": "dead-animal", "label": "Dødt skadedyr" },
+		{ "id": "gnawing", "label": "Gnav eller beskadiget emballage" },
+		{ "id": "insects", "label": "Insekter" },
+		{ "id": "other", "label": "Andet eller mistanke" }
+	],
+	"areas": [
+		{
+			"id": "kitchen",
+			"label": "Køkken / produktion",
+			"status": "example_requires_confirmation",
+			"prevention": [
+				"Hold døre, gennemføringer og afløb sikrede.",
+				"Fjern spild og fødevarerester løbende.",
+				"Se efter spor bag og under inventar."
+			],
+			"incidentActions": [
+				"Stop arbejdet i det berørte område og beskyt eller flyt fødevarer.",
+				"Afgræns hvilke flader, redskaber og varer der kan være påvirket.",
+				"Rengør og desinficér efter en konkret plan før genåbning."
+			]
+		},
+		{
+			"id": "storage",
+			"label": "Lager",
+			"status": "example_requires_confirmation",
+			"prevention": [
+				"Opbevar varer fri af gulv og med mulighed for inspektion langs vægge.",
+				"Kontrollér emballage for huller, gnav og spor.",
+				"Hold området ryddeligt og fjern pap og affald løbende."
+			],
+			"incidentActions": [
+				"Isolér varer og emballage i det berørte område.",
+				"Vurdér konkret, om varer kan være kontaminerede.",
+				"Registrér kassation, rengøring og eventuel kontakt til bekæmpelsesfirma."
+			]
+		},
+		{
+			"id": "waste",
+			"label": "Affald og ydre adgang",
+			"status": "example_requires_confirmation",
+			"prevention": [
+				"Hold beholdere lukkede og området uden ophobet affald.",
+				"Kontrollér døre, sprækker og gennemføringer.",
+				"Placér affald, så det ikke giver adgang eller fødegrundlag tæt på lokalet."
+			],
+			"incidentActions": [
+				"Fjern fødegrundlag og afspær den mulige adgangsvej.",
+				"Undersøg de tilstødende indendørs områder for spor.",
+				"Bestil faglig bekæmpelse, hvis problemet ikke kan afgrænses sikkert."
+			]
+		}
+	],
+	"ratNotice": "Fund eller observation af rotter skal straks anmeldes til kommunen. Appen foretager ikke anmeldelsen.",
+	"sources": [
+		{
+			"label": "Skadedyr i fødevarevirksomheder",
+			"url": "https://foedevarestyrelsen.dk/lovstof/vejledninger/hygiejnevejledningen/18-skadedyr-i-foedevarevirksomheder"
+		},
+		{
+			"label": "Gode arbejdsgange er en del af din egenkontrol",
+			"url": "https://foedevarestyrelsen.dk/kost-og-foedevarer/start-og-drift-af-foedevarevirksomhed/egenkontrol-og-risikoanalyse/gode-arbejdsgange"
+		}
+	]
+}
