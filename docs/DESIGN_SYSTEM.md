@@ -167,6 +167,8 @@ Egenkontrolsystemets primære topnavigation bruger referenceprojektets mål uæn
 - Korttitlen står ofte sent i den vertikale rytme med metadata over og under.
 
 På listen over dagens kontroller åbnes den valgte kontrols inputpanel direkte under dens egen række. Et nyt tryk på samme kontrolrække lukker panelet igen. Panelet må ikke samles i bunden af listen, fordi den rumlige forbindelse mellem handling og kontrol ellers bliver uklar på iPad.
+
+Risikoanalysen vises som et sammenhængende dokument med stor titel, enkel indholdsfortegnelse, nummererede afsnit og tabeller adskilt af linjer. På smalle skærme må brede risikotabeller rulle vandret frem for at få cellerne presset sammen eller blive omdannet til dashboardkort.
 - Metadata vises som små definition lists med højrejusterede værdier.
 - Listetilstand bruger flade grids og lodrette separatorer i stedet for tabeller.
 - Detailsektioner adskilles typisk af overskrift plus bundborder.

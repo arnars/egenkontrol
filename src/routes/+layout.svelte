@@ -1,9 +1,14 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 	import '../styles/app.css';
 	import type { LayoutData } from './$types';
 
 	let { children, data }: { children: import('svelte').Snippet; data: LayoutData } = $props();
+
+	function navClass(active: boolean) {
+		return `flex h-8 items-center justify-center rounded-full font-mono text-[11px] tracking-widest uppercase no-underline transition ${active ? 'bg-ink text-paper' : 'text-muted hover:text-ink'}`;
+	}
 </script>
 
 <svelte:head>
@@ -27,17 +32,19 @@
 				>
 			</form>
 			<nav
-				class="grid w-72 grid-cols-2 rounded-full border border-line bg-paper p-1"
+				class="grid w-72 grid-cols-3 rounded-full border border-line bg-paper p-1"
 				aria-label="Primær navigation"
 			>
 				<a
-					class="flex h-8 items-center justify-center rounded-full bg-ink font-mono text-[11px] tracking-widest text-paper uppercase no-underline"
+					class={navClass(page.route.id === '/')}
 					href={resolve('/')}
-					aria-current="page">Kontroller</a
+					aria-current={page.route.id === '/' ? 'page' : undefined}>Kontroller</a
 				>
+				<a class={navClass(false)} href={`${resolve('/')}#historik`}>Historik</a>
 				<a
-					class="flex h-8 items-center justify-center rounded-full font-mono text-[11px] tracking-widest text-muted uppercase no-underline transition hover:text-ink"
-					href="#historik">Historik</a
+					class={navClass(page.route.id === '/risikoanalyse')}
+					href={resolve('/risikoanalyse')}
+					aria-current={page.route.id === '/risikoanalyse' ? 'page' : undefined}>Risiko</a
 				>
 			</nav>
 		{:else}

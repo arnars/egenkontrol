@@ -172,6 +172,7 @@ Database-schema, RLS og RPC'er sættes som udgangspunkt på pause i dette spor. 
 ## Fase 6 — dokumentation og tilsynsvisning
 
 - [ ] Understøt risikoanalyse
+- [x] Vis et JSON-baseret demonstrationsdokument for risikoanalysen
 - [ ] Understøt procedurer
 - [ ] Vis revisionshistorik
 - [ ] Implementér kontrolbesøgsvisning

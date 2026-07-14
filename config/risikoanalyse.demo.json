@@ -1,0 +1,206 @@
+{
+	"schemaVersion": 1,
+	"id": "risk-analysis-demo-pasta-fasta",
+	"title": "Risikoanalyse",
+	"subject": "Pasta Fasta ApS",
+	"status": "demonstration",
+	"statusLabel": "Demonstrationsindhold",
+	"revision": 1,
+	"introduction": "Denne risikoanalyse bruges udelukkende til at demonstrere sidelayout og datastruktur. Indholdet beskriver Pasta Fasta ApS og er ikke tilpasset eller godkendt som risikoanalyse for Nabo Brejning.",
+	"sections": [
+		{
+			"id": "aktiviteter",
+			"number": "1",
+			"title": "Virksomhedens aktiviteter",
+			"blocks": [
+				{
+					"type": "paragraphs",
+					"paragraphs": [
+						"Pasta Fasta importerer tørret pasta fra producenter i Italien samt indkøber fra grossister i Danmark. Produkterne er færdigpakkede og stabile ved stuetemperatur.",
+						"Der foregår ingen madlavning, ingen håndtering af ubeskyttede fødevarer og ingen produktion af frisk pasta.",
+						"Produkterne sælges via webshop til forbrugere i Danmark."
+					]
+				}
+			]
+		},
+		{
+			"id": "risici-og-styring",
+			"number": "2",
+			"title": "Identificerede risici og styring",
+			"blocks": [],
+			"subsections": [
+				{
+					"id": "modtagelse-og-leverandoerer",
+					"number": "2.1",
+					"title": "Modtagelse og leverandører",
+					"blocks": [
+						{
+							"type": "table",
+							"columns": ["Aktivitet", "Mulige risici", "Vurdering", "Forebyggelse / styring", "Kontrol / dokumentation"],
+							"rows": [
+								["Modtagelse af varer fra leverandører", "Varer lever ikke op til fødevaresikkerhedskrav", "Lav", "Varer købes kun fra EU-producenter eller danske grossister, der er registreret og godkendt hos lokale myndigheder.", "Gem leverandørdokumentation og fakturaer"],
+								["Leverandørvalg og nye produkter", "Leverandør lever ikke op til EU-regler eller hygiejnekrav", "Middel", "Kun EU-leverandører med fødevaregodkendelse. Indhent kopi af certifikater.", "Leverandørarkiv og certifikater gemmes digitalt"],
+								["Transport fra leverandører/grossister", "Produkt beskadiget under transport eller udsat for fugt", "Lav", "Krav om lukket, tørt transportmiddel. Kontrol ved modtagelse af fugt, beskadigelse og korrekt mærkning.", "Modtagekontrolskema"]
+							]
+						}
+					]
+				},
+				{
+					"id": "opbevaring",
+					"number": "2.2",
+					"title": "Opbevaring",
+					"blocks": [
+						{
+							"type": "table",
+							"columns": ["Aktivitet", "Mulige risici", "Vurdering", "Forebyggelse / styring", "Kontrol / dokumentation"],
+							"rows": [
+								["Opbevaring af tørret pasta", "Fugt, skadedyr og forurening fra omgivelser", "Lav", "Lager holdes tørt, rent og skadedyrssikret. Varer opbevares på hylder og ikke direkte på gulv.", "Rengøringsplan og visuel kontrol"],
+								["Temperatur og fugt i lager", "Høj luftfugtighed kan føre til mug", "Lav", "Daglig automatiseret måling af temperatur og fugtniveau", "Fugt- og temperaturlog"],
+								["Skadedyr", "Forurening fra insekter eller mus", "Lav", "Skadedyrskontrol, tjek af eventuelle fælder og tætning af sprækker.", "Skadedyrslog"],
+								["Rengøringsmidler", "Risiko for kemisk forurening", "Lav", "Rengøringsmidler opbevares separat fra fødevarer.", "Placeringen kontrolleres månedligt"]
+							]
+						}
+					]
+				},
+				{
+					"id": "ompaakning-og-maerkning",
+					"number": "2.3",
+					"title": "Ompakning og mærkning",
+					"blocks": [
+						{
+							"type": "table",
+							"columns": ["Aktivitet", "Mulige risici", "Vurdering", "Forebyggelse / styring", "Kontrol / dokumentation"],
+							"rows": [
+								["Ompakning/mærkning", "Krydsforurening, allergenmærkning og fejl i datomærkning", "Lav", "Ingen ubeskyttede fødevarer håndteres. Arbejdsflader rengøres før brug. Etiketter kontrolleres, især allergener.", "Visuel kontrol"],
+								["Mærkningssystem (one source of truth)", "Fejl i batch- eller holdbarhedsoverførsel. Forveksling mellem partier", "Middel", "Klare rutiner for overførsel af dato/batch. Én varetype ad gangen på bordet.", "Mærkningssystem (one source of truth)"],
+								["Fejl i økologimærkning", "Ulovlig brug af logo eller forkert kontrolkode", "Middel", "Kun anvende leverandørens økoetiket uændret eller få godkendelse af ny etiket.", "Kontrol mod certifikat"],
+								["Pasta med æg", "Allergirisiko og mikrobiologisk risiko (salmonella)", "Meget lav", "Kun tørret pasta, der er stabil ved stuetemperatur. Allergenet ÆG angives tydeligt på emballagen.", "Leverandørerklæring og mærkningskontrol"]
+							]
+						}
+					]
+				},
+				{
+					"id": "forsendelse-og-distribution",
+					"number": "2.4",
+					"title": "Forsendelse og distribution",
+					"blocks": [
+						{
+							"type": "table",
+							"columns": ["Aktivitet", "Mulige risici", "Vurdering", "Forebyggelse / styring", "Kontrol / dokumentation"],
+							"rows": [
+								["Transport til forbrugere (forsendelse)", "Varer udsat for varme/fugt under transport. Emballagen går op.", "Lav", "Produkterne tåler stuetemperatur. Pakkes i tørre papkasser med fyldelementer.", "Visuel kontrol ved pakning og stikprøvekontrol"],
+								["Returforsendelser", "Risiko for sammenblanding af returnerede varer", "Lav", "Returnerede varer destrueres og gensælges ikke.", "Log over returnerede varer"],
+								["Fejl i sporbarhed / tilbagekaldelse", "Manglende overblik ved fejl eller klage", "Lav", "Batchnumre gemmes og angives, hvor det er nyttigt.", "Lagerlog og mærkningssystem (one source of truth)"]
+							]
+						}
+					]
+				},
+				{
+					"id": "generelle-forhold",
+					"number": "2.5",
+					"title": "Generelle forhold",
+					"blocks": [
+						{
+							"type": "table",
+							"columns": ["Aktivitet", "Mulige risici", "Vurdering", "Forebyggelse / styring", "Kontrol / dokumentation"],
+							"rows": [
+								["Rengøring og hygiejne", "Ophobning af støv, insekter og skadedyr", "Lav", "Regelmæssig rengøring og skadedyrskontrol. Ingen åbne fødevarer.", "Rengøringsplan og log"],
+								["Personlig hygiejne", "Overførsel af snavs eller allergener fra hænder/tøj", "Lav", "Håndvask, rent arbejdstøj og ingen mad i området.", "Visuel kontrol"],
+								["Besøgende / eksterne håndværkere", "Indslæbning af snavs eller skadedyr", "Lav", "Besøgende ledsages og informeres; adskillelse opretholdes.", "Notat i log ved større arbejder"]
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "allergener",
+			"number": "3",
+			"title": "Allergener",
+			"blocks": [
+				{
+					"type": "paragraphs",
+					"paragraphs": [
+						"Ægpasta indeholder allergenet ÆG. Øvrige pastatyper indeholder allergenet GLUTEN. Eventuelle fremtidige produkter undersøges og noteres for potentielle allergener samt spor af.",
+						"Alle allergener mærkes tydeligt på emballagen og i webshoppen."
+					]
+				}
+			]
+		},
+		{
+			"id": "sporbarhed",
+			"number": "4",
+			"title": "Sporbarhed og tilbagetrækning",
+			"blocks": [
+				{
+					"type": "paragraphs",
+					"paragraphs": [
+						"Alle produkter kan spores ét led tilbage til leverandøren og ét led frem til kunden via ordren.",
+						"Batchnummer eller leverandørnavn registreres i webshoppen via produktmetadata og udgør et one source of truth-system.",
+						"Ved fejl eller klager stoppes salg straks, og Fødevarestyrelsen informeres efter behov."
+					]
+				}
+			]
+		},
+		{
+			"id": "generel-egenkontrol",
+			"number": "5",
+			"title": "Generel egenkontrol og rengøring",
+			"blocks": [
+				{
+					"type": "table",
+					"columns": ["Område", "Frekvens", "Hvad kontrolleres", "Dokumentation"],
+					"rows": [
+						["Lager", "Ugentligt", "Rent, tørt og uden skadedyr", "Tjekliste"],
+						["Pakkeområde", "Efter brug", "Rengøring og oprydning", "Log"],
+						["Leverandørdokumentation", "Ved nye produkter", "Certifikater, mærkninger og ingredienslister", "Gemmes digitalt"]
+					]
+				}
+			]
+		},
+		{
+			"id": "risikoniveau",
+			"number": "6",
+			"title": "Vurdering af risikoniveau",
+			"blocks": [
+				{
+					"type": "paragraphs",
+					"paragraphs": [
+						"Virksomheden håndterer lavrisikofødevarer (tørrede produkter), og risikoen for fødevarebårne sygdomme vurderes som meget lav.",
+						"De væsentligste risici relaterer sig til allergenmærkning og fugt/skadedyr i lagerområdet, som håndteres med enkle og effektive procedurer."
+					]
+				}
+			]
+		},
+		{
+			"id": "lokaler-og-hygiejne",
+			"number": "7",
+			"title": "Lokaler og hygiejne",
+			"blocks": [
+				{
+					"type": "paragraphs",
+					"paragraphs": [
+						"Virksomheden råder over et mindre lager- og pakkerum, der bruges til opbevaring og håndtering af færdigemballerede, tørrede fødevarer. Lokalet er tørt, rent og egnet til fødevareopbevaring.",
+						"Der findes et toilet i umiddelbar nærhed af pakkelokalet, men det er afskærmet med et lille forrum bestående af en plastforhængsløsning, så der er fysisk adskillelse mellem toilet og fødevareområde.",
+						"Toiletdøren åbner udad, men området foran døren er afskærmet, så der ikke er direkte forbindelse mellem toiletrum og fødevarer.",
+						"Der er håndvask med varmt og koldt vand, sæbe og engangspapir i nærheden af pakkeområdet, og hygiejne opretholdes ved faste rengøringsrutiner og tjeklister."
+					]
+				}
+			]
+		},
+		{
+			"id": "konklusion",
+			"number": "8",
+			"title": "Konklusion",
+			"blocks": [
+				{
+					"type": "paragraphs",
+					"paragraphs": [
+						"Pasta Fasta har gennemført en risikoanalyse, der viser, at virksomhedens aktiviteter med import, opbevaring, pakning og salg af tørret pasta, inklusive ægpasta, kan udføres fødevaresikkert ved overholdelse af de beskrevne procedurer.",
+						"Dokumentet forevises ved Fødevarestyrelsens første kontrolbesøg."
+					]
+				}
+			]
+		}
+	]
+}

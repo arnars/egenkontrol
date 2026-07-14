@@ -6,6 +6,8 @@
 
 `config/egenkontrol.schema.json` beskriver den maskinlæsbare struktur. Når applikationen senere oprettes, skal JSON Schema suppleres med Zod-validering og krydsreferencetjek.
 
+`config/risikoanalyse.demo.json` er et separat, versioneret demonstrationsdokument til risikoanalysesiden. Det indeholder afsnits- og tabeldata fra Pasta Fasta-eksemplet og må ikke behandles som Nabo Brejnings risikoanalyse. Dokumentformatet består af sektioner med generiske tekst- og tabelblokke, så det faktiske indhold senere kan udskiftes uden at ændre sidelayoutet. Runtime-validering og revisionslagring af virksomhedens endelige dokument tilføjes ved integrationscheckpointet.
+
 Virksomhedens egne valg ligger separat i `config/virksomhed.example.json`, valideret af `config/virksomhed.schema.json`. Kopiér senere eksemplet til en virksomhedsfil og redigér den frem for at ændre startkataloget direkte. Det gør det muligt at opdatere kataloget og sammenligne versioner uden at overskrive lokale valg.
 
 Nabo Brejnings aktuelle udkast ligger i `config/virksomhed.json`. Eksempelfilen bevares som neutral skabelon.
