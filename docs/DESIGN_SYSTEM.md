@@ -166,7 +166,7 @@ Egenkontrolsystemets primære topnavigation bruger referenceprojektets mål uæn
 - Særlige/utility-kort bruger `accent-soft` med lavere opacity og `line`-border.
 - Korttitlen står ofte sent i den vertikale rytme med metadata over og under.
 
-På listen over dagens kontroller åbnes den valgte kontrols inputpanel direkte under dens egen række. Panelet må ikke samles i bunden af listen, fordi den rumlige forbindelse mellem handling og kontrol ellers bliver uklar på iPad.
+På listen over dagens kontroller åbnes den valgte kontrols inputpanel direkte under dens egen række. Et nyt tryk på samme kontrolrække lukker panelet igen. Panelet må ikke samles i bunden af listen, fordi den rumlige forbindelse mellem handling og kontrol ellers bliver uklar på iPad.
 - Metadata vises som små definition lists med højrejusterede værdier.
 - Listetilstand bruger flade grids og lodrette separatorer i stedet for tabeller.
 - Detailsektioner adskilles typisk af overskrift plus bundborder.

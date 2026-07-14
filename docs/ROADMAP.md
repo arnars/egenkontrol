@@ -121,6 +121,7 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 - [ ] Tilføj en lokal scenarievælger til UI- og iPad-afprøvning
 - [ ] Refaktorér dagens kontrolflade til fixture-adapteren uden databaseændringer
 - [x] Vis kontrolinput direkte under den valgte kontrolrække
+- [x] Lad den aktive kontrolrække lukke sit inputpanel igen
 - [x] Tilpas topnavigation og venstre headerkant til den visuelle reference
 - [ ] Stabiliser de prioriterede flows før næste databasefase
 

@@ -79,6 +79,11 @@
 	let todayLabel = $derived(dayLabel(data.today));
 
 	function openControl(id: string) {
+		if (activeControlId === id) {
+			activeControlId = null;
+			return;
+		}
+
 		dayOmissionOpen = false;
 		dayOmissionError = '';
 		activeControlId = id;
@@ -409,6 +414,7 @@
 						<button
 							class="flex min-h-19 w-full cursor-pointer items-center justify-between gap-4 border-0 border-b border-line bg-transparent px-2 py-3.5 text-left text-ink hover:bg-soft disabled:cursor-not-allowed disabled:opacity-50"
 							disabled={!control.scheduledControlId}
+							aria-expanded={activeControlId === control.id}
 							onclick={() => openControl(control.id)}
 						>
 							<span class="grid gap-1">
