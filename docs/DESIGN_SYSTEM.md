@@ -158,11 +158,15 @@ Navigationen ligger øverst og er centreret i indholdscontaineren. Hovedvalgene 
 
 Den aktive pill flyttes på `200ms ease-out`; navigationen venter `120ms` før route-skift, så bevægelsen ses. Egenkontrolsystemet bør bevare det diskrete topnavigationsprincip, men informationsarkitekturen og touchmål skal valideres for flere funktioner.
 
+Egenkontrolsystemets primære topnavigation bruger referenceprojektets mål uændret på både desktop og tablet: `18rem` samlet bredde, `0.25rem` indvendig padding, `2rem` linkhøjde og mono `11px`. Det er en bevidst undtagelse fra de større trykflader i de daglige kontrolflows. Den separate **Log ud**-handling bruger samme `2rem` højde og `11px` typografi uden vandret padding, så teksten flugter med indholdscontainerens venstre kant.
+
 ## Kort og paneler
 
 - Normale kort bruger `paper`-baggrund, `1.5rem` padding og ingen border eller skygge.
 - Særlige/utility-kort bruger `accent-soft` med lavere opacity og `line`-border.
 - Korttitlen står ofte sent i den vertikale rytme med metadata over og under.
+
+På listen over dagens kontroller åbnes den valgte kontrols inputpanel direkte under dens egen række. Panelet må ikke samles i bunden af listen, fordi den rumlige forbindelse mellem handling og kontrol ellers bliver uklar på iPad.
 - Metadata vises som små definition lists med højrejusterede værdier.
 - Listetilstand bruger flade grids og lodrette separatorer i stedet for tabeller.
 - Detailsektioner adskilles typisk af overskrift plus bundborder.

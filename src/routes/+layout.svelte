@@ -20,23 +20,23 @@
 >
 	<header class="mb-14 flex items-center justify-between gap-4 pb-4 max-[720px]:mb-8 print:hidden">
 		{#if data.claims}
-			<form method="POST" action="/auth/logout">
+			<form class="m-0" method="POST" action="/auth/logout">
 				<button
-					class="min-h-11 cursor-pointer border-0 bg-transparent px-4 font-mono text-[.72rem] tracking-[.11em] text-muted uppercase"
+					class="flex h-8 cursor-pointer items-center justify-center border-0 bg-transparent p-0 font-mono text-[11px] tracking-widest text-muted uppercase transition hover:text-ink"
 					type="submit">Log ud</button
 				>
 			</form>
 			<nav
-				class="grid w-72 grid-cols-2 rounded-full border border-line bg-paper p-1 max-[720px]:w-[min(18rem,calc(100vw-2.5rem))]"
+				class="grid w-72 grid-cols-2 rounded-full border border-line bg-paper p-1"
 				aria-label="Primær navigation"
 			>
 				<a
-					class="flex min-h-11 items-center justify-center rounded-full bg-ink font-mono text-[.7rem] tracking-[.12em] text-paper uppercase no-underline"
+					class="flex h-8 items-center justify-center rounded-full bg-ink font-mono text-[11px] tracking-widest text-paper uppercase no-underline"
 					href={resolve('/')}
 					aria-current="page">Kontroller</a
 				>
 				<a
-					class="flex min-h-11 items-center justify-center rounded-full font-mono text-[.7rem] tracking-[.12em] text-muted uppercase no-underline"
+					class="flex h-8 items-center justify-center rounded-full font-mono text-[11px] tracking-widest text-muted uppercase no-underline transition hover:text-ink"
 					href="#historik">Historik</a
 				>
 			</nav>

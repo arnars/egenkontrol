@@ -120,6 +120,8 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 - [ ] Opret Zod-validerede fixtures for normale forløb, afvigelser og fejl
 - [ ] Tilføj en lokal scenarievælger til UI- og iPad-afprøvning
 - [ ] Refaktorér dagens kontrolflade til fixture-adapteren uden databaseændringer
+- [x] Vis kontrolinput direkte under den valgte kontrolrække
+- [x] Tilpas topnavigation og venstre headerkant til den visuelle reference
 - [ ] Stabiliser de prioriterede flows før næste databasefase
 
 Database-schema, RLS og RPC'er sættes som udgangspunkt på pause i dette spor. Nye databaseændringer kræver et eksplicit integrationscheckpoint eller en kritisk sikkerheds-/integritetsrettelse.
