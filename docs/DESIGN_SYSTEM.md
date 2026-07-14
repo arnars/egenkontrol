@@ -158,7 +158,7 @@ Navigationen ligger øverst og er centreret i indholdscontaineren. Hovedvalgene 
 
 Den aktive pill flyttes på `200ms ease-out`; navigationen venter `120ms` før route-skift, så bevægelsen ses. Egenkontrolsystemet bør bevare det diskrete topnavigationsprincip, men informationsarkitekturen og touchmål skal valideres for flere funktioner.
 
-Egenkontrolsystemets primære topnavigation bruger referenceprojektets mål uændret på både desktop og tablet: `18rem` samlet bredde, `0.25rem` indvendig padding, `2rem` linkhøjde og mono `11px`. Det er en bevidst undtagelse fra de større trykflader i de daglige kontrolflows. Den separate **Log ud**-handling bruger samme `2rem` højde og `11px` typografi uden vandret padding, så teksten flugter med indholdscontainerens venstre kant.
+Egenkontrolsystemets primære topnavigation bruger referenceprojektets form, padding, linkhøjde og typografi, men er udvidet fra `18rem` til `24rem`, fordi tre destinationer blev for tætte. Den bruger fortsat `0.25rem` indvendig padding, `2rem` linkhøjde og mono `11px`. På smalle telefonformater fylder navigationen containerens bredde og placeres under **Log ud**. Den separate **Log ud**-handling bruger samme `2rem` højde og `11px` typografi uden vandret padding, så teksten flugter med indholdscontainerens venstre kant.
 
 ## Kort og paneler
 
@@ -168,9 +168,9 @@ Egenkontrolsystemets primære topnavigation bruger referenceprojektets mål uæn
 
 På listen over dagens kontroller åbnes den valgte kontrols inputpanel direkte under dens egen række. Et nyt tryk på samme kontrolrække lukker panelet igen. Panelet må ikke samles i bunden af listen, fordi den rumlige forbindelse mellem handling og kontrol ellers bliver uklar på iPad.
 
-Risikoanalysen vises som et sammenhængende dokument med stor titel, enkel indholdsfortegnelse, nummererede afsnit og tabeller adskilt af linjer. På smalle skærme må brede risikotabeller rulle vandret frem for at få cellerne presset sammen eller blive omdannet til dashboardkort.
+Risikoanalyse og arbejdsgangsplaner bruger én fælles dokumentheader udledt af opskriftssitet: stor sans-serif `text-5xl/7xl`, semibold vægt, tæt tracking, mono-status og en kort introduktion i højre kolonne. Serif forbeholdes længere brødtekst. Tabeller bruger én fælles komponent med samme kolonneoverskrifter, cellepadding, linjer, typografi og minimumsbredde; på smalle skærme ruller de vandret frem for at blive omdannet til dashboardkort.
 
-Topnavigationens tre pladser er **Kontroller**, **Planer** og **Risiko**. Planer samler rengøring, skadedyr og varemodtagelse på en enkel indeksvisning, så referencebredden på `18rem` kan bevares. Rengøring læses som et statisk dokument. Skadedyr og varemodtagelse viser den statiske arbejdsgang først og åbner kun en formular ved en konkret hændelse eller fejl.
+Topnavigationens tre pladser er **Kontroller**, **Planer** og **Risiko**. Planer samler rengøring, personlig hygiejne, adskillelse, skadedyr og varemodtagelse på en enkel indeksvisning. De første tre læses som statiske dokumenter. Skadedyr og varemodtagelse viser den statiske arbejdsgang først og åbner kun en formular ved en konkret hændelse eller fejl.
 - Metadata vises som små definition lists med højrejusterede værdier.
 - Listetilstand bruger flade grids og lodrette separatorer i stedet for tabeller.
 - Detailsektioner adskilles typisk af overskrift plus bundborder.

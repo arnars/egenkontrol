@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import DocumentHeader from '$lib/components/DocumentHeader.svelte';
 
 	const pages = [
 		{
@@ -7,6 +8,18 @@
 			description: 'Statisk plan for områder, metode, frekvens og kontrol.',
 			href: '/rengoering',
 			kind: 'Plan'
+		},
+		{
+			title: 'Personlig hygiejne',
+			description: 'Håndhygiejne, arbejdstøj, sygdom, sår og besøgende.',
+			href: '/personlig-hygiejne',
+			kind: 'Arbejdsgang'
+		},
+		{
+			title: 'Adskillelse',
+			description: 'Opbevaring, klargøring og forebyggelse af krydskontamination.',
+			href: '/adskillelse',
+			kind: 'Arbejdsgang'
 		},
 		{
 			title: 'Skadedyr',
@@ -28,18 +41,11 @@
 	<meta name="description" content="Arbejdsgange og hændelser i Nabo Brejnings egenkontrol." />
 </svelte:head>
 
-<header class="border-b border-line pb-12">
-	<p class="mb-4 font-mono text-[11px] tracking-widest text-muted uppercase">Arbejdsgange</p>
-	<h1
-		class="m-0 font-serif text-[clamp(3rem,7vw,6.5rem)] leading-[.88] font-normal tracking-[-.055em]"
-	>
-		Planer
-	</h1>
-	<p class="mt-6 mb-0 max-w-2xl font-sans text-lg leading-relaxed text-muted">
-		Her ligger de arbejdsgange, som ikke skal fylde i den daglige kontrolliste. Der registreres kun
-		noget, når den konkrete plan eller en hændelse kræver det.
-	</p>
-</header>
+<DocumentHeader
+	eyebrow="Arbejdsgange"
+	title="Planer"
+	introduction="Her ligger de arbejdsgange, som ikke skal fylde i den daglige kontrolliste. Der registreres kun noget, når den konkrete plan eller en hændelse kræver det."
+/>
 
 <nav class="grid" aria-label="Planer og hændelser">
 	{#each pages as item}

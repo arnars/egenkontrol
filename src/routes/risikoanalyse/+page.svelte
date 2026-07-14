@@ -1,4 +1,6 @@
 <script lang="ts">
+	import DocumentHeader from '$lib/components/DocumentHeader.svelte';
+	import DocumentTable from '$lib/components/DocumentTable.svelte';
 	import type { RiskAnalysisBlock, RiskAnalysisSection } from '$lib/domain/risk-analysis';
 	import type { PageData } from './$types';
 
@@ -15,24 +17,12 @@
 </svelte:head>
 
 <article>
-	<header
-		class="grid gap-7 border-b border-line pb-12 md:grid-cols-[minmax(0,1fr)_18rem] md:items-end"
-	>
-		<div>
-			<p class="mb-4 font-mono text-[11px] tracking-widest text-muted uppercase">
-				{document.statusLabel} · Revision {document.revision}
-			</p>
-			<h1
-				class="m-0 max-w-3xl font-serif text-[clamp(3rem,7vw,6.5rem)] leading-[.88] font-normal tracking-[-.055em]"
-			>
-				{document.title}
-			</h1>
-			<p class="mt-5 mb-0 font-sans text-lg text-muted">{document.subject}</p>
-		</div>
-		<p class="m-0 border-l-2 border-ink pl-5 font-sans text-[.95rem] leading-relaxed text-muted">
-			{document.introduction}
-		</p>
-	</header>
+	<DocumentHeader
+		eyebrow={`${document.statusLabel} · Revision ${document.revision}`}
+		title={document.title}
+		subtitle={document.subject}
+		introduction={document.introduction}
+	/>
 
 	<nav class="border-b border-line py-8" aria-label="Indhold i risikoanalysen">
 		<ol class="m-0 grid list-none gap-x-8 gap-y-2 p-0 sm:grid-cols-2 lg:grid-cols-4">
@@ -104,33 +94,6 @@
 			{/each}
 		</div>
 	{:else}
-		<div class="my-1 overflow-x-auto border-y border-line">
-			<table
-				class="w-full min-w-[860px] table-fixed border-collapse text-left font-sans text-sm leading-relaxed"
-			>
-				<thead>
-					<tr class="border-b border-ink">
-						{#each block.columns as column}
-							<th
-								class="px-3 py-3 align-bottom font-mono text-[10px] tracking-wider text-muted uppercase first:pl-0 last:pr-0"
-							>
-								{column}
-							</th>
-						{/each}
-					</tr>
-				</thead>
-				<tbody>
-					{#each block.rows as row}
-						<tr class="border-b border-line last:border-0">
-							{#each row as cell, index}
-								<td class="px-3 py-4 align-top first:pl-0 last:pr-0" class:font-medium={index === 0}
-									>{cell}</td
-								>
-							{/each}
-						</tr>
-					{/each}
-				</tbody>
-			</table>
-		</div>
+		<DocumentTable columns={block.columns} rows={block.rows} />
 	{/if}
 {/snippet}

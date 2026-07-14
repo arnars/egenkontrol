@@ -3,6 +3,22 @@ export type SourceLink = {
 	url: string;
 };
 
+export type StaticPracticePlan = {
+	schemaVersion: number;
+	id: string;
+	title: string;
+	status: 'draft' | 'approved';
+	statusLabel: string;
+	introduction: string;
+	sections: Array<{
+		id: string;
+		title: string;
+		description?: string;
+		items: string[];
+	}>;
+	sources: SourceLink[];
+};
+
 export type CleaningPlan = {
 	schemaVersion: number;
 	id: string;

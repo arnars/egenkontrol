@@ -1,0 +1,63 @@
+{
+	"schemaVersion": 1,
+	"id": "personal-hygiene-demo-nabo-brejning",
+	"title": "Personlig hygiejne",
+	"status": "draft",
+	"statusLabel": "Udkast — skal tilpasses",
+	"introduction": "Arbejdsgangen beskriver de fælles hygiejneprincipper for personer, der arbejder med eller opholder sig nær fødevarer. Den skal gennemgås mod Nabo Brejnings faktiske bemanding, arbejdsopgaver og faciliteter.",
+	"sections": [
+		{
+			"id": "haandhygiejne",
+			"title": "Håndhygiejne",
+			"description": "Håndvask skal kunne udføres korrekt og på de tidspunkter, hvor arbejdet kræver det.",
+			"items": [
+				"Vask hænder før fødevarearbejde og efter urene arbejdsopgaver.",
+				"Vask hænder efter toiletbesøg, affaldshåndtering, rengøring og andre forhold med risiko for forurening.",
+				"Hold håndvask, sæbe og egnet håndtørring tilgængelig.",
+				"Handsker erstatter ikke håndvask og skal skiftes, når arbejdsopgaven kræver det."
+			]
+		},
+		{
+			"id": "arbejdstoej",
+			"title": "Arbejdstøj og personlig orden",
+			"description": "Beklædning og personlig fremtoning må ikke være en kilde til forurening.",
+			"items": [
+				"Brug rent arbejdstøj, der passer til arbejdsopgaven.",
+				"Skift eller beskyt arbejdstøjet ved overgang fra en uren til en renere arbejdsopgave.",
+				"Hold hår samlet eller dækket, når arbejdet gør det nødvendigt.",
+				"Opbevar private ejendele adskilt fra fødevarer og rene arbejdsområder."
+			]
+		},
+		{
+			"id": "sygdom-og-saar",
+			"title": "Sygdom og sår",
+			"description": "Personer, der kan overføre sygdom til fødevarer, må ikke udføre opgaver, hvor fødevarer kan blive forurenet.",
+			"items": [
+				"Meld symptomer eller sygdom, der kan have betydning for fødevaresikkerheden, til den ansvarlige.",
+				"Flyt eller stop fødevarearbejde, når en konkret vurdering viser risiko for forurening.",
+				"Dæk sår forsvarligt og vurder, om arbejdsopgaven kræver yderligere beskyttelse eller ændring.",
+				"Registrér kun en hændelse, hvis forholdet har eller kan have påvirket fødevarer; undgå unødige helbredsoplysninger."
+			]
+		},
+		{
+			"id": "besoegende",
+			"title": "Besøgende og håndværkere",
+			"description": "Andre personer i produktionsområdet skal følge de relevante hygiejneregler.",
+			"items": [
+				"Informér besøgende om de relevante regler før adgang til fødevareområder.",
+				"Beskyt eller flyt fødevarer under reparationer og andet arbejde.",
+				"Kontrollér og rengør området, før normal drift genoptages, hvis arbejdet kan have forurenet det."
+			]
+		}
+	],
+	"sources": [
+		{
+			"label": "Personlig hygiejne i fødevarevirksomheder",
+			"url": "https://foedevarestyrelsen.dk/lovstof/vejledninger/hygiejnevejledningen/21-personlig-hygiejne-i-foedevarevirksomheder"
+		},
+		{
+			"label": "Gode arbejdsgange er en del af din egenkontrol",
+			"url": "https://foedevarestyrelsen.dk/kost-og-foedevarer/start-og-drift-af-foedevarevirksomhed/egenkontrol-og-risikoanalyse/gode-arbejdsgange"
+		}
+	]
+}

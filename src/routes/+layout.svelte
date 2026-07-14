@@ -11,7 +11,14 @@
 	}
 
 	function isPlanRoute() {
-		return ['/planer', '/rengoering', '/skadedyr', '/varemodtagelse'].includes(page.route.id ?? '');
+		return [
+			'/planer',
+			'/rengoering',
+			'/personlig-hygiejne',
+			'/adskillelse',
+			'/skadedyr',
+			'/varemodtagelse'
+		].includes(page.route.id ?? '');
 	}
 </script>
 
@@ -27,7 +34,9 @@
 <div
 	class="mx-auto w-[min(1120px,calc(100vw-2rem))] py-12 pb-20 max-[720px]:w-[min(calc(100%-1.25rem),1120px)] max-[720px]:pt-5 print:w-auto print:p-0"
 >
-	<header class="mb-14 flex items-center justify-between gap-4 pb-4 max-[720px]:mb-8 print:hidden">
+	<header
+		class="mb-14 flex items-center justify-between gap-4 pb-4 max-[720px]:mb-8 max-[560px]:flex-col max-[560px]:items-stretch print:hidden"
+	>
 		{#if data.claims}
 			<form class="m-0" method="POST" action="/auth/logout">
 				<button
@@ -36,7 +45,7 @@
 				>
 			</form>
 			<nav
-				class="grid w-72 grid-cols-3 rounded-full border border-line bg-paper p-1"
+				class="grid w-96 grid-cols-3 rounded-full border border-line bg-paper p-1 max-[560px]:w-full"
 				aria-label="Primær navigation"
 			>
 				<a

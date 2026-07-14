@@ -1,0 +1,64 @@
+{
+	"schemaVersion": 1,
+	"id": "separation-cross-contamination-demo-nabo-brejning",
+	"title": "Adskillelse",
+	"status": "draft",
+	"statusLabel": "Udkast — procesflow skal tilpasses",
+	"introduction": "Arbejdsgangen skal forebygge, at bakterier, snavs eller andre uønskede forhold overføres mellem råvarer, spiseklare fødevarer, udstyr og arbejdsområder. Den konkrete løsning skal følge Nabo Brejnings faktiske køkken og produktion.",
+	"sections": [
+		{
+			"id": "opbevaring",
+			"title": "Opbevaring",
+			"description": "Varer placeres, så dryp, kontakt og forveksling ikke forurener andre fødevarer.",
+			"items": [
+				"Adskil råvarer fra spiseklare og færdigtilberedte fødevarer.",
+				"Placér varer i lukkede eller egnede beholdere, og beskyt dem mod dryp og kontakt.",
+				"Hold kemikalier, rengøringsmidler og affald adskilt fra fødevarer.",
+				"Fastlæg den konkrete placering i køleskabe, kølebord, frysere og lager."
+			]
+		},
+		{
+			"id": "klargoering",
+			"title": "Klargøring",
+			"description": "Rå og urene processer skal adskilles fra rene og spiseklare processer i rum, på arbejdsstationer, med redskaber eller i tid.",
+			"items": [
+				"Planlæg arbejdsrækkefølgen, så rene opgaver ikke følger urene uden nødvendig rengøring.",
+				"Brug særskilte redskaber eller rengør og desinficér mellem processer, når det er nødvendigt.",
+				"Undgå kontakt mellem rå råvarer og færdige retter via hænder, klude, redskaber og overflader.",
+				"Fjern affald og emballage fra arbejdsområdet uden at forurene fødevarer."
+			]
+		},
+		{
+			"id": "servering-og-pakning",
+			"title": "Servering og pakning",
+			"description": "Spiseklare fødevarer beskyttes efter tilberedning og frem til udlevering.",
+			"items": [
+				"Brug rene redskaber, beholdere og emballager til færdige fødevarer.",
+				"Beskyt maden mod kontakt med råvarer, urene flader og kundevendte genstande.",
+				"Hold rene og brugte redskaber tydeligt adskilt under service.",
+				"Registrér en hændelse, hvis en færdig vare kan være blevet forurenet."
+			]
+		},
+		{
+			"id": "afvigelse",
+			"title": "Ved mulig krydskontamination",
+			"description": "En konkret hændelse kræver stillingtagen til både de berørte fødevarer og årsagen.",
+			"items": [
+				"Stop og afgræns den berørte proces.",
+				"Identificér varer, flader, redskaber og beholdere, der kan være påvirket.",
+				"Tilbagehold, kassér eller frigiv kun varer efter en dokumenteret konkret vurdering.",
+				"Rengør og desinficér relevante områder, ret årsagen og dokumentér handlingen."
+			]
+		}
+	],
+	"sources": [
+		{
+			"label": "Krydskontamination i fødevarevirksomheder",
+			"url": "https://foedevarestyrelsen.dk/lovstof/vejledninger/hygiejnevejledningen/9-krydskontamination-i-foedevarevirksomheder"
+		},
+		{
+			"label": "Gode arbejdsgange er en del af din egenkontrol",
+			"url": "https://foedevarestyrelsen.dk/kost-og-foedevarer/start-og-drift-af-foedevarevirksomhed/egenkontrol-og-risikoanalyse/gode-arbejdsgange"
+		}
+	]
+}

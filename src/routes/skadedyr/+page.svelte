@@ -1,16 +1,23 @@
 <script lang="ts">
+	import DocumentHeader from '$lib/components/DocumentHeader.svelte';
+	import SourceFooter from '$lib/components/SourceFooter.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
 	let plan = $derived(data.plan);
 	let formOpen = $state(false);
-	let areaId = $state(plan.areas[0]?.id ?? '');
-	let incidentType = $state(plan.incidentTypes[0]?.id ?? '');
+	let areaId = $state('');
+	let incidentType = $state('');
 	let observation = $state('');
 	let productImpact = $state('unknown');
 	let selectedActions = $state<string[]>([]);
 	let savedMessage = $state('');
 	let activeArea = $derived(plan.areas.find((area) => area.id === areaId));
+
+	$effect(() => {
+		if (!areaId) areaId = data.plan.areas[0]?.id ?? '';
+		if (!incidentType) incidentType = data.plan.incidentTypes[0]?.id ?? '';
+	});
 
 	function changeArea(event: Event) {
 		areaId = (event.currentTarget as HTMLSelectElement).value;
@@ -32,23 +39,7 @@
 </svelte:head>
 
 <article>
-	<header
-		class="grid gap-7 border-b border-line pb-12 md:grid-cols-[minmax(0,1fr)_18rem] md:items-end"
-	>
-		<div>
-			<p class="mb-4 font-mono text-[11px] tracking-widest text-muted uppercase">
-				{plan.statusLabel}
-			</p>
-			<h1
-				class="m-0 font-serif text-[clamp(3rem,7vw,6.5rem)] leading-[.88] font-normal tracking-[-.055em]"
-			>
-				{plan.title}
-			</h1>
-		</div>
-		<p class="m-0 border-l-2 border-ink pl-5 font-sans text-[.95rem] leading-relaxed text-muted">
-			{plan.introduction}
-		</p>
-	</header>
+	<DocumentHeader eyebrow={plan.statusLabel} title={plan.title} introduction={plan.introduction} />
 
 	{#if savedMessage}
 		<p class="my-6 border-l-2 border-ink bg-paper px-5 py-4 font-sans text-sm" role="status">
@@ -196,13 +187,5 @@
 		</div>
 	</section>
 
-	<footer class="border-t border-line py-8 font-sans text-sm text-muted">
-		<span class="mr-4 font-mono text-[10px] tracking-wider uppercase">Fagligt grundlag</span>
-		{#each plan.sources as source, index}
-			<a
-				class="text-muted underline decoration-line underline-offset-4 hover:text-ink"
-				href={source.url}>{source.label}</a
-			>{index < plan.sources.length - 1 ? ' · ' : ''}
-		{/each}
-	</footer>
+	<SourceFooter sources={plan.sources} />
 </article>
