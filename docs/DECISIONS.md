@@ -206,6 +206,25 @@ De normale `operatingWeekdays` bevares. De beskriver den forventede uge, mens **
 
 Historikken kan skelne mellem en udført måling, en begrundet dag uden måling og en reelt manglende kontrol. Årsager kan justeres i `config/virksomhed.json` uden at omskrive tidligere labels. Noter bør ikke indeholde unødige personfølsomme oplysninger.
 
+## ADR-012: Frontend-first iteration med dokumenteret kontrakt
+
+- **Status:** Accepteret
+- **Dato:** 2026-07-14
+
+### Kontekst
+
+Supabase-forbindelse, Auth, RLS, migrationer og temperaturkontrollens revisionskæde er teknisk valideret. De daglige arbejdsgange og det visuelle interface kræver fortsat hurtig iteration. Hvis hver ændring i et endnu ustabilt flow samtidig udløser en databaseændring, bliver iterationen langsom og skaber unødige migrationer.
+
+### Beslutning
+
+Den næste produktfase er frontend-first. UI'et udvikles mod kontrakten i `FRONTEND_DATA_CONTRACT.md`, realistiske fixtures og en adaptergrænse. Rene frontenditerationer må ikke ændre Supabase-schema eller RPC'er. Nye informationsbehov beskrives som read models og kommandoer, før persistensdesignet vælges.
+
+Databasearbejdet samles i et integrationscheckpoint, når de prioriterede flows og kontrakten er stabile. Ufravigelige krav til historik, atomaritet, identitet og adgangskontrol gælder fortsat i fixtures og kontrakt.
+
+### Konsekvenser
+
+Design og brugerflow kan afprøves hurtigere, inklusive fejl- og ventetilstande. Risikoen for drift mellem frontend og database håndteres med én autoritativ kontrakt, Zod-validerede fixtures og senere adapter-/integrationstests. Den nuværende databaseintegration bevares som teknisk reference, men udvides ikke løbende under frontendfasen.
+
 ## Skabelon til fremtidige ADR'er
 
 ```md

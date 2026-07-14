@@ -24,12 +24,13 @@ Detaljer, som ikke er besluttet i `docs/DECISIONS.md`, må ikke behandles som fa
 1. `AGENTS.md` fastlægger arbejdsregler.
 2. `docs/DOMAIN.md` fastlægger domænesprog og afgrænsning.
 3. `docs/DATA_MODEL.md` beskriver den foreløbige informationsmodel.
-4. `docs/RISK_ANALYSIS_DRAFT.md` er et arbejdsudkast og må ikke behandles som en godkendt risikoanalyse.
-5. `docs/DECISIONS.md` registrerer tekniske beslutninger.
-6. `docs/DESIGN_SYSTEM.md` bliver designets autoritative specifikation efter referenceanalysen.
-7. `docs/SOURCES.md` registrerer faglige kilder og deres påvirkning.
-8. `docs/CONFIGURATION.md` og `config/egenkontrol.defaults.json` beskriver det versionerede startkatalog; udkast må ikke behandles som godkendte regler.
-9. `docs/ROADMAP.md` rummer aktuelle og kortvarige opgaver. Sådanne opgaver må ikke lægges i denne fil.
+4. `docs/FRONTEND_DATA_CONTRACT.md` fastlægger frontendens read model, kommandoer og adaptergrænse i den frontend-fokuserede iterationsfase.
+5. `docs/RISK_ANALYSIS_DRAFT.md` er et arbejdsudkast og må ikke behandles som en godkendt risikoanalyse.
+6. `docs/DECISIONS.md` registrerer tekniske beslutninger.
+7. `docs/DESIGN_SYSTEM.md` bliver designets autoritative specifikation efter referenceanalysen.
+8. `docs/SOURCES.md` registrerer faglige kilder og deres påvirkning.
+9. `docs/CONFIGURATION.md` og `config/egenkontrol.defaults.json` beskriver det versionerede startkatalog; udkast må ikke behandles som godkendte regler.
+10. `docs/ROADMAP.md` rummer aktuelle og kortvarige opgaver. Sådanne opgaver må ikke lægges i denne fil.
 
 Ved konflikt skal den mest specifikke, godkendte beslutning bruges, og konflikten dokumenteres.
 
@@ -51,6 +52,8 @@ Primær enhed er en iPad i et køkkenmiljø. UI skal have store trykflader, fung
 - Valider input på serveren, håndhæv adgangskontrol server-side, og anvend mindst mulige privilegier.
 
 ## Database og migrationer
+
+Projektet er aktuelt i en frontend-first iterationsfase, jf. ADR-012. Som udgangspunkt udvikles nye brugerflows mod den dokumenterede frontend-kontrakt og fixtures uden schema-, RLS- eller RPC-ændringer. Databasearbejde samles i et eksplicit integrationscheckpoint, medmindre en kritisk sikkerheds- eller integritetsfejl kræver en korrigerende migration.
 
 - Enhver schemaændring skal have en gennemgåelig Drizzle-migration; ret ikke produktionsschema manuelt.
 - Migrationer skal være fremadrettede, deterministiske og så vidt muligt bagudkompatible.

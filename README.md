@@ -8,6 +8,8 @@ SvelteKit-fundamentet og de konfigurationsdrevne visninger "Dagens kontroller" o
 
 Den valgte retning er SvelteKit med TypeScript og Tailwind CSS 4 på Vercel, Supabase Postgres og Auth, Drizzle ORM, Zod, Vitest og Playwright. Første version er online-only. Det visuelle system er udledt af et eksisterende lokalt opskriftssite.
 
+Den aktuelle iterationsfase er frontend-first. Nye flows udvikles mod en dokumenteret datakontrakt og realistiske fixtures; databaseændringer samles ved et senere integrationscheckpoint, når interaktionerne er stabile.
+
 ## Dokumentation
 
 - [`docs/DOMAIN.md`](docs/DOMAIN.md) — domæne, begreber og åbne faglige spørgsmål
@@ -15,6 +17,7 @@ Den valgte retning er SvelteKit med TypeScript og Tailwind CSS 4 på Vercel, Sup
 - [`docs/ROADMAP.md`](docs/ROADMAP.md) — afkrydsningsbar projektplan
 - [`docs/DATA_MODEL.md`](docs/DATA_MODEL.md) — foreløbig datamodel og revisionsprincipper
 - [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md) — skabelon til analyse af designreferencen
+- [`docs/FRONTEND_DATA_CONTRACT.md`](docs/FRONTEND_DATA_CONTRACT.md) — frontendens read model, kommandoer, fejl og integrationsgrænse
 - [`docs/DECISIONS.md`](docs/DECISIONS.md) — tekniske beslutninger og åbne valg
 - [`docs/SOURCES.md`](docs/SOURCES.md) — myndigheds- og domænekilder
 - [`docs/LOCAL_SETUP.md`](docs/LOCAL_SETUP.md) — lokal kontekst og kommende miljøvariabler
@@ -26,6 +29,6 @@ Den valgte retning er SvelteKit med TypeScript og Tailwind CSS 4 på Vercel, Sup
 
 ## Næste trin
 
-1. Implementér ja/nej-kontroller og tjeklister.
-2. Implementér de hændelsesbaserede flows for opvarmning, nedkøling, varemodtagelse og varmholdelse.
-3. Fortsæt den faglige gennemgang af risikoanalyse, driftsdage og procedurer.
+1. Etablér fixture-adapteren og scenarierne fra frontend-kontrakten.
+2. Iterér på dagens kontroller og de hændelsesbaserede flows uden nye databaseændringer.
+3. Gennemfør et samlet integrationscheckpoint, når interface og arbejdsgange er stabile.

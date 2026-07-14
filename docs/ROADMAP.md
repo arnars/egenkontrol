@@ -112,6 +112,18 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 
 ## Fase 4 — MVP
 
+### Frontend-first iterationsspor
+
+- [x] Fastlæg frontend-first arbejdsform og integrationscheckpoint
+- [x] Dokumentér read model, kommandoer, resultater og persistenskrav
+- [ ] Etablér en typed adaptergrænse uden Supabase-begreber i komponenterne
+- [ ] Opret Zod-validerede fixtures for normale forløb, afvigelser og fejl
+- [ ] Tilføj en lokal scenarievælger til UI- og iPad-afprøvning
+- [ ] Refaktorér dagens kontrolflade til fixture-adapteren uden databaseændringer
+- [ ] Stabiliser de prioriterede flows før næste databasefase
+
+Database-schema, RLS og RPC'er sættes som udgangspunkt på pause i dette spor. Nye databaseændringer kræver et eksplicit integrationscheckpoint eller en kritisk sikkerheds-/integritetsrettelse.
+
 - [x] Implementér login
 - [ ] Implementér dagens kontroller
 - [x] Implementér ugeoverblik for temperaturkontroller med synlige lukkedage
