@@ -11,7 +11,9 @@
 
 	<div>
 		{#each plan.sections as section, index}
-			<section class="grid gap-7 border-b border-line py-10 lg:grid-cols-[12rem_minmax(0,1fr)]">
+			<section
+				class="grid gap-8 border-b border-line py-12 lg:grid-cols-[10rem_minmax(0,1fr)] lg:gap-12"
+			>
 				<header>
 					<p class="m-0 font-mono text-[11px] tracking-widest text-muted uppercase">
 						{String(index + 1).padStart(2, '0')}
@@ -22,11 +24,24 @@
 				</header>
 				<div class="max-w-3xl">
 					{#if section.description}
-						<p class="mt-0 font-serif text-[1.08rem] leading-[1.7]">{section.description}</p>
+						<p
+							class="mt-0 mb-6 border-l border-line pl-4 font-sans text-base leading-relaxed text-muted"
+						>
+							{section.description}
+						</p>
 					{/if}
-					<ul class="m-0 grid gap-3 pl-5 font-sans leading-relaxed">
-						{#each section.items as item}<li>{item}</li>{/each}
-					</ul>
+					<ol class="m-0 grid list-none gap-4 p-0">
+						{#each section.items as item, itemIndex}
+							<li class="flex gap-4">
+								<span class="mt-1.5 min-w-8 font-mono text-xs tracking-widest text-muted">
+									{String(itemIndex + 1).padStart(2, '0')}
+								</span>
+								<p class="m-0 flex-1 font-sans text-base leading-relaxed tracking-tight md:text-lg">
+									{item}
+								</p>
+							</li>
+						{/each}
+					</ol>
 				</div>
 			</section>
 		{/each}

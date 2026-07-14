@@ -170,6 +170,8 @@ På listen over dagens kontroller åbnes den valgte kontrols inputpanel direkte 
 
 Risikoanalyse og arbejdsgangsplaner bruger én fælles dokumentheader udledt af opskriftssitet: stor sans-serif `text-5xl/7xl`, semibold vægt, tæt tracking, mono-status og en kort introduktion i højre kolonne. Serif forbeholdes længere brødtekst. Tabeller bruger én fælles komponent med samme kolonneoverskrifter, cellepadding, linjer, typografi og minimumsbredde; på smalle skærme ruller de vandret frem for at blive omdannet til dashboardkort.
 
+Statiske arbejdsgange bruger opskriftssidens metodehierarki: en kort note i sans-serif og muted farve med venstrekant, efterfulgt af instruktioner med små mono-løbenumre. Tailwinds nulstilling af standard-listemarkører må ikke efterlade punkter som ustrukturerede, fritstående tekstlinjer.
+
 Topnavigationens tre pladser er **Kontroller**, **Planer** og **Risiko**. Planer samler rengøring, personlig hygiejne, adskillelse, skadedyr og varemodtagelse på en enkel indeksvisning. De første tre læses som statiske dokumenter. Skadedyr og varemodtagelse viser den statiske arbejdsgang først og åbner kun en formular ved en konkret hændelse eller fejl.
 - Metadata vises som små definition lists med højrejusterede værdier.
 - Listetilstand bruger flade grids og lodrette separatorer i stedet for tabeller.
