@@ -158,7 +158,7 @@ Navigationen ligger øverst og er centreret i indholdscontaineren. Hovedvalgene 
 
 Den aktive pill flyttes på `200ms ease-out`; navigationen venter `120ms` før route-skift, så bevægelsen ses. Egenkontrolsystemet bør bevare det diskrete topnavigationsprincip, men informationsarkitekturen og touchmål skal valideres for flere funktioner.
 
-Egenkontrolsystemets primære topnavigation bruger referenceprojektets form, padding, linkhøjde og typografi, men er udvidet fra `18rem` til `24rem`, fordi tre destinationer blev for tætte. Den bruger fortsat `0.25rem` indvendig padding, `2rem` linkhøjde og mono `11px`. På smalle telefonformater fylder navigationen containerens bredde og placeres under **Log ud**. Den separate **Log ud**-handling bruger samme `2rem` højde og `11px` typografi uden vandret padding, så teksten flugter med indholdscontainerens venstre kant.
+Egenkontrolsystemets primære topnavigation bruger referenceprojektets form, padding, linkhøjde og typografi, men er udvidet fra `18rem` til `32rem`, fordi fire destinationer ellers bliver for tætte. Den bruger fortsat `0.25rem` indvendig padding, `2rem` linkhøjde og mono `11px`. På smalle telefonformater fylder navigationen containerens bredde og placeres under **Log ud**. Den separate **Log ud**-handling bruger samme `2rem` højde og `11px` typografi uden vandret padding, så teksten flugter med indholdscontainerens venstre kant.
 
 ## Kort og paneler
 
@@ -172,7 +172,7 @@ Risikoanalyse og arbejdsgangsplaner bruger én fælles dokumentheader udledt af 
 
 Statiske arbejdsgange bruger opskriftssidens metodehierarki: en kort note i sans-serif og muted farve med venstrekant, efterfulgt af instruktioner med små mono-løbenumre. Tailwinds nulstilling af standard-listemarkører må ikke efterlade punkter som ustrukturerede, fritstående tekstlinjer.
 
-Topnavigationens tre pladser er **Kontroller**, **Planer** og **Risiko**. Planer samler rengøring, personlig hygiejne, adskillelse, skadedyr og varemodtagelse på en enkel indeksvisning. De første tre læses som statiske dokumenter. Skadedyr og varemodtagelse viser den statiske arbejdsgang først og åbner kun en formular ved en konkret hændelse eller fejl.
+Topnavigationens fire pladser er **Kontroller**, **Planer**, **Historik** og **Risiko**. Historik er en selvstændig, kronologisk visning med et standardinterval på 30 dage, hurtige periodevalg og frie fra-/til-datoer. Registreringer grupperes efter lokal dato i flade rækker; afvigelser, handlinger og ingen måling skal kunne aflæses uden en tung dashboardtabel. Planer samler rengøring, personlig hygiejne, adskillelse, skadedyr og varemodtagelse på en enkel indeksvisning. De første tre læses som statiske dokumenter. Skadedyr og varemodtagelse viser den statiske arbejdsgang først og åbner kun en formular ved en konkret hændelse eller fejl.
 - Metadata vises som små definition lists med højrejusterede værdier.
 - Listetilstand bruger flade grids og lodrette separatorer i stedet for tabeller.
 - Detailsektioner adskilles typisk af overskrift plus bundborder.

@@ -45,7 +45,7 @@
 				>
 			</form>
 			<nav
-				class="grid w-96 grid-cols-3 rounded-full border border-line bg-paper p-1 max-[560px]:w-full"
+				class="grid w-[32rem] grid-cols-4 rounded-full border border-line bg-paper p-1 max-[560px]:w-full"
 				aria-label="Primær navigation"
 			>
 				<a
@@ -57,6 +57,11 @@
 					class={navClass(isPlanRoute())}
 					href={resolve('/planer')}
 					aria-current={page.route.id === '/planer' ? 'page' : undefined}>Planer</a
+				>
+				<a
+					class={navClass(page.route.id === '/historik')}
+					href={resolve('/historik')}
+					aria-current={page.route.id === '/historik' ? 'page' : undefined}>Historik</a
 				>
 				<a
 					class={navClass(page.route.id === '/risikoanalyse')}

@@ -106,6 +106,46 @@ type EventControlLauncher = {
 
 `ControlOccurrence.status` er en præsenteret status til UI'et. Persistenslaget kan have flere interne statusværdier, men de må ikke sive ind i komponenterne uden et konkret produktbehov.
 
+## Read model til kontrolhistorik
+
+Historikvisningen bruger et afgrænset datointerval og en samlet, kronologisk liste på tværs af gennemførte målinger og **Ingen måling**. Datoer fortolkes i lokationens tidszone. Frontenden skal senere kunne få resultatet sideinddelt uden at kende persistenslagets tabeller.
+
+```ts
+type ControlHistory = {
+  from: string; // YYYY-MM-DD, inklusive
+  to: string; // YYYY-MM-DD, inklusive
+  timeZone: string;
+  totalCount: number;
+  entries: ControlHistoryEntry[];
+  nextCursor?: string;
+};
+
+type ControlHistoryEntry = {
+  id: string;
+  occurrenceId?: string;
+  definitionId?: string;
+  title: string;
+  localDate: string;
+  recordedAt: string;
+  outcome:
+    | {
+        kind: 'temperature';
+        value: number;
+        unit: 'celsius';
+        deviation: boolean;
+        deviationDescription?: string;
+        correctiveAction?: string;
+      }
+    | {
+        kind: 'no_measurement';
+        reasonLabel: string;
+        note?: string;
+      };
+};
+```
+
+Den aktuelle historikside læser de allerede integrerede temperatur- og udeladelsesdata read-only. En endelig adapter, cursor-baseret sideinddeling og revisionsspor for senere rettelser etableres ved integrationscheckpointet; de kræver ikke ændringer i den nuværende frontendvisning.
+
 ## Kommandoer fra frontenden
 
 Alle kommandoer indeholder et klientgenereret `requestId`, så et senere persistenslag kan gøre gentagne indsendelser idempotente.

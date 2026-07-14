@@ -137,7 +137,7 @@ Database-schema, RLS og RPC'er sættes som udgangspunkt på pause i dette spor. 
 - [ ] Implementér tjekliste
 - [x] Implementér afvigelsesflow for temperaturkontroller
 - [x] Implementér korrigerende handling for temperaturkontroller
-- [ ] Implementér historik
+- [x] Implementér read-only historik for temperatur og `Ingen måling` med datofilter
 - [x] Vis statisk JSON-baseret rengøringsplan som udkast
 - [x] Vis statiske JSON-baserede planer for personlig hygiejne og adskillelse
 - [x] Vis konfigurerbar skadedyrsplan med frontend-hændelsesflow
