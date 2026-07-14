@@ -13,6 +13,7 @@ import {
 } from '$lib/server/controls/temperature-completion';
 import {
 	OmissionValidationError,
+	prepareOmissionReason,
 	prepareTemperatureOmission
 } from '$lib/server/controls/temperature-omission';
 import type { Actions, PageServerLoad } from './$types';
@@ -24,6 +25,9 @@ const controlDefinitions = buildTemperatureControls(
 	business.controlOverrides,
 	location?.id ?? ''
 );
+const temperatureDefinitionIds = [
+	...new Set(controlDefinitions.map((control) => control.id.split(':')[0]))
+];
 
 type StoredCompletion = {
 	id: string;
@@ -303,6 +307,65 @@ export const actions: Actions = {
 			if (error) {
 				console.error('Kunne ikke gemme ingen måling', error.code);
 				return fail(500, { error: 'Valget kunne ikke gemmes. Dine felter er bevaret.' });
+			}
+
+			return { success: true };
+		} catch (error) {
+			if (error instanceof OmissionValidationError) return fail(400, { error: error.message });
+			return fail(400, { error: 'Kontrollér grunden og prøv igen.' });
+		}
+	},
+	omitDay: async ({ request, locals }) => {
+		const { claims } = await locals.getVerifiedAuth();
+		if (!claims) return fail(401, { error: 'Din session er udløbet. Log ind igen.' });
+
+		const formData = await request.formData();
+		const { today, todaySchedule } = currentSchedule();
+		if (!todaySchedule?.isOperatingDay) {
+			return fail(400, { error: 'Der er ingen planlagte temperaturkontroller i dag.' });
+		}
+
+		try {
+			const reason = prepareOmissionReason({
+				command: {
+					reasonCode: formData.get('reasonCode'),
+					note: formData.get('note') || undefined
+				},
+				reasons: business.noMeasurementReasons
+			});
+
+			const { data: pendingRows, error: pendingError } = await locals.supabase
+				.from('scheduled_controls')
+				.select('id')
+				.eq('location_id', location?.id ?? '')
+				.eq('local_date', today)
+				.in('control_definition_id', temperatureDefinitionIds)
+				.in('status', ['upcoming', 'due', 'missed']);
+
+			if (pendingError) {
+				console.error('Kunne ikke hente dagens resterende kontroller', pendingError.code);
+				return fail(500, { error: 'Dagens kontroller kunne ikke hentes. Prøv igen.' });
+			}
+
+			const scheduledControlIds = (pendingRows ?? []).map((row) => row.id);
+			if (scheduledControlIds.length === 0) {
+				return fail(409, { error: 'Der er ingen resterende temperaturkontroller i dag.' });
+			}
+
+			const { error } = await locals.supabase.rpc('record_temperature_day_omissions', {
+				p_scheduled_control_ids: scheduledControlIds,
+				p_location_id: location?.id ?? '',
+				p_local_date: today,
+				p_reason_code: reason.reasonCode,
+				p_reason_label: reason.reasonLabel,
+				p_note: reason.note ?? null
+			});
+
+			if (error) {
+				console.error('Kunne ikke gemme ingen målinger i dag', error.code);
+				return fail(500, {
+					error: 'Dagens kontroller kunne ikke afsluttes samlet. Ingen blev ændret.'
+				});
 			}
 
 			return { success: true };

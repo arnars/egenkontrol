@@ -198,7 +198,7 @@ Den normale driftsuge kan ikke forudsige sygdom, helligdage eller ekstraordinær
 
 ### Beslutning
 
-En materialiseret kontrol kan afsluttes med udfaldet **Ingen måling** og en årsag fra virksomhedskonfigurationen. Udfaldet gemmes append-only med forekomst, årsagskode, label-snapshot, eventuel kort bemærkning, aktør og servertid. Databasen sikrer atomisk, at forekomsten ikke samtidig kan have en oprindelig måling, og ændrer schedule-status til `cancelled`.
+En materialiseret kontrol kan afsluttes med udfaldet **Ingen måling** og en årsag fra virksomhedskonfigurationen. Udfaldet gemmes append-only med forekomst, årsagskode, label-snapshot, eventuel kort bemærkning, aktør og servertid. Databasen sikrer atomisk, at forekomsten ikke samtidig kan have en oprindelig måling, og ændrer schedule-status til `cancelled`. Dagens stadig åbne temperaturkontroller kan afsluttes samlet i én transaktion; allerede udførte målinger berøres ikke.
 
 De normale `operatingWeekdays` bevares. De beskriver den forventede uge, mens **Ingen måling** dokumenterer en afvigelse på en konkret allerede planlagt dag.
 

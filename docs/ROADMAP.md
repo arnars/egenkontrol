@@ -117,6 +117,7 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 - [x] Implementér ugeoverblik for temperaturkontroller med synlige lukkedage
 - [x] Implementér temperaturregistrering i UI og atomisk databasefunktion
 - [x] Implementér `Ingen måling` med konfigurerbar grund og auditspor
+- [x] Implementér atomisk `Ingen målinger i dag` for dagens resterende temperaturkontroller
 - [ ] Implementér ja/nej-kontrol
 - [ ] Implementér tjekliste
 - [x] Implementér afvigelsesflow for temperaturkontroller

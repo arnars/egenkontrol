@@ -50,6 +50,13 @@
       "when": 1784011083936,
       "tag": "20260714063803_no_measurement_outcome",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1784011784404,
+      "tag": "20260714064944_daily_no_measurements",
+      "breakpoints": true
     }
   ]
 }

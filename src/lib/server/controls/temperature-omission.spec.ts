@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { OmissionValidationError, prepareTemperatureOmission } from './temperature-omission';
+import {
+	OmissionValidationError,
+	prepareOmissionReason,
+	prepareTemperatureOmission
+} from './temperature-omission';
 
 const reasons = [
 	{ code: 'closed', label: 'Lukket', requiresNote: false },
@@ -38,6 +42,26 @@ describe('prepareTemperatureOmission', () => {
 			prepareTemperatureOmission({
 				command: { ...command, reasonCode: 'other' },
 				expectedControlId: command.controlId,
+				reasons
+			})
+		).toThrow('Skriv en kort forklaring');
+	});
+});
+
+describe('prepareOmissionReason', () => {
+	it('can prepare one configured reason for all remaining controls', () => {
+		expect(
+			prepareOmissionReason({
+				command: { reasonCode: 'closed' },
+				reasons
+			})
+		).toEqual({ reasonCode: 'closed', reasonLabel: 'Lukket' });
+	});
+
+	it('applies the configured note requirement to a daily omission', () => {
+		expect(() =>
+			prepareOmissionReason({
+				command: { reasonCode: 'other' },
 				reasons
 			})
 		).toThrow('Skriv en kort forklaring');

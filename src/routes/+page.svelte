@@ -16,6 +16,10 @@
 	let idempotencyKey = $state('');
 	let omissionReasonCode = $state('');
 	let omissionNote = $state('');
+	let dayOmissionOpen = $state(false);
+	let dayOmissionReasonCode = $state('');
+	let dayOmissionNote = $state('');
+	let dayOmissionError = $state('');
 	let saving = $state(false);
 	let error = $state('');
 	let eventMessage = $state('');
@@ -75,6 +79,8 @@
 	let todayLabel = $derived(dayLabel(data.today));
 
 	function openControl(id: string) {
+		dayOmissionOpen = false;
+		dayOmissionError = '';
 		activeControlId = id;
 		recordingMode = 'measurement';
 		temperatureInput = '';
@@ -86,6 +92,21 @@
 		omissionNote = '';
 		error = '';
 		eventMessage = '';
+	}
+
+	function openDayOmission() {
+		closeControl();
+		dayOmissionOpen = true;
+		dayOmissionReasonCode = data.noMeasurementReasons[0]?.code ?? '';
+		dayOmissionNote = '';
+		dayOmissionError = '';
+	}
+
+	function closeDayOmission() {
+		dayOmissionOpen = false;
+		dayOmissionReasonCode = data.noMeasurementReasons[0]?.code ?? '';
+		dayOmissionNote = '';
+		dayOmissionError = '';
 	}
 
 	function closeControl() {
@@ -179,6 +200,37 @@
 				return;
 			}
 			error = 'Din session er udløbet. Genindlæs siden og log ind igen.';
+		};
+	};
+
+	const enhanceDayOmission: SubmitFunction = ({ cancel }) => {
+		const reason = data.noMeasurementReasons.find((item) => item.code === dayOmissionReasonCode);
+		if (!reason) {
+			dayOmissionError = 'Vælg en grund til ingen målinger.';
+			cancel();
+			return;
+		}
+
+		if (reason.requiresNote && dayOmissionNote.trim() === '') {
+			dayOmissionError = 'Skriv en kort forklaring til den valgte grund.';
+			cancel();
+			return;
+		}
+
+		saving = true;
+		dayOmissionError = '';
+		return async ({ result }) => {
+			saving = false;
+			if (result.type === 'success') {
+				await invalidateAll();
+				closeDayOmission();
+				return;
+			}
+			if (result.type === 'failure') {
+				dayOmissionError = String(result.data?.error ?? 'Dagens kontroller kunne ikke afsluttes.');
+				return;
+			}
+			dayOmissionError = 'Din session er udløbet. Genindlæs siden og log ind igen.';
 		};
 	};
 
@@ -330,9 +382,18 @@
 			<h2 class="m-0 font-sans text-[1.6rem] font-medium tracking-[-.035em]" id="pending-heading">
 				Mangler
 			</h2>
-			<span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase"
-				>{countLabel(pendingControls.length)}</span
-			>
+			<span class="flex items-center gap-4">
+				<span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase"
+					>{countLabel(pendingControls.length)}</span
+				>
+				{#if pendingControls.length > 0}
+					<button
+						class="min-h-11 cursor-pointer border border-ink bg-transparent px-4 font-mono text-[.72rem] tracking-[.11em] text-ink uppercase disabled:cursor-not-allowed disabled:opacity-50"
+						disabled={data.schedulePersistenceError}
+						onclick={openDayOmission}>Ingen målinger i dag</button
+					>
+				{/if}
+			</span>
 		</header>
 
 		{#if pendingControls.length === 0}
@@ -369,6 +430,84 @@
 			</div>
 		{/if}
 	</section>
+
+	{#if dayOmissionOpen}
+		<section
+			class="my-8 grid gap-6 bg-paper p-6 print:hidden"
+			aria-labelledby="day-omission-heading"
+		>
+			<header class="flex items-start justify-between gap-4">
+				<div>
+					<p class="m-0 font-mono text-[.72rem] tracking-[.11em] text-muted uppercase">
+						Afslut dagens resterende kontroller
+					</p>
+					<h2
+						class="mt-1 mb-0 font-sans text-[1.6rem] font-medium tracking-[-.035em]"
+						id="day-omission-heading"
+					>
+						Ingen målinger i dag
+					</h2>
+				</div>
+				<button
+					class="min-h-11 cursor-pointer border-0 bg-transparent px-4 font-mono text-[.72rem] tracking-[.11em] text-muted uppercase"
+					onclick={closeDayOmission}>Luk</button
+				>
+			</header>
+
+			<form class="grid gap-6" method="POST" action="?/omitDay" use:enhance={enhanceDayOmission}>
+				<p class="m-0 font-sans text-base leading-relaxed text-ink">
+					Dette afslutter alle {countLabel(pendingControls.length)} uden en temperaturværdi. Allerede
+					gemte målinger ændres ikke.
+				</p>
+
+				<label class="grid gap-2.5">
+					<span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase">Grund</span>
+					<select
+						class="min-h-13 w-full rounded-none border border-line bg-page px-3.5 font-sans text-base text-ink"
+						name="reasonCode"
+						bind:value={dayOmissionReasonCode}
+					>
+						{#each data.noMeasurementReasons as reason (reason.code)}
+							<option value={reason.code}>{reason.label}</option>
+						{/each}
+					</select>
+				</label>
+
+				<label class="grid gap-2.5">
+					<span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase"
+						>Bemærkning {data.noMeasurementReasons.find(
+							(item) => item.code === dayOmissionReasonCode
+						)?.requiresNote
+							? '· påkrævet'
+							: '· valgfri'}</span
+					>
+					<textarea
+						class="w-full resize-y rounded-none border border-line bg-page p-3.5 font-sans text-base leading-relaxed text-ink"
+						name="note"
+						bind:value={dayOmissionNote}
+						rows="3"
+						maxlength="1000"></textarea>
+				</label>
+
+				<p class="m-0 min-h-5 font-sans text-sm leading-relaxed text-danger" aria-live="polite">
+					{dayOmissionError}
+				</p>
+
+				<footer class="flex items-center justify-end gap-3 max-[720px]:[&>*]:flex-1">
+					<button
+						class="min-h-12 cursor-pointer border border-ink bg-transparent px-5 font-mono text-[.72rem] tracking-[.11em] text-ink uppercase"
+						type="button"
+						onclick={closeDayOmission}>Annullér</button
+					>
+					<button
+						class="min-h-12 cursor-pointer border border-ink bg-ink px-5 font-mono text-[.72rem] tracking-[.11em] text-paper uppercase disabled:cursor-wait disabled:opacity-65"
+						type="submit"
+						disabled={saving}>{saving ? 'Gemmer…' : 'Gem ingen målinger'}</button
+					>
+				</footer>
+			</form>
+		</section>
+	{/if}
 
 	{#if activeControl}
 		<section

@@ -122,6 +122,8 @@ En ny temperaturudførelse skal pege på en forekomst for samme lokation, kontro
 
 En planlagt temperaturkontrol kan alternativt afsluttes som **Ingen måling**. `scheduled_control_omissions` gemmer den valgte årsags kode og et label-snapshot, eventuel bemærkning, aktør og servertid. Databasen tillader højst én sådan registrering pr. forekomst, afviser den hvis en måling allerede findes og ændrer atomisk forekomsten til `cancelled`. Tabellen og audit-eventet er append-only. Årsagslisten valideres server-side mod virksomhedskonfigurationen, så klienten ikke kan opfinde en årsag.
 
+Handlingen **Ingen målinger i dag** henter alle stadig åbne temperaturforekomster for lokationens aktuelle lokale dato og sender deres UUID'er til én databasefunktion. Funktionen validerer dato, virksomhed, lokation og samtlige forekomster, låser dem i deterministisk rækkefølge og gemmer alle udeladelser i én transaktion med fælles correlation-id. Hvis blot én forekomst er ugyldig eller allerede målt, rulles hele handlingen tilbage. Allerede gemte målinger indgår ikke i serverens input og ændres aldrig.
+
 Tidligere temperaturudførelser har fortsat `scheduled_control_id = null`. De backfilles ikke, fordi en automatisk efterkobling ikke kan dokumentere, hvilken planrevision der faktisk gjaldt. Migrationerne er fremadrettede og sletter eller omskriver ingen historiske records. Ved fejl skal execute-adgang til materialiserings-/completion-RPC’en kunne tilbagekaldes, hvorefter en ny korrigerende migration anvendes; den unikke indeks kan bevares uden at påvirke legacy-records.
 
 ## Versionshistorik
