@@ -96,6 +96,7 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 - [x] Modellér kontroldefinition
 - [ ] Modellér gentagelsesregel og begge hyppighedstyper
 - [x] Modellér planlagt kontrol
+- [x] Modellér begrundet afslutning uden måling
 - [x] Modellér udført kontrol
 - [x] Modellér måling
 - [x] Modellér afvigelse
@@ -115,6 +116,7 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 - [ ] Implementér dagens kontroller
 - [x] Implementér ugeoverblik for temperaturkontroller med synlige lukkedage
 - [x] Implementér temperaturregistrering i UI og atomisk databasefunktion
+- [x] Implementér `Ingen måling` med konfigurerbar grund og auditspor
 - [ ] Implementér ja/nej-kontrol
 - [ ] Implementér tjekliste
 - [x] Implementér afvigelsesflow for temperaturkontroller

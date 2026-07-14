@@ -34,7 +34,7 @@ En kontroldefinition kan have en kritisk grænse og en gentagelsesregel. Gentage
 
 En lokation har et konfigureret ugentligt driftsmønster. En `daily`-regel betyder én forekomst pr. **driftsdag**, ikke pr. kalenderdag. En fast lukkedag danner derfor ingen planlagt kontrol og skal hverken vises som manglende eller efterfølgende markeres som overskredet. Ugevisningen viser lukkedagen eksplicit, så fraværet af kontroller kan forklares.
 
-Nabo Brejnings aktuelle konfigurationsudkast bruger tirsdag–lørdag som driftsdage og mandag/søndag som lukkedage. Mønstret er et driftsmæssigt udkast, ikke en fagligt godkendt kontrolhyppighed. Enkeltstående lukninger, ferie og helligdage er endnu ikke modelleret.
+Nabo Brejnings aktuelle konfigurationsudkast bruger tirsdag–lørdag som normale driftsdage og mandag/søndag som faste lukkedage. Mønstret er et driftsmæssigt udkast, ikke en fagligt godkendt kontrolhyppighed. Hvis en allerede planlagt kontrol ikke udføres, afsluttes den eksplicit som **Ingen måling** med en konfigureret grund, fx lukket eller helligdag. Det er dokumentation for den konkrete forekomst og må ikke gemmes som en opdigtet måleværdi.
 
 ## To forskellige hyppigheder
 
@@ -71,6 +71,7 @@ Listen er ikke et kravkatalog. Relevans, grænser og hyppighed afhænger af virk
 | Kontrolhyppighed | Hvor ofte kontrollen udføres. |
 | Dokumentationshyppighed | Hvor ofte normal udførelse registreres. |
 | Planlagt kontrol | En konkret forventet kontrol forekomst med tidsvindue og status. |
+| Ingen måling | En sporbar afslutning af en planlagt kontrol med grund og uden måleværdi. |
 | Udført kontrol | Den revisionsrelevante registrering af en udførelse. |
 | Måling | En struktureret værdi med enhed og kontekst, fx en temperatur. |
 | Afvigelse | En selvstændig registrering af et forhold, der kræver stillingtagen. |

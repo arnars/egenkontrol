@@ -8,11 +8,14 @@
 	let { data }: { data: PageData } = $props();
 	let view = $state<'today' | 'week'>('today');
 	let activeControlId = $state<string | null>(null);
+	let recordingMode = $state<'measurement' | 'no_measurement'>('measurement');
 	let temperatureInput = $state('');
 	let deviation = $state(false);
 	let deviationDescription = $state('');
 	let correctiveActionDescription = $state('');
 	let idempotencyKey = $state('');
+	let omissionReasonCode = $state('');
+	let omissionNote = $state('');
 	let saving = $state(false);
 	let error = $state('');
 	let eventMessage = $state('');
@@ -20,10 +23,14 @@
 	let activeControl = $derived(data.controls.find((control) => control.id === activeControlId));
 	let completions = $derived(data.completions);
 	let pendingControls = $derived(
-		data.controls.filter((control) => completions[control.id] === undefined)
+		data.controls.filter(
+			(control) => completions[control.id] === undefined && data.omissions[control.id] === undefined
+		)
 	);
 	let completedControls = $derived(
-		data.controls.filter((control) => completions[control.id] !== undefined)
+		data.controls.filter(
+			(control) => completions[control.id] !== undefined || data.omissions[control.id] !== undefined
+		)
 	);
 	let weekPendingCount = $derived(
 		data.schedule.days.reduce(
@@ -32,7 +39,8 @@
 				day.controls.filter(
 					(control) =>
 						day.localDate <= data.today &&
-						data.weeklyCompletions[control.occurrenceKey] === undefined
+						data.weeklyCompletions[control.occurrenceKey] === undefined &&
+						data.weeklyOmissions[control.occurrenceKey] === undefined
 				).length,
 			0
 		)
@@ -44,7 +52,8 @@
 				day.controls.filter(
 					(control) =>
 						day.localDate > data.today &&
-						data.weeklyCompletions[control.occurrenceKey] === undefined
+						data.weeklyCompletions[control.occurrenceKey] === undefined &&
+						data.weeklyOmissions[control.occurrenceKey] === undefined
 				).length,
 			0
 		)
@@ -67,22 +76,28 @@
 
 	function openControl(id: string) {
 		activeControlId = id;
+		recordingMode = 'measurement';
 		temperatureInput = '';
 		deviation = false;
 		deviationDescription = '';
 		correctiveActionDescription = '';
 		idempotencyKey = crypto.randomUUID();
+		omissionReasonCode = data.noMeasurementReasons[0]?.code ?? '';
+		omissionNote = '';
 		error = '';
 		eventMessage = '';
 	}
 
 	function closeControl() {
 		activeControlId = null;
+		recordingMode = 'measurement';
 		temperatureInput = '';
 		deviation = false;
 		deviationDescription = '';
 		correctiveActionDescription = '';
 		idempotencyKey = '';
+		omissionReasonCode = data.noMeasurementReasons[0]?.code ?? '';
+		omissionNote = '';
 		error = '';
 	}
 
@@ -132,6 +147,37 @@
 				return;
 			}
 
+			error = 'Din session er udløbet. Genindlæs siden og log ind igen.';
+		};
+	};
+
+	const enhanceOmission: SubmitFunction = ({ cancel }) => {
+		const reason = data.noMeasurementReasons.find((item) => item.code === omissionReasonCode);
+		if (!reason) {
+			error = 'Vælg en grund til ingen måling.';
+			cancel();
+			return;
+		}
+
+		if (reason.requiresNote && omissionNote.trim() === '') {
+			error = 'Skriv en kort forklaring til den valgte grund.';
+			cancel();
+			return;
+		}
+
+		saving = true;
+		error = '';
+		return async ({ result }) => {
+			saving = false;
+			if (result.type === 'success') {
+				await invalidateAll();
+				closeControl();
+				return;
+			}
+			if (result.type === 'failure') {
+				error = String(result.data?.error ?? 'Valget kunne ikke gemmes.');
+				return;
+			}
 			error = 'Din session er udløbet. Genindlæs siden og log ind igen.';
 		};
 	};
@@ -243,6 +289,7 @@
 						<div class="grid">
 							{#each day.controls as control (control.occurrenceKey)}
 								{@const completion = data.weeklyCompletions[control.occurrenceKey]}
+								{@const omission = data.weeklyOmissions[control.occurrenceKey]}
 								<div class="flex min-h-16 items-center justify-between gap-4 px-2 py-3 text-ink">
 									<span class="grid gap-1">
 										<strong class="font-sans font-medium">{control.assetLabel}</strong>
@@ -255,15 +302,18 @@
 										<span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase"
 											>{completion
 												? 'Gemt'
-												: day.localDate > data.today
-													? 'Planlagt'
-													: 'Mangler'}</span
+												: omission
+													? `Ingen måling · ${omission.reasonLabel}`
+													: day.localDate > data.today
+														? 'Planlagt'
+														: 'Mangler'}</span
 										>
 										<i
-											class="grid h-8 w-8 place-items-center rounded-full border font-sans not-italic {completion
+											class="grid h-8 w-8 place-items-center rounded-full border font-sans not-italic {completion ||
+											omission
 												? 'border-ink bg-ink text-paper'
 												: 'border-line'}"
-											aria-hidden="true">{completion ? '✓' : '·'}</i
+											aria-hidden="true">{completion ? '✓' : omission ? '–' : '·'}</i
 										>
 									</span>
 								</div>
@@ -328,7 +378,7 @@
 			<header class="flex items-center justify-between gap-4">
 				<div>
 					<p class="m-0 font-mono text-[.72rem] tracking-[.11em] text-muted uppercase">
-						Registrér temperatur
+						Afslut kontrol
 					</p>
 					<h2
 						class="m-0 font-sans text-[1.6rem] font-medium tracking-[-.035em]"
@@ -343,94 +393,177 @@
 				>
 			</header>
 
-			<form class="grid gap-6" method="POST" action="?/complete" use:enhance={enhanceCompletion}>
-				<input type="hidden" name="controlId" value={activeControl.id} />
-				<input type="hidden" name="scheduledControlId" value={activeControl.scheduledControlId} />
-				<input type="hidden" name="idempotencyKey" value={idempotencyKey} />
-				<div
-					class="grid grid-cols-[minmax(0,1fr)_minmax(14rem,.45fr)] items-end gap-6 max-[720px]:grid-cols-1"
+			<div class="grid grid-cols-2 border border-line" aria-label="Registreringstype">
+				<button
+					class="min-h-12 cursor-pointer border-0 px-4 font-mono text-[.72rem] tracking-[.11em] uppercase {recordingMode ===
+					'measurement'
+						? 'bg-ink text-paper'
+						: 'bg-page text-ink'}"
+					type="button"
+					aria-pressed={recordingMode === 'measurement'}
+					onclick={() => {
+						recordingMode = 'measurement';
+						error = '';
+					}}>Temperatur</button
 				>
-					<label class="grid gap-2.5">
-						<span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase"
-							>Målt temperatur</span
-						>
-						<span class="relative block">
-							<input
-								class="min-h-13 w-full rounded-none border border-line bg-page py-2.5 pr-13 pl-3.5 font-sans text-lg text-ink"
-								name="value"
-								bind:value={temperatureInput}
-								inputmode="decimal"
-								autocomplete="off"
-								aria-describedby="profile-hint measurement-error"
-							/>
-							<i class="absolute top-1/2 right-4 -translate-y-1/2 font-mono text-muted not-italic"
-								>°C</i
-							>
-						</span>
-					</label>
+				<button
+					class="min-h-12 cursor-pointer border-0 px-4 font-mono text-[.72rem] tracking-[.11em] uppercase {recordingMode ===
+					'no_measurement'
+						? 'bg-ink text-paper'
+						: 'bg-page text-ink'}"
+					type="button"
+					aria-pressed={recordingMode === 'no_measurement'}
+					onclick={() => {
+						recordingMode = 'no_measurement';
+						error = '';
+					}}>Ingen måling</button
+				>
+			</div>
 
-					<label class="flex min-h-13 cursor-pointer items-center gap-3">
-						<input
-							class="m-0 h-6 w-6 accent-ink"
-							name="deviation"
-							type="checkbox"
-							bind:checked={deviation}
-						/>
-						<span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase"
-							>Markér afvigelse</span
-						>
-					</label>
-				</div>
-
-				{#if deviation}
-					<div class="grid grid-cols-2 gap-6 max-[720px]:grid-cols-1">
+			{#if recordingMode === 'measurement'}
+				<form class="grid gap-6" method="POST" action="?/complete" use:enhance={enhanceCompletion}>
+					<input type="hidden" name="controlId" value={activeControl.id} />
+					<input type="hidden" name="scheduledControlId" value={activeControl.scheduledControlId} />
+					<input type="hidden" name="idempotencyKey" value={idempotencyKey} />
+					<div
+						class="grid grid-cols-[minmax(0,1fr)_minmax(14rem,.45fr)] items-end gap-6 max-[720px]:grid-cols-1"
+					>
 						<label class="grid gap-2.5">
 							<span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase"
-								>Beskriv afvigelsen</span
+								>Målt temperatur</span
 							>
-							<textarea
-								class="w-full resize-y rounded-none border border-line bg-page p-3.5 font-sans text-base leading-relaxed text-ink"
-								name="deviationDescription"
-								bind:value={deviationDescription}
-								rows="3"
-								maxlength="2000"
-								required></textarea>
+							<span class="relative block">
+								<input
+									class="min-h-13 w-full rounded-none border border-line bg-page py-2.5 pr-13 pl-3.5 font-sans text-lg text-ink"
+									name="value"
+									bind:value={temperatureInput}
+									inputmode="decimal"
+									autocomplete="off"
+									aria-describedby="profile-hint measurement-error"
+								/>
+								<i class="absolute top-1/2 right-4 -translate-y-1/2 font-mono text-muted not-italic"
+									>°C</i
+								>
+							</span>
 						</label>
-						<label class="grid gap-2.5">
+
+						<label class="flex min-h-13 cursor-pointer items-center gap-3">
+							<input
+								class="m-0 h-6 w-6 accent-ink"
+								name="deviation"
+								type="checkbox"
+								bind:checked={deviation}
+							/>
 							<span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase"
-								>Hvad gjorde du?</span
+								>Markér afvigelse</span
 							>
-							<textarea
-								class="w-full resize-y rounded-none border border-line bg-page p-3.5 font-sans text-base leading-relaxed text-ink"
-								name="correctiveActionDescription"
-								bind:value={correctiveActionDescription}
-								rows="3"
-								maxlength="2000"
-								required></textarea>
 						</label>
 					</div>
-				{/if}
 
-				<p id="profile-hint" class="m-0 font-sans text-sm leading-relaxed text-muted">
-					{activeControl.profileLabel}: højst {formatTemperature(activeControl.limit)}.
-					Profilstatus:
-					{activeControl.profileStatus === 'approved' ? 'godkendt' : 'afventer godkendelse'}.
-				</p>
-				<p
-					id="measurement-error"
-					class="m-0 min-h-5 font-sans text-sm leading-relaxed text-danger"
-					aria-live="polite"
-				>
-					{error}
-				</p>
+					{#if deviation}
+						<div class="grid grid-cols-2 gap-6 max-[720px]:grid-cols-1">
+							<label class="grid gap-2.5">
+								<span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase"
+									>Beskriv afvigelsen</span
+								>
+								<textarea
+									class="w-full resize-y rounded-none border border-line bg-page p-3.5 font-sans text-base leading-relaxed text-ink"
+									name="deviationDescription"
+									bind:value={deviationDescription}
+									rows="3"
+									maxlength="2000"
+									required></textarea>
+							</label>
+							<label class="grid gap-2.5">
+								<span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase"
+									>Hvad gjorde du?</span
+								>
+								<textarea
+									class="w-full resize-y rounded-none border border-line bg-page p-3.5 font-sans text-base leading-relaxed text-ink"
+									name="correctiveActionDescription"
+									bind:value={correctiveActionDescription}
+									rows="3"
+									maxlength="2000"
+									required></textarea>
+							</label>
+						</div>
+					{/if}
 
-				<footer
-					class="flex items-center justify-between gap-4 max-[720px]:flex-col max-[720px]:items-stretch"
-				>
-					<span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase"
-						>Bruger, tidspunkt og definitionens revision gemmes i revisionssporet.</span
+					<p id="profile-hint" class="m-0 font-sans text-sm leading-relaxed text-muted">
+						{activeControl.profileLabel}: højst {formatTemperature(activeControl.limit)}.
+						Profilstatus:
+						{activeControl.profileStatus === 'approved' ? 'godkendt' : 'afventer godkendelse'}.
+					</p>
+					<p
+						id="measurement-error"
+						class="m-0 min-h-5 font-sans text-sm leading-relaxed text-danger"
+						aria-live="polite"
 					>
-					<div class="flex gap-3 max-[720px]:[&>*]:flex-1">
+						{error}
+					</p>
+
+					<footer
+						class="flex items-center justify-between gap-4 max-[720px]:flex-col max-[720px]:items-stretch"
+					>
+						<span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase"
+							>Bruger, tidspunkt og definitionens revision gemmes i revisionssporet.</span
+						>
+						<div class="flex gap-3 max-[720px]:[&>*]:flex-1">
+							<button
+								class="min-h-12 cursor-pointer border border-ink bg-transparent px-5 font-mono text-[.72rem] tracking-[.11em] text-ink uppercase"
+								type="button"
+								onclick={closeControl}>Annullér</button
+							>
+							<button
+								class="min-h-12 cursor-pointer border border-ink bg-ink px-5 font-mono text-[.72rem] tracking-[.11em] text-paper uppercase disabled:cursor-wait disabled:opacity-65"
+								type="submit"
+								disabled={saving}>{saving ? 'Gemmer…' : 'Gem kontrol'}</button
+							>
+						</div>
+					</footer>
+				</form>
+			{:else}
+				<form class="grid gap-6" method="POST" action="?/omit" use:enhance={enhanceOmission}>
+					<input type="hidden" name="controlId" value={activeControl.id} />
+					<input type="hidden" name="scheduledControlId" value={activeControl.scheduledControlId} />
+
+					<label class="grid gap-2.5">
+						<span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase">Grund</span>
+						<select
+							class="min-h-13 w-full rounded-none border border-line bg-page px-3.5 font-sans text-base text-ink"
+							name="reasonCode"
+							bind:value={omissionReasonCode}
+						>
+							{#each data.noMeasurementReasons as reason (reason.code)}
+								<option value={reason.code}>{reason.label}</option>
+							{/each}
+						</select>
+					</label>
+
+					<label class="grid gap-2.5">
+						<span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase"
+							>Bemærkning {data.noMeasurementReasons.find(
+								(item) => item.code === omissionReasonCode
+							)?.requiresNote
+								? '· påkrævet'
+								: '· valgfri'}</span
+						>
+						<textarea
+							class="w-full resize-y rounded-none border border-line bg-page p-3.5 font-sans text-base leading-relaxed text-ink"
+							name="note"
+							bind:value={omissionNote}
+							rows="3"
+							maxlength="1000"></textarea>
+					</label>
+
+					<p class="m-0 font-sans text-sm leading-relaxed text-muted">
+						Der gemmes ingen temperatur. Grund, bruger og tidspunkt registreres i revisionssporet.
+					</p>
+					<p class="m-0 min-h-5 font-sans text-sm leading-relaxed text-danger" aria-live="polite">
+						{error}
+					</p>
+
+					<footer class="flex items-center justify-end gap-3 max-[720px]:[&>*]:flex-1">
 						<button
 							class="min-h-12 cursor-pointer border border-ink bg-transparent px-5 font-mono text-[.72rem] tracking-[.11em] text-ink uppercase"
 							type="button"
@@ -439,18 +572,18 @@
 						<button
 							class="min-h-12 cursor-pointer border border-ink bg-ink px-5 font-mono text-[.72rem] tracking-[.11em] text-paper uppercase disabled:cursor-wait disabled:opacity-65"
 							type="submit"
-							disabled={saving}>{saving ? 'Gemmer…' : 'Gem kontrol'}</button
+							disabled={saving}>{saving ? 'Gemmer…' : 'Gem ingen måling'}</button
 						>
-					</div>
-				</footer>
-			</form>
+					</footer>
+				</form>
+			{/if}
 		</section>
 	{/if}
 
 	<section class="mt-14" aria-labelledby="completed-heading" id="historik">
 		<header class="flex items-center justify-between gap-4 border-b border-line pb-3">
 			<h2 class="m-0 font-sans text-[1.6rem] font-medium tracking-[-.035em]" id="completed-heading">
-				Gennemført
+				Afsluttet
 			</h2>
 			<span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase"
 				>{countLabel(completedControls.length)}</span
@@ -459,24 +592,31 @@
 		<div class="grid">
 			{#each completedControls as control (control.id)}
 				{@const completion = completions[control.id]}
+				{@const omission = data.omissions[control.id]}
 				<div
 					class="flex min-h-19 w-full items-center justify-between gap-4 border-b border-line px-2 py-3.5 text-left text-ink"
 				>
 					<span class="grid gap-1">
 						<strong class="font-sans text-[1.05rem] font-medium">{control.assetLabel}</strong>
 						<small class="text-[.95rem] text-muted"
-							>{formatTemperature(completion.value)}{completion.deviation
-								? completion.correctiveAction
-									? ' · afvigelse · handling dokumenteret'
-									: ' · afvigelse'
-								: ''}</small
+							>{completion
+								? `${formatTemperature(completion.value)}${
+										completion.deviation
+											? completion.correctiveAction
+												? ' · afvigelse · handling dokumenteret'
+												: ' · afvigelse'
+											: ''
+									}`
+								: `Ingen måling · ${omission.reasonLabel}${omission.note ? ` · ${omission.note}` : ''}`}</small
 						>
 					</span>
 					<span class="flex items-center gap-3">
-						<span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase">Gemt</span>
+						<span class="font-mono text-[.72rem] tracking-[.11em] text-muted uppercase"
+							>{completion ? 'Gemt' : 'Ingen måling'}</span
+						>
 						<i
 							class="grid h-8 w-8 place-items-center rounded-full border border-ink bg-ink font-sans text-paper not-italic"
-							aria-hidden="true">✓</i
+							aria-hidden="true">{completion ? '✓' : '–'}</i
 						>
 					</span>
 				</div>

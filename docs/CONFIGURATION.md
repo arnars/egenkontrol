@@ -10,7 +10,7 @@ Virksomhedens egne valg ligger separat i `config/virksomhed.example.json`, valid
 
 Nabo Brejnings aktuelle udkast ligger i `config/virksomhed.json`. Eksempelfilen bevares som neutral skabelon.
 
-Hver lokation har `operatingWeekdays`. Feltet angiver de normale ugentlige driftsdage. En kontrol med `controlFrequency.kind: "daily"` genereres kun på disse dage. Faste lukkedage fremgår af ugevisningen, men danner ingen manglende kontrol. Midlertidige lukninger og datoundtagelser er ikke en del af schema version 2.
+Hver lokation har `operatingWeekdays`. Feltet angiver de normale ugentlige driftsdage. En kontrol med `controlFrequency.kind: "daily"` genereres kun på disse dage. Faste lukkedage fremgår af ugevisningen, men danner ingen manglende kontrol. En allerede planlagt kontrol kan afsluttes som `Ingen måling`, hvis driften afviger på den konkrete dag.
 
 ```json
 {
@@ -18,6 +18,8 @@ Hver lokation har `operatingWeekdays`. Feltet angiver de normale ugentlige drift
   "operatingWeekdays": ["tuesday", "wednesday", "thursday", "friday", "saturday"]
 }
 ```
+
+`noMeasurementReasons` er virksomhedens redigerbare liste af grunde. Kodeværdien er stabil; label kan ændres fremadrettet, fordi registreringen gemmer et snapshot. `requiresNote` kan kræve en kort forklaring. Nabo Brejnings startliste er sygdom, lukket, helligdag, barn syg og anden årsag. Undgå personfølsomme detaljer i den valgfrie bemærkning.
 
 Tværgående gode arbejdsgange og procedurer ligger separat i `config/arbejdsgange.defaults.json`. De holdes uden for kontrolkataloget, fordi de ikke automatisk skal generere daglige kontroller. Kataloget skelner mellem kandidater til gode arbejdsgange, risikostyring og dokumenterede hændelsesprocedurer.
 

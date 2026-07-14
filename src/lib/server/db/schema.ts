@@ -179,6 +179,33 @@ export const completedControls = pgTable(
 	]
 );
 
+export const scheduledControlOmissions = pgTable(
+	'scheduled_control_omissions',
+	{
+		id: uuid('id').primaryKey().defaultRandom(),
+		companyId: text('company_id')
+			.notNull()
+			.references(() => companies.id),
+		locationId: text('location_id')
+			.notNull()
+			.references(() => locations.id),
+		scheduledControlId: uuid('scheduled_control_id')
+			.notNull()
+			.references(() => scheduledControls.id),
+		reasonCode: text('reason_code').notNull(),
+		reasonLabel: text('reason_label').notNull(),
+		note: text('note'),
+		recordedAt: timestamp('recorded_at', { withTimezone: true }).notNull().defaultNow(),
+		recordedBy: uuid('recorded_by')
+			.notNull()
+			.references(() => actors.id)
+	},
+	(table) => [
+		uniqueIndex('scheduled_control_omissions_schedule_uidx').on(table.scheduledControlId),
+		index('scheduled_control_omissions_history_idx').on(table.locationId, table.recordedAt)
+	]
+);
+
 export const measurements = pgTable(
 	'measurements',
 	{

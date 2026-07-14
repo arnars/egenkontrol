@@ -11,6 +11,10 @@ import {
 	CompletionValidationError,
 	prepareTemperatureCompletion
 } from '$lib/server/controls/temperature-completion';
+import {
+	OmissionValidationError,
+	prepareTemperatureOmission
+} from '$lib/server/controls/temperature-omission';
 import type { Actions, PageServerLoad } from './$types';
 
 const location = business.locations[0];
@@ -31,6 +35,15 @@ type StoredCompletion = {
 		id: string;
 		corrective_actions: Array<{ description: string; status: string }>;
 	}>;
+};
+
+type StoredOmission = {
+	id: string;
+	scheduled_control_id: string;
+	reason_code: string;
+	reason_label: string;
+	note: string | null;
+	recorded_at: string;
 };
 
 type MaterializedScheduleRow = {
@@ -110,6 +123,15 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 	if (error) console.error('Kunne ikke hente dagens kontroller', error.code);
 
+	const { data: omissionData, error: omissionError } = await locals.supabase
+		.from('scheduled_control_omissions')
+		.select('id, scheduled_control_id, reason_code, reason_label, note, recorded_at')
+		.eq('location_id', location?.id ?? '')
+		.order('recorded_at', { ascending: false })
+		.limit(100);
+
+	if (omissionError) console.error('Kunne ikke hente kontroller uden måling', omissionError.code);
+
 	const weeklyCompletions = Object.fromEntries(
 		((data ?? []) as StoredCompletion[]).flatMap((completion) => {
 			const controlId = completion.metadata?.configuredControlId;
@@ -141,6 +163,31 @@ export const load: PageServerLoad = async ({ locals }) => {
 			return completion ? [[control.id, completion]] : [];
 		})
 	);
+	const weeklyOmissions = Object.fromEntries(
+		((omissionData ?? []) as StoredOmission[]).flatMap((omission) => {
+			const occurrenceKey = occurrenceByScheduledId.get(omission.scheduled_control_id);
+			if (!occurrenceKey) return [];
+
+			return [
+				[
+					occurrenceKey,
+					{
+						id: omission.id,
+						reasonCode: omission.reason_code,
+						reasonLabel: omission.reason_label,
+						note: omission.note,
+						recordedAt: omission.recorded_at
+					}
+				] as const
+			];
+		})
+	);
+	const omissions = Object.fromEntries(
+		(todaySchedule?.controls ?? []).flatMap((control) => {
+			const omission = weeklyOmissions[control.occurrenceKey];
+			return omission ? [[control.id, omission]] : [];
+		})
+	);
 
 	return {
 		companyName: business.company.name,
@@ -152,7 +199,10 @@ export const load: PageServerLoad = async ({ locals }) => {
 		schedule,
 		controls: todaySchedule?.controls ?? [],
 		completions,
+		omissions,
 		weeklyCompletions,
+		weeklyOmissions,
+		noMeasurementReasons: business.noMeasurementReasons,
 		eventControls: [
 			{ id: 'receiving-check', title: 'Varemodtagelse', description: 'Start ved levering' },
 			{ id: 'heating-core-temperature', title: 'Opvarmning', description: 'Start for en batch' },
@@ -219,6 +269,46 @@ export const actions: Actions = {
 		} catch (error) {
 			if (error instanceof CompletionValidationError) return fail(400, { error: error.message });
 			return fail(400, { error: 'Kontrollér målingen og prøv igen.' });
+		}
+	},
+	omit: async ({ request, locals }) => {
+		const { claims } = await locals.getVerifiedAuth();
+		if (!claims) return fail(401, { error: 'Din session er udløbet. Log ind igen.' });
+
+		const formData = await request.formData();
+		const { todaySchedule } = currentSchedule();
+		const control = todaySchedule?.controls.find((item) => item.id === formData.get('controlId'));
+		if (!control) return fail(400, { error: 'Kontrollen findes ikke længere.' });
+
+		try {
+			const command = prepareTemperatureOmission({
+				command: {
+					scheduledControlId: formData.get('scheduledControlId'),
+					controlId: formData.get('controlId'),
+					reasonCode: formData.get('reasonCode'),
+					note: formData.get('note') || undefined
+				},
+				expectedControlId: control.id,
+				reasons: business.noMeasurementReasons
+			});
+
+			const { error } = await locals.supabase.rpc('record_temperature_omission', {
+				p_scheduled_control_id: command.scheduledControlId,
+				p_location_id: location?.id ?? '',
+				p_reason_code: command.reasonCode,
+				p_reason_label: command.reasonLabel,
+				p_note: command.note ?? null
+			});
+
+			if (error) {
+				console.error('Kunne ikke gemme ingen måling', error.code);
+				return fail(500, { error: 'Valget kunne ikke gemmes. Dine felter er bevaret.' });
+			}
+
+			return { success: true };
+		} catch (error) {
+			if (error instanceof OmissionValidationError) return fail(400, { error: error.message });
+			return fail(400, { error: 'Kontrollér grunden og prøv igen.' });
 		}
 	}
 };

@@ -187,6 +187,25 @@ Opvarmning, nedkøling, varemodtagelse og varmholdelse omfattes ikke. De er hæn
 
 Planlagte temperaturkontroller eksisterer i databasen, før de udføres, uden at MVP’en behøver en ekstern scheduler. Gentagne indlæsninger skaber ikke dubletter. Sideindlæsningen har en kontrolleret, idempotent skriveeffekt; en senere scheduler kan overtage samme RPC-kontrakt. Eksisterende udførelser backfilles ikke. Definitioner skal fortsat versionsstyres, så en allerede materialiseret forekomst ikke omskrives af senere konfigurationsændringer.
 
+## ADR-011: Ingen måling er et særskilt revisionsspor
+
+- **Status:** Accepteret
+- **Dato:** 2026-07-14
+
+### Kontekst
+
+Den normale driftsuge kan ikke forudsige sygdom, helligdage eller ekstraordinær lukning. En manglende temperaturværdi må hverken gemmes som en fiktiv måling eller efterlades uforklaret.
+
+### Beslutning
+
+En materialiseret kontrol kan afsluttes med udfaldet **Ingen måling** og en årsag fra virksomhedskonfigurationen. Udfaldet gemmes append-only med forekomst, årsagskode, label-snapshot, eventuel kort bemærkning, aktør og servertid. Databasen sikrer atomisk, at forekomsten ikke samtidig kan have en oprindelig måling, og ændrer schedule-status til `cancelled`.
+
+De normale `operatingWeekdays` bevares. De beskriver den forventede uge, mens **Ingen måling** dokumenterer en afvigelse på en konkret allerede planlagt dag.
+
+### Konsekvenser
+
+Historikken kan skelne mellem en udført måling, en begrundet dag uden måling og en reelt manglende kontrol. Årsager kan justeres i `config/virksomhed.json` uden at omskrive tidligere labels. Noter bør ikke indeholde unødige personfølsomme oplysninger.
+
 ## Skabelon til fremtidige ADR'er
 
 ```md

@@ -32,6 +32,7 @@ Temperaturflowet gemmer nu måling, afvigelse, en udført korrigerende handling,
 | `ControlDefinition` / revision | Versioneret definition af input, grænser og hyppigheder. |
 | `CriticalLimit` | Versioneret, fagligt fastlagt grænse, når relevant. |
 | `ScheduledControl` | Konkret forekomst genereret fra definition og gentagelsesregel. |
+| `ScheduledControlOmission` | Immutable begrundelse for, at en konkret planlagt kontrol blev afsluttet uden måling. |
 | `CompletedControl` | Immutable registrering af den konkrete udførelse. |
 | `Measurement` | Struktureret værdi, enhed og målekontekst. |
 | `Deviation` | Selvstændigt afvigelsesforløb. |
@@ -50,6 +51,7 @@ ControlMeasure 1 ── * ProcedureRevision
 ProcedureRevision 1 ── * ControlDefinitionRevision
 ControlDefinitionRevision 1 ── * ScheduledControl
 ScheduledControl 0..1 ── 1 CompletedControl ── * Measurement
+ScheduledControl 0..1 ── 1 ScheduledControlOmission
 CompletedControl 0..* ── * Deviation ── * CorrectiveAction
 alle væsentlige entiteter ── * AuditEvent
 ```
@@ -117,6 +119,8 @@ Lokationens normale `operatingWeekdays` filtrerer kalenderbaserede gentagelsesre
 Den autentificerede ugevisning sender højst 100 deterministiske temperaturforekomster til `materialize_temperature_schedule`. Databasen validerer actor, virksomhed, lokation, definition, asset, dato, tidspunkt og occurrence key. `ON CONFLICT DO NOTHING` gør gentagne sideindlæsninger idempotente, og nye forekomster får et audit-event. Kun et rullende vindue fra syv dage før til fjorten dage efter lokationens lokale dato accepteres.
 
 En ny temperaturudførelse skal pege på en forekomst for samme lokation, kontrol og lokale dato. En partiel unik indeks tillader kun én oprindelig udførelse pr. planlagt kontrol; senere rettelser skal fortsat bruge korrektionsrelationen. Gemning af udførelse, måling, eventuel afvigelse, handling, auditspor og statusændring til `completed` sker i samme transaktion.
+
+En planlagt temperaturkontrol kan alternativt afsluttes som **Ingen måling**. `scheduled_control_omissions` gemmer den valgte årsags kode og et label-snapshot, eventuel bemærkning, aktør og servertid. Databasen tillader højst én sådan registrering pr. forekomst, afviser den hvis en måling allerede findes og ændrer atomisk forekomsten til `cancelled`. Tabellen og audit-eventet er append-only. Årsagslisten valideres server-side mod virksomhedskonfigurationen, så klienten ikke kan opfinde en årsag.
 
 Tidligere temperaturudførelser har fortsat `scheduled_control_id = null`. De backfilles ikke, fordi en automatisk efterkobling ikke kan dokumentere, hvilken planrevision der faktisk gjaldt. Migrationerne er fremadrettede og sletter eller omskriver ingen historiske records. Ved fejl skal execute-adgang til materialiserings-/completion-RPC’en kunne tilbagekaldes, hvorefter en ny korrigerende migration anvendes; den unikke indeks kan bevares uden at påvirke legacy-records.
 

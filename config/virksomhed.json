@@ -1,7 +1,7 @@
 {
   "$schema": "./virksomhed.schema.json",
   "schemaVersion": 2,
-  "configurationVersion": "2026-07-13.1",
+  "configurationVersion": "2026-07-14.1",
   "status": "draft_requires_business_approval",
   "basedOnCatalogVersion": "2026-07-12.1",
   "company": {
@@ -10,6 +10,13 @@
     "legalName": null,
     "cvr": null
   },
+  "noMeasurementReasons": [
+    { "code": "illness", "label": "Sygdom", "requiresNote": false },
+    { "code": "closed", "label": "Lukket", "requiresNote": false },
+    { "code": "public-holiday", "label": "Helligdag", "requiresNote": false },
+    { "code": "child-illness", "label": "Barn syg", "requiresNote": false },
+    { "code": "other", "label": "Anden årsag", "requiresNote": true }
+  ],
   "locations": [
     {
       "id": "brejning",

@@ -43,6 +43,13 @@
       "when": 1783975847489,
       "tag": "20260713205047_fix_schedule_status_cast",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1784011083936,
+      "tag": "20260714063803_no_measurement_outcome",
+      "breakpoints": true
     }
   ]
 }

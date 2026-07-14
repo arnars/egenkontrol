@@ -4,7 +4,7 @@
   "title": "Virksomhedens egenkontrolkonfiguration",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schemaVersion", "configurationVersion", "status", "basedOnCatalogVersion", "company", "locations", "assets", "activitySelections", "controlOverrides", "profileOverrides", "review"],
+  "required": ["schemaVersion", "configurationVersion", "status", "basedOnCatalogVersion", "company", "noMeasurementReasons", "locations", "assets", "activitySelections", "controlOverrides", "profileOverrides", "review"],
   "properties": {
     "$schema": { "type": "string" },
     "schemaVersion": { "type": "integer", "minimum": 1 },
@@ -12,6 +12,11 @@
     "status": { "enum": ["draft_requires_business_approval", "approved", "retired"] },
     "basedOnCatalogVersion": { "type": "string", "minLength": 1 },
     "company": { "$ref": "#/$defs/company" },
+    "noMeasurementReasons": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/noMeasurementReason" }
+    },
     "locations": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/location" } },
     "assets": { "type": "array", "items": { "$ref": "#/$defs/asset" } },
     "activitySelections": { "type": "array", "items": { "$ref": "#/$defs/activitySelection" } },
@@ -31,6 +36,16 @@
         "name": { "type": "string", "minLength": 1 },
         "legalName": { "type": ["string", "null"] },
         "cvr": { "type": ["string", "null"], "pattern": "^[0-9]{8}$" }
+      }
+    },
+    "noMeasurementReason": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "label", "requiresNote"],
+      "properties": {
+        "code": { "$ref": "#/$defs/id" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "requiresNote": { "type": "boolean" }
       }
     },
     "location": {
