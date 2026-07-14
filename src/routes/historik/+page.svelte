@@ -46,6 +46,12 @@
 	function countLabel(count: number) {
 		return `${count} ${count === 1 ? 'registrering' : 'registreringer'}`;
 	}
+
+	function periodHref(from: string, to: string) {
+		const params = new URLSearchParams({ from, to });
+		if (data.historyType !== 'all') params.set('type', data.historyType);
+		return `?${params.toString()}`;
+	}
 </script>
 
 <svelte:head>
@@ -69,14 +75,14 @@
 				{#each data.presets as preset}
 					<a
 						class="flex h-8 items-center border border-line px-3 font-mono text-[10px] tracking-wider text-muted uppercase no-underline hover:border-ink hover:text-ink"
-						href={`?from=${preset.from}&to=${preset.to}`}>{preset.days} dage</a
+						href={periodHref(preset.from, preset.to)}>{preset.days} dage</a
 					>
 				{/each}
 			</nav>
 		</div>
 
 		<form
-			class="grid gap-4 sm:grid-cols-[1fr_1fr_auto] sm:items-end"
+			class="grid gap-4 sm:grid-cols-2 sm:items-end lg:grid-cols-[1fr_1fr_1fr_auto]"
 			method="GET"
 			action={resolve('/historik')}
 		>
@@ -102,6 +108,18 @@
 					required
 				/>
 			</label>
+			<label class="grid gap-2 font-sans text-sm font-medium">
+				Type
+				<select
+					class="min-h-12 border border-line bg-paper px-3 font-sans text-base"
+					name="type"
+					value={data.historyType}
+				>
+					{#each data.historyTypeOptions as option}
+						<option value={option.value}>{option.label}</option>
+					{/each}
+				</select>
+			</label>
 			<button
 				class="min-h-12 cursor-pointer border border-ink bg-ink px-6 font-mono text-[11px] tracking-widest text-paper uppercase"
 				type="submit">Vis periode</button
@@ -115,7 +133,7 @@
 	<section class="grid grid-cols-3 border-b border-line py-6" aria-label="Opsummering">
 		<div class="border-r border-line px-4 first:pl-0">
 			<strong class="block font-sans text-2xl font-medium">{data.totalCount}</strong>
-			<span class="font-mono text-[10px] tracking-wider text-muted uppercase">Kontroller</span>
+			<span class="font-mono text-[10px] tracking-wider text-muted uppercase">Registreringer</span>
 		</div>
 		<div class="border-r border-line px-4">
 			<strong class="block font-sans text-2xl font-medium">{deviations}</strong>
@@ -127,7 +145,11 @@
 		</div>
 	</section>
 
-	{#if data.loadError}
+	{#if data.availabilityMessage}
+		<p class="my-10 border-l-2 border-ink pl-4 font-sans text-sm leading-relaxed text-muted">
+			{data.availabilityMessage}
+		</p>
+	{:else if data.loadError}
 		<p class="my-8 border-l-2 border-danger pl-4 font-sans text-sm text-danger" role="alert">
 			{data.loadError}
 		</p>

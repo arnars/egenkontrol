@@ -114,6 +114,7 @@ Historikvisningen bruger et afgrænset datointerval og en samlet, kronologisk li
 type ControlHistory = {
   from: string; // YYYY-MM-DD, inklusive
   to: string; // YYYY-MM-DD, inklusive
+  type: 'all' | 'control' | 'receiving' | 'pest';
   timeZone: string;
   totalCount: number;
   entries: ControlHistoryEntry[];
@@ -140,11 +141,27 @@ type ControlHistoryEntry = {
         kind: 'no_measurement';
         reasonLabel: string;
         note?: string;
+      }
+    | {
+        kind: 'receiving_deviation';
+        supplier: string;
+        deliveryReference: string;
+        issueLabel: string;
+        actionLabel: string;
+        assessment: string;
+      }
+    | {
+        kind: 'pest_incident';
+        areaLabel: string;
+        incidentLabel: string;
+        observation: string;
+        productImpact: 'yes' | 'no' | 'unknown';
+        actions: string[];
       };
 };
 ```
 
-Den aktuelle historikside læser de allerede integrerede temperatur- og udeladelsesdata read-only. En endelig adapter, cursor-baseret sideinddeling og revisionsspor for senere rettelser etableres ved integrationscheckpointet; de kræver ikke ændringer i den nuværende frontendvisning.
+Den aktuelle historikside læser de allerede integrerede temperatur- og udeladelsesdata read-only. Typefilteret og genveje fra varemodtagelse og skadedyr er etableret, men de to hændelsestyper viser en tydelig ikke-tilsluttet tilstand, indtil deres persistens implementeres. En endelig adapter, cursor-baseret sideinddeling og revisionsspor for senere rettelser etableres ved integrationscheckpointet; de kræver ikke ændringer i den nuværende frontendnavigation.
 
 ## Kommandoer fra frontenden
 

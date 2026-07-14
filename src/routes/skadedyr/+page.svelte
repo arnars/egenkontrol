@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import DocumentHeader from '$lib/components/DocumentHeader.svelte';
 	import SourceFooter from '$lib/components/SourceFooter.svelte';
 	import type { PageData } from './$types';
@@ -55,12 +56,18 @@
 				</p>
 				<h2 class="m-0 font-sans text-2xl font-medium tracking-[-.035em]">Registrér en hændelse</h2>
 			</div>
-			<button
-				class="min-h-11 cursor-pointer rounded-full border border-ink bg-ink px-5 font-sans text-sm text-paper"
-				type="button"
-				onclick={() => (formOpen = !formOpen)}
-				aria-expanded={formOpen}>{formOpen ? 'Luk' : 'Registrér fund'}</button
-			>
+			<div class="flex flex-wrap gap-3">
+				<a
+					class="flex min-h-11 items-center rounded-full border border-line px-5 font-sans text-sm text-ink no-underline"
+					href={`${resolve('/historik')}?type=pest`}>Se historik</a
+				>
+				<button
+					class="min-h-11 cursor-pointer rounded-full border border-ink bg-ink px-5 font-sans text-sm text-paper"
+					type="button"
+					onclick={() => (formOpen = !formOpen)}
+					aria-expanded={formOpen}>{formOpen ? 'Luk' : 'Registrér fund'}</button
+				>
+			</div>
 		</div>
 
 		{#if formOpen}

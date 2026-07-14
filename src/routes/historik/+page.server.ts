@@ -1,5 +1,10 @@
 import catalog from '../../../config/egenkontrol.defaults.json';
 import business from '../../../config/virksomhed.json';
+import {
+	historyTypeOptions,
+	parseHistoryType,
+	unavailableHistoryMessage
+} from '$lib/domain/control-history';
 import { buildTemperatureControls } from '$lib/domain/today-controls';
 import type { PageServerLoad } from './$types';
 
@@ -113,6 +118,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	const defaultFrom = addDays(today, -29);
 	const requestedFrom = url.searchParams.get('from');
 	const requestedTo = url.searchParams.get('to');
+	const historyType = parseHistoryType(url.searchParams.get('type'));
 	const from = requestedFrom && parseLocalDate(requestedFrom) ? requestedFrom : defaultFrom;
 	const to = requestedTo && parseLocalDate(requestedTo) ? requestedTo : today;
 	const filterError = from > to ? 'Fra-dato skal ligge før eller på til-dato.' : '';
@@ -121,6 +127,8 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		return {
 			from,
 			to,
+			historyType,
+			historyTypeOptions,
 			today,
 			timeZone,
 			locationName: location?.name ?? business.company.name,
@@ -129,6 +137,26 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 			truncated: false,
 			filterError,
 			loadError: '',
+			availabilityMessage: unavailableHistoryMessage(historyType),
+			presets: [7, 30, 90].map((days) => ({ days, from: addDays(today, -(days - 1)), to: today }))
+		};
+	}
+
+	if (historyType === 'receiving' || historyType === 'pest') {
+		return {
+			from,
+			to,
+			historyType,
+			historyTypeOptions,
+			today,
+			timeZone,
+			locationName: location?.name ?? business.company.name,
+			entries: [],
+			totalCount: 0,
+			truncated: false,
+			filterError: '',
+			loadError: '',
+			availabilityMessage: unavailableHistoryMessage(historyType),
 			presets: [7, 30, 90].map((days) => ({ days, from: addDays(today, -(days - 1)), to: today }))
 		};
 	}
@@ -207,6 +235,8 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	return {
 		from,
 		to,
+		historyType,
+		historyTypeOptions,
 		today,
 		timeZone,
 		locationName: location?.name ?? business.company.name,
@@ -214,6 +244,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		totalCount,
 		truncated: totalCount > entries.length,
 		filterError: '',
+		availabilityMessage: '',
 		loadError:
 			completionResult.error || omissionResult.error
 				? 'Noget af historikken kunne ikke hentes. Prøv igen.'
