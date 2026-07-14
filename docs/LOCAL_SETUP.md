@@ -4,7 +4,7 @@ Projektet bruger Node.js 24.x og pnpm. Installer dependencies med `pnpm install`
 
 Vercel-projektet hedder `egenkontrol` under teamet `weareremotely` og er forbundet med GitHub-repositoryet `arnars/egenkontrol`. Produktionsdeployments bruger Node.js 24.x. Den midlertidige offentlige produktionsadresse er `https://egenkontrol-eta.vercel.app`; det tilsigtede domæne er `https://egenkontrol.nabobrejning.dk`.
 
-Domænet er tilføjet til projektet og ejerskabet er verificeret hos Vercel, men DNS hos DNS.services skal pege subdomænet `egenkontrol` på Vercels projektspecifikke CNAME `f7a9a3aa3cff5d2f.vercel-dns-017.com`. Når posten er slået igennem, verificeres konfigurationen med `vercel domains verify egenkontrol.nabobrejning.dk`.
+Domænet er tilføjet til projektet, og DNS hos DNS.services peger subdomænet `egenkontrol` på Vercels projektspecifikke CNAME `f7a9a3aa3cff5d2f.vercel-dns-017.com`. Vercel verificerede konfigurationen og HTTPS den 14. juli 2026. Status kan genkontrolleres med `vercel domains verify egenkontrol.nabobrejning.dk`.
 
 ## Visuelt referenceprojekt
 

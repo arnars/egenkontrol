@@ -81,7 +81,7 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 - [x] Opsæt Playwright
 - [ ] Opsæt preview-deployments
 - [x] Opret Vercel-projekt, forbind GitHub og gennemfør første produktiondeployment
-- [ ] Peg `egenkontrol.nabobrejning.dk` på Vercel i DNS og verificér HTTPS
+- [x] Peg `egenkontrol.nabobrejning.dk` på Vercel i DNS og verificér HTTPS
 - [ ] Fastlæg basal sikkerheds- og logningspraksis
 
 **Acceptkriterier**
