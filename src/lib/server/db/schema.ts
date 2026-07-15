@@ -241,6 +241,40 @@ export const operationalEvents = pgTable(
 	]
 );
 
+export const evidenceCorrections = pgTable(
+	'evidence_corrections',
+	{
+		id: uuid('id').primaryKey().defaultRandom(),
+		companyId: text('company_id')
+			.notNull()
+			.references(() => companies.id),
+		locationId: text('location_id')
+			.notNull()
+			.references(() => locations.id),
+		sourceType: text('source_type').notNull(),
+		sourceId: uuid('source_id').notNull(),
+		revision: integer('revision').notNull(),
+		requestId: uuid('request_id').notNull(),
+		correctionReason: text('correction_reason').notNull(),
+		payload: jsonb('payload').notNull(),
+		correctedAt: timestamp('corrected_at', { withTimezone: true }).notNull().defaultNow(),
+		correctedBy: uuid('corrected_by')
+			.notNull()
+			.references(() => actors.id)
+	},
+	(table) => [
+		uniqueIndex('evidence_corrections_company_request_uidx').on(table.companyId, table.requestId),
+		uniqueIndex('evidence_corrections_source_revision_uidx').on(
+			table.companyId,
+			table.sourceType,
+			table.sourceId,
+			table.revision
+		),
+		index('evidence_corrections_source_idx').on(table.sourceType, table.sourceId, table.revision),
+		index('evidence_corrections_history_idx').on(table.locationId, table.correctedAt)
+	]
+);
+
 export const measurements = pgTable(
 	'measurements',
 	{

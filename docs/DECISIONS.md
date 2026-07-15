@@ -280,7 +280,26 @@ Den ugentlige ikke-relevant-status gemmes som en konkret `ScheduledControlOmissi
 
 ### Konsekvenser
 
-De prioriterede dynamiske flows og den samlede historik bruger nu Supabase som vedvarende lag. Igangværende nedkøling kan fortsætte på tværs af sideindlæsninger uden at være en opdigtet afsluttet kontrol. Nye hændelsestyper kræver eksplicit databasevalidering og historikmapping. Den fælles typed adapter, automatiserede integrationstests, dokumentrevisioner, eksport og backup resterer.
+De prioriterede dynamiske flows og den samlede historik bruger nu Supabase som vedvarende lag. Igangværende nedkøling kan fortsætte på tværs af sideindlæsninger uden at være en opdigtet afsluttet kontrol. Nye hændelsestyper kræver eksplicit databasevalidering og historikmapping. Den fælles typed adapter, automatiserede integrationstests, dokumentrevisioner, åbent dataformat og backup resterer.
+
+## ADR-016: Fælles append-only rettelsesjournal
+
+- **Status:** Accepteret
+- **Dato:** 2026-07-15
+
+### Kontekst
+
+En bruger skal kunne genåbne og rette en forkert registrering, men udført egenkontrol må ikke overskrives lydløst. Historikken består af flere typer dokumentation i forskellige tabeller, og separate korrektionsmodeller ville give forskellig revisionsadfærd.
+
+### Beslutning
+
+Rettelser gemmes i den fælles append-only tabel `evidence_corrections`. Hver rettelse peger logisk på kildetypen og kilde-id'et, har et stigende revisionsnummer, en obligatorisk årsag, et komplet valideret snapshot, aktør, servertid og request-id. En afgrænset `SECURITY DEFINER`-funktion validerer virksomhed og lokation og skriver et audit-event atomisk. Originalen og tidligere rettelser ændres ikke.
+
+Historikken viser seneste revision som gældende og markerer den som rettet. Originalens resumé og alle rettelsesårsager kan åbnes i revisionssporet. Printvisningen bruger samme read model og viser det valgte datointerval samt rettelsesmarkeringer; den udgør en læsbar eksport, men erstatter ikke et senere åbent dataformat eller backup.
+
+### Konsekvenser
+
+Samme brugerflow kan anvendes på målinger, proceskontroller, udeladelser, varemodtagelse og skadedyr. De eksisterende felter `completed_controls.correction_of_id` bevares af hensyn til schemahistorik, men bruges ikke af dette fælles flow. En rettelse ændrer dokumentationen, ikke status på den oprindelige planforekomst. Historikforespørgslen skal lægge seneste korrektion oven på originalen og beholde revisionslisten.
 
 ## Skabelon til fremtidige ADR'er
 

@@ -14,7 +14,7 @@ Drizzle-schema og migrationer findes i `src/lib/server/db/schema.ts` og `drizzle
 - bruger-id og tidspunkter med tidszone,
 - database-triggers, der afviser `UPDATE` og `DELETE` på revisionsrelevante tabeller.
 
-Auth-relationen, de første RLS-politikker, nødvendige læseprivilegier og seed af temperaturdefinitionerne er etableret. Den aktuelle temperatur-ugeplan materialiseres nu idempotent i `scheduled_controls` gennem en afgrænset RPC, og nye temperaturudførelser gemmer den konkrete schedule-reference. Fuld synkronisering af konfigurationskataloget og den endelige korrektionsmodel er endnu ikke afsluttet.
+Auth-relationen, de første RLS-politikker, nødvendige læseprivilegier og seed af temperaturdefinitionerne er etableret. Den aktuelle temperatur-ugeplan materialiseres nu idempotent i `scheduled_controls` gennem en afgrænset RPC, og nye temperaturudførelser gemmer den konkrete schedule-reference. Fuld synkronisering af konfigurationskataloget er endnu ikke afsluttet.
 
 Temperaturflowet gemmer nu måling, afvigelse, en udført korrigerende handling, afvigelseshændelser og audit-events i samme databasetransaktion. En korrigerende handling dokumenterer, hvad brugeren faktisk gjorde; systemet foreskriver ikke handlingen. Afvigelsen forbliver et selvstændigt forløb og lukkes ikke automatisk af denne registrering.
 
@@ -36,6 +36,7 @@ Migration `20260714101814_operational_events` er anvendt på den delte Supabase-
 | `ScheduledControl` | Konkret forekomst genereret fra definition og gentagelsesregel. |
 | `ScheduledControlOmission` | Immutable begrundelse for, at en konkret planlagt kontrol blev afsluttet uden måling. |
 | `OperationalEvent` | Append-only starthændelse eller selvstændig drifthændelse, som ikke i sig selv er en afsluttet kontrol. |
+| `EvidenceCorrection` | Append-only rettelsesrevision med årsag, nyt snapshot, aktør og servertid; originalen ændres ikke. |
 | `CompletedControl` | Immutable registrering af den konkrete udførelse. |
 | `Measurement` | Struktureret værdi, enhed og målekontekst. |
 | `Deviation` | Selvstændigt afvigelsesforløb. |
@@ -57,6 +58,7 @@ ScheduledControl 0..1 ── 1 CompletedControl ── * Measurement
 ScheduledControl 0..1 ── 1 ScheduledControlOmission
 ScheduledControl 0..* ── * OperationalEvent
 CompletedControl 0..* ── * Deviation ── * CorrectiveAction
+CompletedControl / ScheduledControlOmission / OperationalEvent 1 ── * EvidenceCorrection
 alle væsentlige entiteter ── * AuditEvent
 ```
 
@@ -106,7 +108,7 @@ Statusværdier er foreløbige. Særligt forskellen mellem `resolved` og `closed`
 ## Revisionsprincipper
 
 - `CompletedControl`, `Measurement`, `Deviation`, `CorrectiveAction` og `AuditEvent` er revisionsrelevante.
-- Indsendte registreringer ændres ikke in-place. En rettelse oprettes som en ny revision/korrektion med årsag og reference til den tidligere registrering.
+- Indsendte registreringer ændres ikke in-place. En rettelse oprettes i `evidence_corrections` med kildeart, kilde-id, stigende revision, årsag og et valideret nyt snapshot.
 - Soft delete kan bruges til konfiguration, der skal skjules, men må ikke skjule revisionsrelevant historik. `retiredAt` er ofte tydeligere end generisk `deletedAt`.
 - Auditloggen er append-only og supplerer, men erstatter ikke, domænespecifik versionshistorik.
 - Hver væsentlig hændelse gemmer aktør, server-tidspunkt, handling, entitet, correlation/request-id og relevant ændringsmetadata.
@@ -137,6 +139,12 @@ Tidligere temperaturudførelser har fortsat `scheduled_control_id = null`. De ba
 `Ikke relevant i denne uge` genbruger `scheduled_control_omissions` med et særskilt årsags-snapshot og kan ikke anvendes på en allerede startet nedkøling. Varemodtagelsesfejl og skadedyrsfund gemmes som selvstændige `operational_events`; normale leverancer og den almindelige skadedyrssikring danner fortsat ingen registrering.
 
 Migrationen er fremadrettet og har ingen datamigrering, fordi de tidligere frontendregistreringer ikke var vedvarende dokumentation. Ved en fejl må den allerede anvendte migration ikke redigeres eller rulles destruktivt tilbage. Execute-adgang til de nye RPC'er kan tilbagekaldes, hvorefter en ny korrigerende migration anvendes. Eksisterende hændelser og ugeforekomster skal bevares.
+
+### Rettelser af udført dokumentation
+
+`evidence_corrections` giver ét fælles revisionsspor for udførte kontroller, begrundede udeladelser og selvstændige varemodtagelses-/skadedyrshændelser. Den oprindelige række og dens målinger ændres aldrig. `record_evidence_correction` låser og validerer kilden mod den autentificerede actors virksomhed og lokation, tildeler næste revision og gemmer rettelsen og et audit-event i samme transaktion. Request-id gør genforsøg idempotente.
+
+Serverlaget Zod-validerer det komplette rettede snapshot og sikrer for målinger, at felttyper og enheder ikke ændres. Den gældende historikvisning lægger seneste rettelse oven på originalen og viser samtidig årsag og revisionsspor. Databasen bevarer alle tidligere rettelser. Rettelser er dokumentationskorrektioner; de genåbner ikke en afsluttet planforekomst og skaber ikke en ny driftskontrol.
 
 ## Versionshistorik
 

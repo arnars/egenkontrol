@@ -154,6 +154,8 @@ type ControlHistoryEntry = {
   title: string;
   localDate: string;
   recordedAt: string;
+  correctionStatus: 'submitted' | 'corrected';
+  correctionHistory: Array<{ revision: number; reason: string; correctedAt: string }>;
   outcome:
     | {
         kind: 'temperature';
@@ -187,7 +189,7 @@ type ControlHistoryEntry = {
 };
 ```
 
-Historiksiden læser temperaturer, udeladelser, proceskontroller, varemodtagelsesfejl og skadedyrshændelser gennem serverlaget. Typefilter og genveje er integreret med persistenslaget. Cursor-baseret sideinddeling og den endelige visning af senere rettelser er fortsat udskudt; de kræver ikke ændringer i den nuværende frontendnavigation.
+Historiksiden læser temperaturer, udeladelser, proceskontroller, varemodtagelsesfejl og skadedyrshændelser gennem serverlaget. Typefilter og genveje er integreret med persistenslaget. Proceskontroller viser ret, batch og relevante start-/slutmålinger. Registreringer kan genåbnes og rettes; seneste revision vises som gældende, mens original og rettelsesårsager forbliver synlige i revisionssporet. Den valgte periode kan printes eller gemmes som PDF gennem browserens standarddialog. Cursor-baseret sideinddeling er fortsat udskudt.
 
 ## Kommandoer fra frontenden
 
@@ -221,6 +223,15 @@ type RecordNoMeasurementsTodayCommand = {
   occurrenceIds: string[];
   reasonCode: string;
   note?: string;
+};
+
+type CorrectEvidenceCommand = {
+  kind: 'correct_evidence';
+  requestId: string;
+  sourceType: 'completed_control' | 'scheduled_control_omission' | 'operational_event';
+  sourceId: string;
+  correctionReason: string;
+  payload: Record<string, unknown>; // komplet, typevalideret snapshot
 };
 
 type RecordWeeklyProcessControlCommand =

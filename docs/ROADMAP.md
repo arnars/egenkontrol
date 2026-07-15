@@ -109,7 +109,7 @@ Roadmapet er projektets levende opgaveliste. Faglige punkter skal valideres og m
 **Acceptkriterier**
 
 - [x] Temperaturkontrollens komplette kontrolkæde kan gemmes og hentes uden at miste historik
-- [ ] Rettelser og væsentlige ændringer kan spores til bruger og tidspunkt
+- [x] Rettelser og væsentlige ændringer kan spores til bruger og tidspunkt
 - [ ] Isolation mellem virksomheder og lokationer er testet
 
 ## Fase 4 — MVP
@@ -148,6 +148,8 @@ Database-schema, RLS og RPC'er sættes som udgangspunkt på pause i dette spor. 
 - [x] Vis ugentlige frontendflows for opvarmning, nedkøling og varmholdelse med `Ikke relevant i denne uge`
 - [x] Persistér varemodtagelsesfejl og skadedyrshændelser med actor, servertid og auditspor
 - [x] Integrér proceskontroller, varemodtagelse og skadedyr i den samlede historik
+- [x] Vis ret, batch samt start-/slutmålinger for proceskontroller i historikken
+- [x] Genåbn og ret historikregistreringer uden at overskrive originalen
 - [x] Vis tydelig gemmebekræftelse for temperaturkontroller
 - [x] Bevar temperaturinput og vis fejltilstand ved gemmeproblemer
 - [ ] Test centrale flows på iPad-formater
@@ -184,17 +186,17 @@ Database-schema, RLS og RPC'er sættes som udgangspunkt på pause i dette spor. 
 - [ ] Understøt risikoanalyse
 - [x] Vis et JSON-baseret demonstrationsdokument for risikoanalysen
 - [ ] Understøt procedurer
-- [ ] Vis revisionshistorik
+- [x] Vis revisionshistorik for rettede registreringer
 - [ ] Implementér kontrolbesøgsvisning
-- [ ] Implementér periodefiltrering
+- [x] Implementér periodefiltrering
 - [ ] Implementér åbent eksportformat
-- [ ] Afklar og implementér PDF-generator
+- [x] Tilføj printvenlig visning og browserens Gem som PDF for valgt periode
 - [ ] Afklar og implementér backupudbyder og gendannelsestest
 
 **Acceptkriterier**
 
 - [ ] Historik kan vises og eksporteres forståeligt for en valgt periode
-- [ ] Revisioner og rettelser er sporbare
+- [x] Revisioner og rettelser er sporbare
 - [ ] En dokumenteret gendannelsestest viser, at databasen ikke er eneste kopi
 
 ## Fase 7 — senere muligheder

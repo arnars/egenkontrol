@@ -47,4 +47,13 @@
 		size: A4;
 		margin: 10mm 12mm;
 	}
+
+	html,
+	body {
+		background: #fff;
+	}
+
+	[data-history-entry] {
+		break-inside: avoid;
+	}
 }
